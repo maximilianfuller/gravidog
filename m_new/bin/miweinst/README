@@ -1,0 +1,22 @@
+
+M2 README
+
+At least 25 hours
+I don't know of any bugs
+
+ENGINE
+Restitution
+Engine calculates an impulse to apply to each shape when a collision is detected. Algorithm is executed within each PhysicsEntity if a collision is detected. PhysicsEntity class has an instance variable _COR for coefficient of restitution, and both of these variables are used in calculating the impulse. The _COR is a float between 0 (inelastic) to 1 (elastic), and the resulting impulse incorporates both entity's values.
+
+Raycasting
+Engine supports raycasting on CircleShape, PolygonShape and AARectShape. It has a Ray class with a project() method for each subclass of Shape. These methods return a Vec2f indicating where the Ray intersected with the specified shape. 
+
+GAME
+The pink squares have a COR of 1, so two pink squares result in an elastic collision. The blue circles have a COR of 0, so the collision between a circle and another shape is an inelastic collision. And therefore the collision between two blue circles is a perfectly inelastic collision, because both PhysicsEntity's COR fields are 0.
+
+Player fires lazors that act instantly using raycasting. The red line indicates the ray used for the lazor pulse bullet. An impulse is applied to any shape that intersects with the ray, in the direction of the ray. Impulse only applied to non-static objects.
+
+Pressing CNTRL throws a grenade which explodes on contact with any surface. It casts multiple rays on all the shapes in the world, and applies an impulse of a strength corresponding the number of rays intersected by that shape. So if an object is partially obstructed by another object, it will still receive an impulse, but of a proportionally lesser strength. Impulse is only applied to objects inside blast radius.
+
+Player can only jump once finished bouncing on a solid object; no double jumps or jumps from mid-air. To check if the Player is standing on top of a solid object, it checks if the MTV is not null, positive and sufficiently small (so there is functionally no bounce occurring) In MWorld, there is also a boolean that indicates whether the Player is currently jumping. This ensures no double-presses on key input of the jump impulse. The combined strategies work together to ensure the player can jump if and only if standing on top of solid object.
+
