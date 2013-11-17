@@ -1,13 +1,15 @@
 
 
-BUG: Restitution for squares and circles?
-BUG: Squares to polygons
-BUG: Read Polygon's location correctly from level reader, setting to centroid
+BUG: For entities with CircleShapes, you have to set the restitution too damn high
+TODO: Squares to polygons
+TODO: Read Polygon's location correctly from level reader, setting to centroid
 
-BUG: POI error; talk to TA
+TODO: POI error; talk to TA
+	Find a way to calculate the POI when no vertices are contained in other shape
 
 BUG: If the ball just sits on a curve for a really long time, it eventually suddenly falls through...
 
+TODO (if we want)
 Create _rotatable boolean
 Jumping on slanted surfaces
 Jumping at right moment on bounce; not only after being totally settled

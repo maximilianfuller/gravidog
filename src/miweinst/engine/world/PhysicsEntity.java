@@ -5,7 +5,7 @@ import java.util.Map;
 import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
-import miweinst.engine.gfx.shape.PolygonShape;
+import miweinst.engine.gfx.shape.CircleShape;
 import miweinst.engine.gfx.shape.Shape;
 import cs195n.Vec2f;
 
@@ -231,7 +231,7 @@ public class PhysicsEntity extends MovingEntity {
 	public boolean collides(PhysicsEntity s) {
 		boolean collision = super.collides(s);	
 		if (_isInteractive && s.isInteractive())
-//////POI CHECK??
+//////Shouldn't have to check if POI is null, because collision only works when vertex is contained by other shape
 			if (collision && s.getShape().poi(getShape()) != null) 
 				this.collisionResponse(s);	
 		return collision;
@@ -247,7 +247,6 @@ public class PhysicsEntity extends MovingEntity {
 		CollisionInfo thisData = this.getShape().getCollisionInfo();
 
 		if (otherData != null && thisData != null) {
-
 			//Get MTVs and locations for each Entity
 			Vec2f otherMTV = otherData.getMTV();	
 			Vec2f thisMTV = thisData.getMTV();			
@@ -255,6 +254,7 @@ public class PhysicsEntity extends MovingEntity {
 			Vec2f thisNewLoc = this.getLocation();				
 			Vec2f poi = this.getShape().poi(other.getShape());
 			
+			//Point of intersection should be same when called from either direction
 			assert poi == other.getShape().poi(this.getShape());
 			
 			//If other shape is static, move full MTV. Else each move MTV/2
@@ -302,7 +302,8 @@ public class PhysicsEntity extends MovingEntity {
 	public Vec2f[] calculateImpulse(PhysicsEntity other) {
 		//Impulse array, equal but opposite: [impulseA, impulseB]
 		Vec2f[] imps = new Vec2f[2];
-		float cor = (float) Math.sqrt(this.getRestitution()*other.getRestitution());	
+		float cor = (float) Math.sqrt(this.getRestitution()*other.getRestitution());
+		
 		float m_a = this.getMass();
 		float m_b = other.getMass();		
 		Vec2f u_a = this.getVelocity().projectOnto(this.getShape().getCollisionInfo().getMTV());
@@ -314,7 +315,13 @@ public class PhysicsEntity extends MovingEntity {
 		Vec2f r1Perp = getCentroid().minus(poi).getNormal();
 		Vec2f r2Perp = other.getCentroid().minus(poi).getNormal();
 
+/////
 		Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
+		
+		if (getShape() instanceof CircleShape || other.getShape() instanceof CircleShape) {
+			System.out.println(cor);
+		}
+		
 		float denominator = 1f/m_a + 1f/m_b;
 		float denA = (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);
 		float denB = (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass());
@@ -327,6 +334,7 @@ public class PhysicsEntity extends MovingEntity {
 		imps[1] = (numerator.sdiv(denominator));
 		imps[0] = imps[1].invert();
 
+		//Don't delete yet; impulse calculation for non-rotating entities
 /*//	Vec2f i_a = (u_b.minus(u_a)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));
 		Vec2f i_b = (u_a.minus(u_b)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));		
 		if (this.isStatic()) {

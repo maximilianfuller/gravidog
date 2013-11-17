@@ -41,23 +41,22 @@ public class MTestObject extends PhysicsEntity {
 		if (type==0) {
 			shape = new PolygonShape(location, verts);
 			shape.setColor(new Color(226, 98, 82));
-			this.setMass(.5f);
+			this.setMass(20f);
 			this.setRestitution(1f);
 		}
 		//Lower mass Square, green
 		else if (type==1) {
 			shape = new AARectShape(location, new Vec2f(10, 10));
-//			shape = new AARectShape(location, new Vec2f(10, 10)).rectToPoly();
 			shape.setColor(new Color(254, 175, 175));	//Green
 			this.setMass(.6f);
-			this.setRestitution(0f);
+			this.setRestitution(.8f);
 		}	
 		//Greater mass Circle, turquoise
 		else if (type==2) {
 			shape = new CircleShape(location, 8.5f); 
 			shape.setColor(new Color(54, 85, 93));	//turquoise
 			this.setMass(2);
-			this.setRestitution(0);
+			this.setRestitution(20f);
 		}				
 		if (shape != null) this.setShape(shape);
 		this.setLocation(location);

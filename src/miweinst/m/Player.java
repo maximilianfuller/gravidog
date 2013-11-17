@@ -145,12 +145,14 @@ public class Player extends PhysicsEntity {
 		
 		this.setShape(shape);
 		this.setLocation(location);
-		this.setMass(.5f);
+		this.setMass(40f);
 		this.setStatic(false);		
 		_shape = shape;		
 		_saveData = new ArrayList<String>();
 		_gravitySwitched = false;
 		_dataWritten = false;
+		
+		this.setRestitution(100f);
 	}
 	
 	/*Allows method to override the built in check
