@@ -6,7 +6,7 @@ TODO: Read Polygon's location correctly from level reader, setting to centroid
 
 TODO: POI error; talk to TA
 	Find a way to calculate the POI when no vertices are contained in other shape
-
+BUG: When player goes too fast you can't change direction with goalVelocity...
 BUG: If the ball just sits on a curve for a really long time, it eventually suddenly falls through...
 
 TODO (if we want)
