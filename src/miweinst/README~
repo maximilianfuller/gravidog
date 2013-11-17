@@ -1,0 +1,28 @@
+
+M4 README
+
+About 25 hours on M4
+
+Bug: Save data is supposed to be reset when Player quits. But only works when player quits with 'q' from playScreen; doesn't work when closing window. Didn't figure out how to do a shutDownHook(Thread)... So once you make it to the checkpoint, you're set for life.
+
+Start a new game by pressing 'r' at any point. Can also quit with 'q'
+
+Wayyy more than 5 I/O connections. Mostly because sensors, sensors everywhere.
+
+FEATURES ADDED TO GAME
+
+-Drawing and calculating points on Bezier Curves
+	Uses an algorithm called de Casteljau's algorithm, which efficiently finds a point on the curve (I just have a CubicBezierCurve class). I also have methods to calculate the point directly using the BezierCurve equation.
+
+-Circle-Curve collision detection using orthogonality check by vector dot product
+
+-Environmental Traps (Platforms disappearing when you jump on them; Bumper that shoots you off map if you touch it)
+
+-Basic Save/Load (saves whether Player has reached checkpoint, and if so, loads player at checkpoint)
+
+-Ability to reverse gravity at some point in game
+
+- Level is won by solving puzzle; in particularly, triggering the correct color-changing relay and then finding the win platform once that the relay has been triggered (and the Player is black). Also has false triggers, such as when the Player turns white in that place that you'll discover.
+
+
+
