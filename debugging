@@ -1,0 +1,16 @@
+
+
+BUG: Restitution for squares and circles?
+BUG: Squares to polygons
+BUG: Read Polygon's location correctly from level reader, setting to centroid
+
+BUG: POI error; talk to TA
+
+BUG: If the ball just sits on a curve for a really long time, it eventually suddenly falls through...
+
+Create _rotatable boolean
+Jumping on slanted surfaces
+Jumping at right moment on bounce; not only after being totally settled
+Make level editor more extensible; move most of it to engine (GameWorld)
+Fix mass to area? Or just make a density thing?
+
