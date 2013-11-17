@@ -1,13 +1,14 @@
 
 
-BUG: For entities with CircleShapes, you have to set the restitution too damn high
+TODO: POI error; talk to TA
+	Find a way to calculate the POI when no vertices are contained in other shape
 TODO: Squares to polygons
 TODO: Read Polygon's location correctly from level reader, setting to centroid
 
-TODO: POI error; talk to TA
-	Find a way to calculate the POI when no vertices are contained in other shape
+BUG: For entities with CircleShapes, you have to set the restitution too damn high
 BUG: When player goes too fast you can't change direction with goalVelocity...
 BUG: If the ball just sits on a curve for a really long time, it eventually suddenly falls through...
+
 
 TODO (if we want)
 Create _rotatable boolean
@@ -16,3 +17,9 @@ Jumping at right moment on bounce; not only after being totally settled
 Make level editor more extensible; move most of it to engine (GameWorld)
 Fix mass to area? Or just make a density thing?
 
+
+Bezier Curve Aspirations
+- QuadricBezierCurve
+- Combining cubic and quadratic curves into higher degree curves
+- Bounding boxes
+- Create curve from three points
