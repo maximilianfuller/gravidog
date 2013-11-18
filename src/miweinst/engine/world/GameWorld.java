@@ -302,7 +302,7 @@ public class GameWorld {
 				String b = rgb[2];				
 				color = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
 			} catch (NumberFormatException e) {
-				System.out.println("NumberFormatException: " + e.getMessage());
+				System.err.println("NumberFormatException: " + e.getMessage());
 				color = Color.BLACK;
 			}
 		}

@@ -246,7 +246,7 @@ public class Player extends PhysicsEntity {
 		if (new String("doRead").equals(s)) {
 			return doRead;
 		}
-		System.out.println("No input found (Player.getInputOf)");
+		System.err.println("No input found (Player.getInputOf)");
 		return null;
 	}
 

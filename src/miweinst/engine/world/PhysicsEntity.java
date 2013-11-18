@@ -87,10 +87,10 @@ public class PhysicsEntity extends MovingEntity {
 	public void setMass(float m) {
 		_mass = m;
 	}
-	public final Vec2f getCentroid() {
+	public Vec2f getCentroid() {
 		return super.getShape().getCentroid();
 	}
-	public final float getMomentOfInertia(float mass) {
+	public float getMomentOfInertia(float mass) {
 		return super.getShape().getMomentOfInertia(mass);
 	}
 
@@ -318,9 +318,10 @@ public class PhysicsEntity extends MovingEntity {
 /////
 		Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
 		
-		if (getShape() instanceof CircleShape || other.getShape() instanceof CircleShape) {
+		/*if (getShape() instanceof CircleShape || other.getShape() instanceof CircleShape) {
 			System.out.println(cor);
 		}
+		*/
 		
 		float denominator = 1f/m_a + 1f/m_b;
 		float denA = (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);

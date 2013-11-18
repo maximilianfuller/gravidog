@@ -15,4 +15,6 @@ public class Constants {
 	
 	//Gravitational constant in Acceleration ft/sec**
 //	public static final float GRAVITY = -9.8f;
+	
+	
 }

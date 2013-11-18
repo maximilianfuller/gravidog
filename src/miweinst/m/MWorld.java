@@ -17,6 +17,7 @@ import miweinst.engine.App;
 import miweinst.engine.FileIO;
 import miweinst.engine.Tuple;
 import miweinst.engine.beziercurve.BezierCurveEntity;
+import miweinst.engine.contraints.PinEntity;
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
@@ -75,6 +76,12 @@ public class MWorld extends GameWorld {
 		_app = app;
 		//Initialize Player to avoid NullPointer, in case not instantiated in level editor
 		_player = new Player(this);
+		
+		Shape pinEntityShape = new AARectShape(new Vec2f(40f, 50f), new Vec2f(10f, 1f)).rectToPoly();
+		PinEntity pin = new PinEntity(this, pinEntityShape.getCentroid());
+		pin.setShape(pinEntityShape);
+		pin.setMass(pinEntityShape.getArea());
+		this.addEntity(pin);
 
 		//Key code order: Left(37), Up(38), Right(39), Down(40)
 		_arrowKeyStates = new boolean[4];
@@ -105,11 +112,11 @@ public class MWorld extends GameWorld {
 			level = CS195NLevelReader.readLevel(f);
 		}
 		catch (InvalidLevelException le) {
-			System.out.println("The level you loaded is invalid!! MWorld()");
+			System.err.println("The level you loaded is invalid!! MWorld()");
 			le.printStackTrace();
 		}
 		catch (FileNotFoundException fe) {
-			System.out.println("File not found!! MWorld()");
+			System.err.println("File not found!! MWorld()");
 			fe.printStackTrace();
 		}			
 		if (level != null) {
@@ -127,7 +134,7 @@ public class MWorld extends GameWorld {
 					Constructor<?> c = _classes.getDecoration(entityClass).getConstructor(GameWorld.class);
 					entity = (PhysicsEntity) c.newInstance(this);
 				} catch (Exception e) {
-					System.out.println("Exception...: " + e.getMessage());
+					System.err.println("Exception...: " + e.getMessage());
 					e.printStackTrace();
 				}										
 				//Cast PhysicsEntity to specific subclass
@@ -193,10 +200,10 @@ public class MWorld extends GameWorld {
 				PhysicsEntity target = null;
 				if (_entities.contains(src)) 
 					source = _entities.getDecoration(src);
-				else System.out.println("Connection source " + src + " does not exist!");
+				else System.err.println("Connection source " + src + " does not exist!");
 				if (_entities.contains(dst)) 
 					target = _entities.getDecoration(dst);
-				else System.out.println("Connection target " + dst + " does not exist!");
+				else System.err.println("Connection target " + dst + " does not exist!");
 				
 				if (source != null && target != null) {		
 					Connection toAdd = null;
@@ -208,9 +215,9 @@ public class MWorld extends GameWorld {
 						//Connect Output source here
 						if (onOut !=  null) 
 							onOut.connect(toAdd);
-						else System.out.println("Source " + src + " has no output " + srcOut);
+						else System.err.println("Source " + src + " has no output " + srcOut);
 					}
-					else System.out.println("Target " + dst + " has no input " + dstIn);
+					else System.err.println("Target " + dst + " has no input " + dstIn);
 					//If valid Connection, parse Connection properties
 					if (toAdd != null) {
 						//Properties of connection
@@ -220,7 +227,7 @@ public class MWorld extends GameWorld {
 			}
 		}
 		else
-			System.out.println("Level is null! MWorld()");
+			System.err.println("Level is null! MWorld()");
 		
 /////////// END LEVEL READER ^^^^^^^^
 		
@@ -354,7 +361,6 @@ public class MWorld extends GameWorld {
 	}
 	/* Releasing arrow key sets state boolean back to false.*/
 	public void onKeyReleased(KeyEvent e) {
-//		System.out.println("Key Code: " + e.getKeyCode());
 		int arrow = e.getKeyCode()-37;
 		if (arrow >= 0 && arrow < _arrowKeyStates.length) {
 			_arrowKeyStates[arrow] = false;
