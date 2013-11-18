@@ -6,10 +6,8 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import miweinst.engine.collisiondetection.CollisionInfo;
-import miweinst.engine.collisiondetection.SeparatingAxis;
 import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.CompoundShape;
 import miweinst.engine.gfx.shape.PolygonShape;
 import miweinst.engine.gfx.shape.Shape;
 import cs195n.Vec2f;
@@ -18,7 +16,12 @@ public class CubicBezierCurve extends BezierCurve {
 	
 	public Vec2f start, ctrl_one, ctrl_two, end;
 	private Vec2f[] _points;
+	
 	private ArrayList<LineSegment> _segs;
+	private ArrayList<Vec2f> _pois;
+	private ArrayList<Vec2f> _mtvs;
+//////	
+//	private ArrayList<CircleShape> _dots;
 	
 	/*Default constructor and constructor taking in four _points (2 endpoints, 2 ctrl _points)*/
 	public CubicBezierCurve() {
@@ -45,8 +48,13 @@ public class CubicBezierCurve extends BezierCurve {
 		end = _points[3] = point4;
 		this.setLocation(start);
 		this.updateSegs();
+		
+////////
+		_pois = new ArrayList<Vec2f>();
+		_mtvs = new ArrayList<Vec2f>();
+//		_dots = new ArrayList<CircleShape>();
 	}
-	
+		
 	/*Location of curve is defined as the starting endpoint. 
 	 * When new location is set, points do not move relative to
 	 * each other; all points are translated by same amount so
@@ -89,7 +97,7 @@ public class CubicBezierCurve extends BezierCurve {
 	 * start, end, ctrl_one or ctrl_two are changed. Should
 	 * be called automatically from any methods within BezierCurve classes
 	 * that change any of the point values, for encapsulation's sake.*/
-	protected void updatePointArr() {
+	public void updatePointArr() {
 		_points[0] = start;
 		_points[1] = ctrl_one;
 		_points[2] = ctrl_two;
@@ -97,7 +105,7 @@ public class CubicBezierCurve extends BezierCurve {
 		updateSegs();
 	}
 	/*Other direction: Updates vars for each point if pointsArr has been changed.*/
-	protected void updatePointVars() {
+	public void updatePointVars() {
 		start = _points[0];
 		ctrl_one = _points[1];
 		ctrl_two = _points[2];
@@ -278,13 +286,19 @@ public class CubicBezierCurve extends BezierCurve {
 		//Draw each LineSegment calculated by deCasteljau's algorithm in init
 		for (LineSegment seg: _segs) 
 			seg.draw(g);
+///////	
+/*		for (CircleShape c: _dots) {
+			c.draw(g);
+		}*/
 	}
 	
 	
 	/**public static methods*/
 	/*Returns sign of specified float as 1 or -1*/
-	public static int sign(float f) {
-		return (int) (f/Math.abs(f));
+	public static int sgn(double d) {
+	    if (d < 0.0) 
+	    	return -1;
+	    return 1;
 	}
 	/*Static calculation that takes in all four _points as arguments.*/
 	public static Vec2f calculateBezierPoint(float t, Vec2f p0, Vec2f p1, Vec2f p2, Vec2f p3) {
@@ -309,160 +323,294 @@ public class CubicBezierCurve extends BezierCurve {
 	}	*/
 	public static float[] bezierCoeffsX(Vec2f p0, Vec2f p1, Vec2f p2, Vec2f p3) {
 		float[] x_cof = new float[4];
-		x_cof[0] = -p0.x + 3*p1.x - 3*p2.x + p3.x;
-		x_cof[1] = 3*p0.x - 6*p1.x + 3*p2.x;
-		x_cof[2] = -3*p0.x + p1.x;
-		x_cof[3] = p0.x;
+/*		Vec2f[] coeffs = bezierCoefficients(p0, p1, p2, p3);
+		for (int i=0; i<coeffs.length; i++) {
+			x_cof[i] = coeffs[i].x;
+		}*/
+		x_cof[0] = -p0.x + 3*p1.x - 3*p2.x + p3.x;	//t^3
+		x_cof[1] = 3*(p0.x - 2*p1.x + p2.x);		//t^2
+		x_cof[2] = 3*(-p0.x + p1.x);				//t
+		x_cof[3] = p0.x;							//1 
 		return x_cof;
 	}
 	public static float[] bezierCoeffsY(Vec2f p0, Vec2f p1, Vec2f p2, Vec2f p3) {
 		float[] y_cof = new float[4];
-		y_cof[0] = -p0.y + 3*p1.y - 3*p2.y + p3.y;
-		y_cof[1] = 3*p0.y - 6*p1.y + 3*p2.y;
-		y_cof[2] = -3*p0.y + p1.y;
-		y_cof[3] = p0.y;
+/*		Vec2f[] coeffs = bezierCoefficients(p0, p1, p2, p3);
+		for (int i=0; i<coeffs.length; i++) {
+			y_cof[i] = coeffs[i].y;
+		}*/
+		y_cof[0] = -p0.y + 3*p1.y - 3*p2.y + p3.y;	//t^3
+		y_cof[1] = 3*(p0.y - 2*p1.y + p2.y);		//t^2
+		y_cof[2] = 3*(-p0.y + p1.y);				//t
+		y_cof[3] = p0.y;							//1
 		return y_cof;
 	}
+	/* Returns array of roots of cubic polynomial in form of:
+	 *  arr[0]t^3 + arr[1]t^2 + arr[2]t + arr[3]. 
+	 * Specified array of floats specifies coefficients of polynomial.
+	 * Non-real or out of range roots set to -1.*/
 	public static float[] cubicRoots(float[] arr) {
-		
+		//Coefficients
 		float c0 = arr[0];
 		float c1 = arr[1];
 		float c2 = arr[2];
-		float c3 = arr[3];
-		
-		//Turn into form: 0 = x^3 + Ax^2 + Bx + C (by dividing all coeffs by c0)
+		float c3 = arr[3];	
+		//Turn into form: 0 = x^3 + Ax^2 + Bx + C [by dividing all coeffs by c0 (so coefficient of x^3 is 1)]
 		float a = c1/c0;
 		float b = c2/c0;
 		float c = c3/c0;
-		
-		float q_var = (3*b - a*2)/9;
-		float r_var = (float) ((3*a*b - 27*c - Math.pow(a, 3))/54);		
-		float dscrm = (float) (Math.pow(q_var, 3) + Math.pow(r_var, 2));
-		
+	
+		//calculate vars of cubic formula
+		float q = (3*b - a*a)/9;
+		float r = (9*a*b - 27*c - 2*a*a*a)/54;		
+		float dscrm = q*q*q + r*r;
+		//return array
 		float[] roots = new float[3];
-////////
-		if (dscrm >= 0) {	//complex or duplicate roots because discriminate is > 0 (complex) or == 0 (duplicate)
-			//Get S and T with sign of discriminant to correct for Math's returns
-			float s_var = (float)(sign(r_var+(float)Math.sqrt(dscrm))* Math.pow(r_var + Math.sqrt(dscrm), 1/3));
-			float t_var = (float)(sign(r_var-(float)Math.sqrt(dscrm))* Math.pow(r_var - Math.sqrt(dscrm), 1/3));
-
-			roots[0] = -a/3 + (s_var + t_var);                    // real root
-	        roots[1] = -a/3 - (s_var + t_var)/2;                  // real part of complex root
-	        roots[2] = -a/3 - (s_var + t_var)/2;                  // real part of complex root
-	        
-	        double im = Math.abs(Math.sqrt(3)*(s_var - t_var)/2);    // complex part of root pair   
-	        if (im!=0) {
+		
+		//complex or duplicate roots; discrim > 0 (complex), or discrim == 0 (duplicate real)
+		if (dscrm >= 0) {	
+			//Get S and T with sign of discrim
+			float s = r + (float)Math.sqrt(dscrm);
+			s = (float) (s<0? -Math.pow(-s, 1/3) : Math.pow(s,  1/3));
+//			float s = sgn(r+(float)Math.sqrt(dscrm))*((float)Math.pow(Math.abs(r + Math.sqrt(dscrm)), (1/3)));
+			float t = r - (float)Math.sqrt(dscrm);
+			t = (float) (t<0? -Math.pow(-t, 1/3) : Math.pow(t, 1/3));
+//			float t = sgn(r-(float)Math.sqrt(dscrm))*((float)Math.pow(Math.abs(r - Math.sqrt(dscrm)), (1/3)));
+			roots[0] = -a/3 + s + t;                    // real root		
+			//Don't need non-real roots for interesctions
+	        roots[1] = -a/3 - (s + t)/2;                  // real part of complex root
+	        roots[2] = -a/3 - (s + t)/2;                  // real part of complex root
+	        double im = Math.abs(Math.sqrt(3)*(s - t)/2);    // complex part of root pair   
+	        //discard complex roots
+	        if (im != 0) {
 	            roots[1]=-1;
 	            roots[2]=-1;
 	        }
-				
 		}
-		else {	//distinct real roots
-			
-			float theta = (float) Math.acos(r_var/Math.sqrt(-Math.pow(q_var, 3)));
-			roots[0] = (float) (2*Math.sqrt(-q_var)*Math.cos(theta/3) - a/3);
-			roots[1] = (float) (2*Math.sqrt(-q_var)*Math.cos((theta+2*Math.PI)/3) - a/3);
-			roots[2] = (float) (2*Math.sqrt(-q_var)*Math.cos((theta+4*Math.PI)/3) - a/3);
+		//distinct real roots; discrim is < 0
+		else {	
+			float theta = (float) Math.acos(r/Math.sqrt(-Math.pow(q, 3)));
+			roots[0] = (float) (2*Math.sqrt(-q)*Math.cos(theta/3)) - a/3;
+			roots[1] = (float) (2*Math.sqrt(-q)*Math.cos((theta+2*Math.PI)/3)) - a/3;
+			roots[2] = (float) (2*Math.sqrt(-q)*Math.cos((theta+4*Math.PI)/3)) - a/3;
 			//im = 0f;
 		}
-		
-		for (int i=0; i<roots.length; i++) 
-			if (roots[i] < 0 || roots[i] > 0) 
+
+///////Necessary? <=/>= or </> (I think former, because t is [0,1], but online has latter	
+		//discard roots before or after curve endpoints [out of range of t [0, 1]]
+/*		for (int i=0; i<3; i++) {
+			if (roots[i] < 0 || roots[i] > 1) {
 				roots[i] = -1;
-			
-		//Sort roots and put -1 vals at end
-		
-//		console.log(t[0]+" "+t[1]+" "+t[2]);
+			}
+		}	*/
+//////Need to sort roots and put -1 vals at end?		
     	return roots;
 	}	
-	public void collidesLine(LineSegment l) {
-		float A = l.end.y - l.start.y;
-		float B = l.start.x - l.end.x;
-		float C = l.start.x*(l.start.y-l.end.y) + l.start.y*(l.end.x-l.start.x);
-		
+/////////////////////REWRITE THIS////////////////////////
+	/* Takes in four coefficients in c as [0, t, t^2, t^3] and 
+	 * an array s. Returns number of real roots and populates s.
+	 * c = double[4], s = double[3]*/
+	public static int solveCubic(double[] c, double[] s)  {
+		int i, num;  
+		double sub;  
+		double A, B, C;  
+		double sq_A, p, q;  
+		double cb_p, D;  
+		/* turn into normal form: x^3 + Ax^2 + Bx + C = 0 */  
+		A = c[ 2 ] / c[ 3 ];  
+		B = c[ 1 ] / c[ 3 ];  
+		C = c[ 0 ] / c[ 3 ];  
+
+		/*  substitute x = y - A/3 to eliminate quadric term: 
+			x^3 +px + q = 0 */  
+		sq_A = A * A;  
+		p = 1.0/3 * (- 1.0/3 * sq_A + B);  
+		q = 1.0/2 * (2.0/27 * A * sq_A - 1.0/3 * A * B + C);  
+
+		/* use Cardano's formula */  
+		cb_p = p * p * p;  
+		D = q * q + cb_p;  
+
+		if (D == 0)  {  
+			/* one triple solution */  
+			if (q == 0) {  
+				s[ 0 ] = 0;  
+				num = 1;  
+			}  
+			/* one single and one double solution */
+			else  {  
+				double u = Math.cbrt(-q);  
+				s[ 0 ] = 2 * u;  
+				s[ 1 ] = - u;  
+				num = 2;  
+			}  
+		}  
+		/* three real solutions */
+		else if (D < 0) {  
+			double phi = 1.0/3 * Math.acos(-q / Math.sqrt(-cb_p));  
+			double t = 2 * Math.sqrt(-p);  
+
+			s[ 0 ] =   t * Math.cos(phi);  
+			s[ 1 ] = - t * Math.cos(phi + Math.PI / 3);  
+			s[ 2 ] = - t * Math.cos(phi - Math.PI / 3);  
+			num = 3;  
+		}  
+		/* one real solution*/
+		else {  
+			double sqrt_D = Math.sqrt(D);  
+			double u = Math.cbrt(sqrt_D - q);  
+			double v = - Math.cbrt(sqrt_D + q);  
+			s[ 0 ] = u + v;  
+			num = 1;  
+		}  
+		/* resubstitute */  
+		sub = 1.0/3 * A;  
+		for (i = 0; i < num; ++i)  
+			s[ i ] -= sub;  
+		return num;  
+	}  
+/////////////////////////////////////^^^^^^^^^^^^
+	
+	/*Calculates intersection between curve and line.
+	 * Useful for POI and collision detection. */
+	public ArrayList<Vec2f> collidesLine(LineSegment l) {
+		//Express line in form: Ax + By + C = 0
+		float A = l.end.y - l.start.y;		//A = y2-y1
+		float B = l.start.x - l.end.x;		//B = x1-x2
+		float C = l.start.x*(l.start.y-l.end.y) + l.start.y*(l.end.x-l.start.x);	//C = x1*(y1-y2)+y1*(x2-x1)
+		//Coefficients of Bezier polynomial
 		float[] bx = bezierCoeffsX(start, ctrl_one, ctrl_two, end);
 		float[] by = bezierCoeffsY(start, ctrl_one, ctrl_two, end);
+		//Plug in Bezier coefficients into line equation to get degree-3 polynomial
+		double[] pArr = new double[4];
+		pArr[3] = A*bx[0] + B*by[0];		//t^3
+		pArr[2] = A*bx[1] + B*by[1];		//t^2
+		pArr[1] = A*bx[2] + B*by[2];		//t
+		pArr[0] = A*bx[3] + B*by[3] + C;	//1
+		//Find roots of the new polynomial, curve plugged into line 
+		double[] r = new double[3];
+		solveCubic(pArr, r);
 		
-		float[] pArr = new float[4];
-		pArr[0] = A*bx[0] + B*by[0];		//t^3
-		pArr[1] = A*bx[1] + B*by[1];		//t^2
-		pArr[2] = A*bx[2] + B*by[2];		//t
-		pArr[3] = A*bx[3] + B*by[3] + C;	//1
+		//Three roots; given -1 if invalid or imaginary
+		assert r.length == 3;	
 		
-		float[] t = cubicRoots(pArr);
-		Vec2f[] pts = new Vec2f[t.length];
+		ArrayList<Vec2f> pts = new ArrayList<Vec2f>();
+		for (int i=0; i<3; i++) {
+			//get t for each root
+			float t = (float) r[i];		
+			//Plug in t_val for root into polynomial
+			Float x0 = bx[0]*t*t*t+bx[1]*t*t+bx[2]*t+bx[3];
+			Float y0 = by[0]*t*t*t+by[1]*t*t+by[2]*t+by[3];
+			Vec2f p = new Vec2f(x0, y0);
+			
+			//Add poi to list, then remove if out of range
+			pts.add(p);
 		
-		for (int i=0; i<t.length; i++) 
-			pts[i] = calculateBezierPoint(t[i]);
+			//Check if intersections are in bounds of line seg (so far, intersections with infinite line)
+			float check;
+			//If not vertical line
+			if ((l.end.x - l.start.x) != 0) {	
+				check = (x0 - l.start.x)/(l.end.x - l.start.x);	// s=(X[0]-lx[0])/(lx[1]-lx[0]);
+			}
+			else {
+				check = (y0 - l.start.y)/(l.end.y - l.start.y);	//s=(X[1]-ly[0])/(ly[1]-ly[0]);
+			}
+			//If poi is out of t e[0, 1] or off line seg, remove
+			if (t<=0 || t>=1.0 || check<0 || check>1.0) {
+				pts.remove(p);
+			}
+		}
+		_pois = pts;
+		return pts;
 	}
 	
-	/**collision detection*/
+	
+	/**collision detection and POI*/
+	/*Double dispatch for collision and poi*/
 	@Override
 	public boolean collides(Shape s) {
 		return s.collidesCurve(this);
 	}
 	@Override
-	public boolean collidesCircle(CircleShape c) {	
-		Vec2f on = this.nearestPointOnCurve(c.getCentroid());
-		float dist = on.dist(c.getCentroid());
-		Vec2f mtv = on.minus(c.getCentroid()).normalized().smult(c.getRadius()-dist);
+	public Vec2f poi(Shape s) {
+		return s.poiCurve(this);
+	}
+	
+	/*Collision and point of intersection for circles. POI returns 
+	 * nearest point to circle's center on curve. Doesn't really matter,
+	 * since circles have arbitrary rotation and curves don't rotate.*/
+	@Override
+	public boolean collidesCircle(CircleShape c) {			
+		Vec2f p = this.nearestPointOnCurve(c.getCentroid());
+		float dist = p.dist(c.getCentroid());
+		Vec2f mtv = p.minus(c.getCentroid()).normalized().smult(c.getRadius()-dist);
 		if (dist <= c.getRadius()) {
 			this.setCollisionInfo(new CollisionInfo(this, c, mtv));
-			c.setCollisionInfo(new CollisionInfo(c, this, mtv.smult(-1)));
+			c.setCollisionInfo(new CollisionInfo(c, this, mtv.smult(-1)));			
 			return true;
 		}
 		return false;
 	}
 	@Override
-	public boolean collidesAAB(AARectShape aab) {
-		// TODO Auto-generated method stub
-//		System.out.println("collidesAAB not implemented (CubicBezierCurve)");
-		return false;
+	public Vec2f poiCircle(CircleShape c) {
+		return this.nearestPointOnCurve(c.getCentroid());
 	}
+	
 	@Override
-	public boolean collidesCompound(CompoundShape c) {
-		// TODO Auto-generated method stub
-//		System.out.println("collidesCompound not implemented (CubicBezierCurve)");
-		return false;
+	public boolean collidesAAB(AARectShape aab) {
+		PolygonShape p = aab.rectToPoly();
+		boolean collides = this.collidesPolygon(p);
+		aab.setCollisionInfo(p.getCollisionInfo());
+		return collides;
 	}
+	
+	/*Collision and point of intersection for Polygons.*/
 	@Override
 	public boolean collidesPolygon(PolygonShape p) {
 		// TODO Auto-generated method stub
 		boolean collision = false;
-/*		Vec2f[] verts = p.vertices();
+		Vec2f[] verts = p.getVertices();
+		_mtvs = new ArrayList<Vec2f>();
 		for (int i=0; i<verts.length; i++) {
 			Vec2f src = verts[i];
+			//if not last segment, endpoint is next vertex
 			Vec2f dst;
-			if (i < verts.length-1)
-				dst = verts[i+1];			
-			else
+			if (i < verts.length-1) 
+				dst = verts[i+1];
+			else 
 				dst = verts[0];
-			LineSegment side = new LineSegment(src, dst);	*/
-			
-			//Preferred:
-			//Checking for intersections by rotating/translating to x-axis, then root finding
-/*			if (side.collidesCurve(this) == true)
-				collision = true;*/
-			
-			//Worst case:
-			//Trying to check for intersections of line segments
-/*			for (LineSegment seg: _segs) {
-				if (side.lineIntersection(seg) != null)
-					collision = true;
+			LineSegment seg = new LineSegment(src, dst);
+			ArrayList<Vec2f> pts = this.collidesLine(seg);
+			if (!pts.isEmpty()) {
+				collision = true;
+///////// MTV calc...
+				for (Vec2f poi: pts) {
+					_mtvs.add(dst.minus(poi).normalized());
+				}		
+			}				
+///////////	VIEW POIS
+/*			for (Vec2f pt: pts) {
+				float rad = .8f;
+				CircleShape c = new CircleShape(new Vec2f(pt.x-rad, pt.y-rad), rad);
+				c.setColor(Color.WHITE);
+				_dots.add(c);
 			}*/
-//		}
+////////^^^^^^
+		}
+		
+		if (!_mtvs.isEmpty()) {
+			Vec2f mtv = Vec2f.average(_mtvs);
+			this.setCollisionInfo(new CollisionInfo(this, p, mtv));
+			p.setCollisionInfo(new CollisionInfo(p, this, mtv.smult(-1)));
+		}
+		
 		return collision;
 	}
 	@Override
-	public boolean contains(Vec2f pnt) {
+	public Vec2f poiPolygon(PolygonShape p) {
 		// TODO Auto-generated method stub
-//		System.out.println("contains not implemented (CubicBezierCurve)");
-		return false;
-	}
-	@Override
-	public Vec2f projectOnto(SeparatingAxis sep) {
-		// TODO Auto-generated method stub
-//		System.out.println("projectOnto not implemented (CubicBezierCurve)");
-		return new Vec2f(0, 0);
+		//update _pois
+		collidesPolygon(p);
+		return Vec2f.average(_pois);
 	}
 }

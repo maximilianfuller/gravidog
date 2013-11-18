@@ -21,7 +21,6 @@ public class AARectShape extends Shape {
 	public static final String string = "AARectShape";
 
 	private Rectangle2D _rect;
-///
 	private CollisionInfo _collisionInfo;
 
 	public AARectShape(Vec2f loc, Vec2f dim) {
@@ -155,8 +154,7 @@ public class AARectShape extends Shape {
 
 	@Override
 	public boolean collidesCurve(BezierCurve c) {
-		// TODO Auto-generated method stub
-		return false;
+		return c.collidesAAB(this);
 	}
 
 	@Override
@@ -187,5 +185,10 @@ public class AARectShape extends Shape {
 	@Override
 	public Vec2f poiCircle(CircleShape c) {
 		return rectToPoly().poiCircle(c);
+	}
+
+	@Override
+	public Vec2f poiCurve(BezierCurve c) {
+		return c.poiPolygon(rectToPoly());
 	}
 }

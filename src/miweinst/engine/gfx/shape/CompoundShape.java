@@ -228,4 +228,10 @@ public class CompoundShape extends Shape {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Vec2f poiCurve(BezierCurve c) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
