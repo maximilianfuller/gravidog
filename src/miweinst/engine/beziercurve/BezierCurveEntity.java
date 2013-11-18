@@ -43,16 +43,16 @@ public class BezierCurveEntity extends PhysicsEntity {
 		}
 		if (s instanceof CircleShape) {
 			if (!_points[0]) {
-				_curve.start = s.getLocation();
+				_curve.start = s.getCentroid();
 				_points[0] = true;
 			}
 			else {
-				if (_curve.start.x > s.getLocation().x) {
+				if (_curve.start.x > s.getCentroid().x) {
 					_curve.end = _curve.start;
-					_curve.start = s.getLocation();
+					_curve.start = s.getCentroid();
 				}
 				else {
-					_curve.end = s.getLocation();
+					_curve.end = s.getCentroid();
 				}
 				_points[3] = true;
 			}
