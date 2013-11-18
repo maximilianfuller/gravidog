@@ -266,7 +266,6 @@ public class Viewport {
 	}
 
 	
-//////
 	public boolean isMathCoordinateSystem() {
 		return _mathCoords;
 	}

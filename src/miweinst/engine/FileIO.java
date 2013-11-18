@@ -44,7 +44,7 @@ public class FileIO{
 			System.out.println("Save complete");
 		}
 		catch (IOException e) {
-			System.out.println("Save failed");
+			System.err.println("Save failed");
 			e.printStackTrace();
 		}
 	}
@@ -57,7 +57,7 @@ public class FileIO{
 		try {		
 			File file = new File(OUTPUT_FILE_NAME);
 			if (!file.exists()) 
-				System.out.println("File does not exist! (FileIO.read");
+				System.err.println("File does not exist! (FileIO.read");
 			FileReader fr = new FileReader(file.getAbsoluteFile());
 			BufferedReader br = new BufferedReader(fr);
 			
@@ -71,10 +71,10 @@ public class FileIO{
 			System.out.println("Load complete");
 
 		} catch (FileNotFoundException e) {
-			System.out.println("Load failed");
+			System.err.println("Load failed");
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("Load failed");
+			System.err.println("Load failed");
 			e.printStackTrace();
 		}
 		return map;

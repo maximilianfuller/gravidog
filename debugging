@@ -42,6 +42,10 @@ Jumping at right moment on bounce; not only after being totally settled
 Make level editor more extensible; move most of it to engine (GameWorld)
 Fix mass to area? Or just make a density thing?
 
+<<<<<<< HEAD
+BUG: fix zoom
+
+=======
 
 Bezier Curve Aspirations
 - QuadricBezierCurve
@@ -49,3 +53,4 @@ Bezier Curve Aspirations
 - Bounding boxes
 - Create curve from three points
 >>>>>>> 322d990d395166326e36c954398b4445f242cbb3
+>>>>>>> 53c637e7d188839772152202f4d81806abaf6552

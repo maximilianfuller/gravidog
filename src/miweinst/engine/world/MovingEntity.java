@@ -204,16 +204,16 @@ public abstract class MovingEntity extends Entity {
 	}
 	public void setHealth(float health) {
 		if (_isDamagable) _health = health;
-		else System.out.println("Entity not damagable! (MovingEntity.setHealth)");
+		else System.err.println("Entity not damagable! (MovingEntity.setHealth)");
 	}
 	/*Methods to change health by specified amount.*/
 	public void damage(float dhealth) {
 		if (_isDamagable) _health -= dhealth;
-		else System.out.println("Entity not damagable! (MovingEntity.damage)");
+		else System.err.println("Entity not damagable! (MovingEntity.damage)");
 	}
 	public void undamage(float dhealth) {
 		if (_isDamagable) _health += dhealth;
-		else System.out.println("Entity not damagable! (MovingEntity.undamage)");
+		else System.err.println("Entity not damagable! (MovingEntity.undamage)");
 	}
 	public void resetHealth() {
 		_health = _initialHealth;

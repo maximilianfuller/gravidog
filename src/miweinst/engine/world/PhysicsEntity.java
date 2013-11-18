@@ -88,10 +88,10 @@ public class PhysicsEntity extends MovingEntity {
 	public void setMass(float m) {
 		_mass = m;
 	}
-	public final Vec2f getCentroid() {
+	public Vec2f getCentroid() {
 		return super.getShape().getCentroid();
 	}
-	public final float getMomentOfInertia(float mass) {
+	public float getMomentOfInertia(float mass) {
 		return super.getShape().getMomentOfInertia(mass);
 	}
 
