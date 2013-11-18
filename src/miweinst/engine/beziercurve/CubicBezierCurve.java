@@ -520,7 +520,6 @@ public class CubicBezierCurve extends BezierCurve {
 				pts.remove(p);
 			}
 		}
-		_pois = pts;
 		return pts;
 	}
 	
@@ -571,6 +570,10 @@ public class CubicBezierCurve extends BezierCurve {
 		boolean collision = false;
 		Vec2f[] verts = p.getVertices();
 		_mtvs = new ArrayList<Vec2f>();
+		
+		Vec2f mintv = null;
+		float minDist = Float.POSITIVE_INFINITY;
+		
 		for (int i=0; i<verts.length; i++) {
 			Vec2f src = verts[i];
 			//if not last segment, endpoint is next vertex
@@ -583,10 +586,26 @@ public class CubicBezierCurve extends BezierCurve {
 			ArrayList<Vec2f> pts = this.collidesLine(seg);
 			if (!pts.isEmpty()) {
 				collision = true;
+				_pois = pts;
 ///////// MTV calc...
 				for (Vec2f poi: pts) {
-					_mtvs.add(dst.minus(poi).normalized());
-				}		
+					float ldist = poi.dist2(dst);
+					float rdist = poi.dist2(src);
+					if (ldist < rdist) {
+						_mtvs.add(dst.minus(poi));
+						if (ldist < minDist) {
+							minDist = ldist;
+							mintv = dst.minus(poi);
+						}
+					}
+					else {
+						_mtvs.add(src.minus(poi));
+						if (rdist < minDist) {
+							minDist = rdist;
+							mintv = src.minus(poi);
+						}
+					}
+				}	
 			}				
 ///////////	VIEW POIS
 /*			for (Vec2f pt: pts) {
@@ -599,7 +618,8 @@ public class CubicBezierCurve extends BezierCurve {
 		}
 		
 		if (!_mtvs.isEmpty()) {
-			Vec2f mtv = Vec2f.average(_mtvs);
+//			Vec2f mtv = Vec2f.average(_mtvs);
+			Vec2f mtv = mintv;
 			this.setCollisionInfo(new CollisionInfo(this, p, mtv));
 			p.setCollisionInfo(new CollisionInfo(p, this, mtv.smult(-1)));
 		}
@@ -610,7 +630,10 @@ public class CubicBezierCurve extends BezierCurve {
 	public Vec2f poiPolygon(PolygonShape p) {
 		// TODO Auto-generated method stub
 		//update _pois
+//		return p.getCentroid();
 		collidesPolygon(p);
+		if (_pois.isEmpty())
+			return null;
 		return Vec2f.average(_pois);
 	}
 }

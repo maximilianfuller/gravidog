@@ -1,2 +1,0 @@
-checkpoint: true
-color: 0,0,0
