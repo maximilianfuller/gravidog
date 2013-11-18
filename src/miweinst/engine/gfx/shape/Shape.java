@@ -4,9 +4,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-import java.util.List;
 import java.util.Map;
 
+import miweinst.engine.beziercurve.BezierCurve;
 import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.collisiondetection.SeparatingAxis;
 import miweinst.engine.collisiondetection.ShapeCollisionDetection;
@@ -121,6 +121,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public abstract Vec2f poi(Shape s);
 	public abstract Vec2f poiPolygon(PolygonShape p);
 	public abstract Vec2f poiCircle(CircleShape c);
+	public abstract Vec2f poiCurve(BezierCurve c);
 	
 	/*Mutator/Accessor for shape fill color*/
 	public void setColor(Color color){

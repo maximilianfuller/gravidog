@@ -101,10 +101,10 @@ public class TestCollisionVisualizer {
 		}
 
 //////	TESTER FOR ONLY CHECKING ONE SHAPE AGAINST THE OTHER
-		if (_testArr[2].collides(_testArr[4])) {
+/*		if (_testArr[2].collides(_testArr[3])) {
 			_testArr[2].setShapeColor(new Color(r,g,b));
-			_testArr[4].setShapeColor(new Color(r,g,b));
-		}
+			_testArr[3].setShapeColor(new Color(r,g,b));
+		}*/
 		//Gravity
 /*		_testArr[0].onTick(nanos);
 		_testArr[3].onTick(nanos);*/

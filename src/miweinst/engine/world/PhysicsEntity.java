@@ -5,7 +5,6 @@ import java.util.Map;
 import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
-import miweinst.engine.gfx.shape.CircleShape;
 import miweinst.engine.gfx.shape.Shape;
 import cs195n.Vec2f;
 
@@ -29,6 +28,7 @@ public class PhysicsEntity extends MovingEntity {
 	private boolean _isStatic;
 	private boolean _isVisited;
 	private boolean _isInteractive;
+//	private boolean _isRotatable;
 
 	//Input to change whether interactive/visible; for traps, dynamic mechanics, etc...
 	public Input doDisappear = new Input() 
@@ -56,6 +56,7 @@ public class PhysicsEntity extends MovingEntity {
 		_isStatic = false;		
 		_isVisited = false;		
 		_isInteractive = true;
+//		_isRotatable = true;
 		//Moves on set dx/dy without having to call move() manually
 		this.setFreeMoving(true);
 	}
@@ -308,46 +309,38 @@ public class PhysicsEntity extends MovingEntity {
 		float m_b = other.getMass();		
 		Vec2f u_a = this.getVelocity().projectOnto(this.getShape().getCollisionInfo().getMTV());
 		Vec2f u_b = other.getVelocity().projectOnto(other.getShape().getCollisionInfo().getMTV());	
-		
-		Vec2f poi = this.getShape().poi(other.getShape());
-		Vec2f n = this.getShape().getCollisionInfo().getMTV().normalized();
+				
+			Vec2f poi = this.getShape().poi(other.getShape());
+			Vec2f n = this.getShape().getCollisionInfo().getMTV().normalized();
 
-		Vec2f r1Perp = getCentroid().minus(poi).getNormal();
-		Vec2f r2Perp = other.getCentroid().minus(poi).getNormal();
+			Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
+			float denominator = 1f/m_a + 1f/m_b;
+			//Only non-static entities have non-null getCentroid() and getMomentOfInertia() [i.e. BezierCurveEntity does not]
+			if (!this.isStatic()) {
+				Vec2f r1Perp = getCentroid().minus(poi).getNormal();
+				denominator += (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);;
+			}
+			if (!other.isStatic()) {
+				Vec2f r2Perp = other.getCentroid().minus(poi).getNormal();
+				denominator += (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass());;
+			}
+			imps[1] = (numerator.sdiv(denominator));
+			imps[0] = imps[1].invert();
 
-/////
-		Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
-		
-		/*if (getShape() instanceof CircleShape || other.getShape() instanceof CircleShape) {
-			System.out.println(cor);
-		}
-		*/
-		
-		float denominator = 1f/m_a + 1f/m_b;
-		float denA = (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);
-		float denB = (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass());
-
-		if (!this.isStatic()) 
-			denominator += denA;
-		if (!other.isStatic()) 
-			denominator += denB;
-
-		imps[1] = (numerator.sdiv(denominator));
-		imps[0] = imps[1].invert();
-
-		//Don't delete yet; impulse calculation for non-rotating entities
-/*//	Vec2f i_a = (u_b.minus(u_a)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));
-		Vec2f i_b = (u_a.minus(u_b)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));		
-		if (this.isStatic()) {
-			i_a = u_b.minus(u_a).smult(m_b*(1+cor));
-			i_b = u_a.minus(u_b).smult(m_b*(1+cor));
-		}
-		if (other.isStatic()) {
-			i_a = u_b.minus(u_a).smult(m_a*(1+cor));
-			i_b = u_a.minus(u_b).smult(m_a*(1+cor));
-		}
-		imps[0] = i_b;
-		imps[1] = i_a;*/
+		//Old, non-rotating collision response (flat impulse calculation)
+/*		if (!this.isRotatable() && !other.isRotatable()) {
+			//Don't delete yet; impulse calculation for non-rotating entities
+			//	Vec2f i_a = (u_b.minus(u_a)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));
+			imps[0] = (u_a.minus(u_b)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));		
+			if (this.isStatic()) {
+				imps[1] = u_b.minus(u_a).smult(m_b*(1+cor));
+				imps[0] = u_a.minus(u_b).smult(m_b*(1+cor));
+			}
+			if (other.isStatic()) {
+				imps[1] = u_b.minus(u_a).smult(m_a*(1+cor));
+				imps[0] = u_a.minus(u_b).smult(m_a*(1+cor));
+			}
+		}*/
 
 		return imps;
 	}
@@ -378,6 +371,12 @@ public class PhysicsEntity extends MovingEntity {
 	public void setInteractive(boolean r) {
 		_isInteractive = r;
 	}	
+/*	public boolean isRotatable() {
+		return _isRotatable;
+	}
+	public void setRotatable(boolean r) {
+		_isRotatable = r;
+	}*/
 
 	/* Properties of PhysicsEntity, mapped from Strings to
 	 * values as Strings.*/

@@ -203,4 +203,9 @@ public class CircleShape extends Shape {
 		float ratio = c._radius/(c._radius + this._radius);
 		return getLocation().plus(dir.smult(ratio));
 	}
+
+	@Override
+	public Vec2f poiCurve(BezierCurve c) {
+		return c.poiCircle(this);
+	}
 }

@@ -16,8 +16,11 @@ import javax.swing.SwingUtilities;
 import miweinst.engine.App;
 import miweinst.engine.FileIO;
 import miweinst.engine.Tuple;
+<<<<<<< HEAD
 import miweinst.engine.beziercurve.BezierCurveEntity;
 import miweinst.engine.contraints.PinEntity;
+=======
+>>>>>>> 53c637e7d188839772152202f4d81806abaf6552
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
@@ -27,6 +30,7 @@ import miweinst.engine.gfx.shape.PolygonShape;
 import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.graph.HashDecorator;
 import miweinst.engine.screen.Viewport;
+import miweinst.engine.world.BezierCurveEntity;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.RelayEntity;
@@ -170,7 +174,7 @@ public class MWorld extends GameWorld {
 						} else if (shapeType == Type.BOX) {
 							shape = new AARectShape(s.getMin(), new Vec2f(s.getWidth(), s.getHeight()));
 						} else if (shapeType == Type.POLY) {
-							shape = new PolygonShape(s.getMin(), s.getVerts().toArray(new Vec2f[s.getVerts().size()]));
+							shape = new PolygonShape(PolygonShape.getCentroidOf(s.getVerts()), s.getVerts().toArray(new Vec2f[s.getVerts().size()]));
 						}
 						//Parse Shape properties in Entity
 						if (shape != null) {							
@@ -327,7 +331,6 @@ public class MWorld extends GameWorld {
 			g.draw(_lazor);
 			g.setColor(col);
 		}
-		
 /////////
 //		_testVisualizer.draw(g);
 	}

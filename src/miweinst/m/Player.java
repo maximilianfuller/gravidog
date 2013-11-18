@@ -153,6 +153,8 @@ public class Player extends PhysicsEntity {
 		_dataWritten = false;
 		
 		this.setRestitution(100f);
+////
+//		this.setRotatable(false);
 	}
 	
 	/*Allows method to override the built in check

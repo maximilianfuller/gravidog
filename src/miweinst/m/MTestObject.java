@@ -58,7 +58,8 @@ public class MTestObject extends PhysicsEntity {
 			this.setMass(2);
 			this.setRestitution(20f);
 		}				
-		if (shape != null) this.setShape(shape);
+		if (shape != null) 
+			this.setShape(shape);
 		this.setLocation(location);
 		this.setStatic(false);
 	}

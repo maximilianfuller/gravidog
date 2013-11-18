@@ -29,7 +29,7 @@ public class PolygonShape extends Shape {
 	private Vec2f[] _vertices;
 	private Vec2f[] _relativeVertices;
 	private Vec2f _centroid;
-	private float _area;
+//	private float _area;
 	
 /////  Stores other Shape in collision (K) and MTV (V)
 //	private HashDecorator<Shape, Vec2f> _collisionDecorator;
@@ -48,7 +48,7 @@ public class PolygonShape extends Shape {
 		for (int i=0; i<ccverts.length; i++) {
 			_relativeVertices[i] = ccverts[i].minus(_centroid);
 		}
-		_area = getArea();
+//		_area = getArea();
 	}
 	
 	/*Returns a Path2D object representing this Polygon*/
@@ -90,7 +90,7 @@ public class PolygonShape extends Shape {
 		_vertices = verticesWithOffset.toArray(new Vec2f[_vertices.length]);
 	}
 	
-	private static Vec2f getCentroidOf(List<Vec2f> vertices) {
+	public static Vec2f getCentroidOf(List<Vec2f> vertices) {
 		float constant = 1f/(6f*getArea(vertices));
 		float xSum = 0, ySum = 0;
 		int n = vertices.size();
@@ -463,7 +463,7 @@ public class PolygonShape extends Shape {
 		p.setCollisionInfo(new CollisionInfo(p, this, mtv));	
 		return true;
 	}
-/////
+
 	@Override
 	public CollisionInfo getCollisionInfo() {
 		return _collisionInfo;
@@ -472,7 +472,6 @@ public class PolygonShape extends Shape {
 	public void setCollisionInfo(CollisionInfo info) {
 		_collisionInfo = info;
 	}
-/////^^^
 
 	@Override
 	public Vec2f projectOnto(SeparatingAxis sep) {
@@ -481,8 +480,7 @@ public class PolygonShape extends Shape {
 
 	@Override
 	public boolean collidesCurve(BezierCurve c) {
-		// TODO Auto-generated method stub
-		return false;
+		return c.collidesPolygon(this);
 	}
 
 	@Override
@@ -524,7 +522,6 @@ public class PolygonShape extends Shape {
 		return Vec2f.average(verticesInsideOtherShape);
 	}
 	
-/////Double check CollisionInfo object not null; return object instead of setting on collision
 	@Override
 	public Vec2f poiCircle(CircleShape c) {
 		this.collidesCircle(c);
@@ -534,6 +531,11 @@ public class PolygonShape extends Shape {
 		} else {
 			return c.getLocation().plus(info.getMTV().normalized().smult(c.getRadius()));
 		}
+	}
+	
+	@Override
+	public Vec2f poiCurve(BezierCurve c) {
+		return c.poiPolygon(this);
 	}
 	
 ////////////////////
@@ -556,4 +558,5 @@ public class PolygonShape extends Shape {
 		return edges;
 	}
 ///////////////^^^^^^^^^^^^
+
 }

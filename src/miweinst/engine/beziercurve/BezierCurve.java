@@ -8,7 +8,7 @@ import miweinst.engine.gfx.shape.PolygonShape;
 import cs195n.Vec2f;
 import miweinst.engine.gfx.shape.Shape;
 
-public class BezierCurve extends Shape {
+public abstract class BezierCurve extends Shape {
 
 	public BezierCurve(Vec2f loc, Vec2f dim) {
 		super(loc, dim);
@@ -16,28 +16,14 @@ public class BezierCurve extends Shape {
 
 	@Override
 	public boolean collides(miweinst.engine.gfx.shape.Shape s) {
-		return false;
+		return s.collidesCurve(this);
 	}
 
 	@Override
-	public boolean collidesCircle(CircleShape c) {
-		return false;
-	}
-
-	@Override
-	public boolean collidesAAB(AARectShape aab) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public abstract boolean collidesAAB(AARectShape aab);
 
 	@Override
 	public boolean collidesCompound(CompoundShape c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean collidesPolygon(PolygonShape p) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -60,14 +46,16 @@ public class BezierCurve extends Shape {
 		return false;
 	}
 
+	/*No centroid in BezierCurve, which is OK
+	 * because it should always be static!*/
 	@Override
 	public Vec2f getCentroid() {
 		return null;
 	}
-
+	/*No momentOfInertia because BezierCurve should
+	 * not be rotatable and is always static.*/
 	@Override
 	public float getMomentOfInertia(float mass) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -76,22 +64,25 @@ public class BezierCurve extends Shape {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
 	@Override
-	public Vec2f poi(Shape s) {
-		// TODO Auto-generated method stub
+	public Vec2f poiCurve(BezierCurve c) {
+		// TODO Won't have curve-curve collisions ever!?
 		return null;
 	}
+	
+	@Override
+	public abstract boolean collidesPolygon(PolygonShape p);
+	
+	@Override
+	public abstract boolean collidesCircle(CircleShape c);
 
 	@Override
-	public Vec2f poiPolygon(PolygonShape p) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract Vec2f poi(Shape s);
 
 	@Override
-	public Vec2f poiCircle(CircleShape c) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract Vec2f poiPolygon(PolygonShape p);
+
+	@Override
+	public abstract Vec2f poiCircle(CircleShape c);
 }
