@@ -97,7 +97,7 @@ public class TestCollisionVisualizer {
 				}
 			}
 //////		GRAVITY
-//			_testArr[i].onTick(nanos);
+			_testArr[i].onTick(nanos);
 		}
 
 //////	TESTER FOR ONLY CHECKING ONE SHAPE AGAINST THE OTHER
@@ -162,7 +162,7 @@ private class TestEntity extends PhysicsEntity {
 		super(world);
 		
 		if (shape == "circle") {
-			Vec2f circloc = new Vec2f(45, 60);
+			Vec2f circloc = new Vec2f(10, 60);
 			float radius = 2;
 			CircleShape circle = new CircleShape(circloc, radius);
 			circle.setColor(Color.PINK);
@@ -178,7 +178,7 @@ private class TestEntity extends PhysicsEntity {
 			square.setBorderWidth(0);
 //			test_shape = square;
 		} else if (shape == "rect") {
-			Vec2f rectloc  = new Vec2f(42, 38);
+			Vec2f rectloc  = new Vec2f(42, 20);
 			Vec2f rectdim = new Vec2f(7, 4);
 			AARectShape rect = new AARectShape(rectloc, rectdim);
 			rect.setColor(Color.GREEN);
@@ -201,6 +201,7 @@ private class TestEntity extends PhysicsEntity {
 			verts[1] = new Vec2f(11, 35);
 			verts[2] = new Vec2f(11, 45);
 			PolygonShape poly = new PolygonShape(new Vec2f(11, 11), verts);
+			poly.setLocation(new Vec2f(45, 60));
 			poly.setOutline(Color.RED, .14f);
 			test_shape = poly;
 		} else if (shape == "polygonB") {
@@ -216,13 +217,16 @@ private class TestEntity extends PhysicsEntity {
 			CubicBezierCurve curve = new CubicBezierCurve();
 			curve.setBorderColor(Color.RED);
 			curve.setBorderWidth(1);
+			curve.rotate(curve.start, 5);
+			curve.translate(new Vec2f(-8, 0));
 			test_shape = curve;
 //////
 			this.setStatic(true);
-			this.setRestitution(1);
+			this.setRestitution(5);
+			this.setMass(1);
 		}
 /////
-		this.setInteractive(false);
+//		this.setInteractive(false);
 		super.setShape(test_shape);
 	}	
 }
