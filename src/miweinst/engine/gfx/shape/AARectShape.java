@@ -2,6 +2,7 @@ package miweinst.engine.gfx.shape;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 
 import cs195n.Vec2f;
 import miweinst.engine.beziercurve.BezierCurve;
@@ -72,7 +73,7 @@ public class AARectShape extends Shape {
 		verts[1] = upperLeft;
 		verts[2] = lowerLeft;
 		verts[3] = lowerRight;	
-		PolygonShape poly = new PolygonShape(upperLeft, verts);
+		PolygonShape poly = new PolygonShape(PolygonShape.getCentroidOf(Arrays.asList(verts)), verts);
 		return poly;
 	}
 	
