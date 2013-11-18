@@ -19,7 +19,6 @@ public class CubicBezierCurve extends BezierCurve {
 	
 	private ArrayList<LineSegment> _segs;
 	private ArrayList<Vec2f> _pois;
-	private ArrayList<Vec2f> _mtvs;
 //////	
 //	private ArrayList<CircleShape> _dots;
 	
@@ -51,7 +50,6 @@ public class CubicBezierCurve extends BezierCurve {
 		
 ////////
 		_pois = new ArrayList<Vec2f>();
-		_mtvs = new ArrayList<Vec2f>();
 //		_dots = new ArrayList<CircleShape>();
 	}
 		
@@ -569,8 +567,8 @@ public class CubicBezierCurve extends BezierCurve {
 		// TODO Auto-generated method stub
 		boolean collision = false;
 		Vec2f[] verts = p.getVertices();
-		_mtvs = new ArrayList<Vec2f>();
 		
+		ArrayList<Vec2f> mtvs = new ArrayList<Vec2f>();
 		Vec2f mintv = null;
 		float minDist = Float.POSITIVE_INFINITY;
 		
@@ -592,14 +590,14 @@ public class CubicBezierCurve extends BezierCurve {
 					float ldist = poi.dist2(dst);
 					float rdist = poi.dist2(src);
 					if (ldist < rdist) {
-						_mtvs.add(dst.minus(poi));
+						mtvs.add(dst.minus(poi));
 						if (ldist < minDist) {
 							minDist = ldist;
 							mintv = dst.minus(poi);
 						}
 					}
 					else {
-						_mtvs.add(src.minus(poi));
+						mtvs.add(src.minus(poi));
 						if (rdist < minDist) {
 							minDist = rdist;
 							mintv = src.minus(poi);
@@ -617,9 +615,9 @@ public class CubicBezierCurve extends BezierCurve {
 ////////^^^^^^
 		}
 		
-		if (!_mtvs.isEmpty()) {
-//			Vec2f mtv = Vec2f.average(_mtvs);
-			Vec2f mtv = mintv;
+		if (!mtvs.isEmpty()) {
+			Vec2f mtv = Vec2f.average(mtvs);
+//			Vec2f mtv = mintv;
 			this.setCollisionInfo(new CollisionInfo(this, p, mtv));
 			p.setCollisionInfo(new CollisionInfo(p, this, mtv.smult(-1)));
 		}
