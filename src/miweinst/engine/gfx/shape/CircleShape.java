@@ -83,12 +83,12 @@ public class CircleShape extends Shape {
 	
 	@Override
 	public Vec2f getCentroid() {
-		return new Vec2f(this.getX()+_radius, this.getY()+_radius);
+		return new Vec2f(this.getX(), this.getY());
 	}
 	
 	@Override
 	public void draw(Graphics2D g) {
-		_circle.setFrame(super.getX(), super.getY(), super.getWidth(), super.getHeight());
+		_circle.setFrame(super.getX()-_radius, super.getY()-_radius, super.getWidth(), super.getHeight());
 		super.draw(g);
 	}
 		
