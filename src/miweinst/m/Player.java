@@ -151,7 +151,6 @@ public class Player extends PhysicsEntity {
 		_saveData = new ArrayList<String>();
 		_gravitySwitched = false;
 		_dataWritten = false;
-		
 		this.setRestitution(100f);
 ////
 //		this.setRotatable(false);

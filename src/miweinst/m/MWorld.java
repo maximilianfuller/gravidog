@@ -18,6 +18,7 @@ import miweinst.engine.FileIO;
 import miweinst.engine.Tuple;
 import miweinst.engine.beziercurve.BezierCurveEntity;
 import miweinst.engine.contraints.PinEntity;
+import miweinst.engine.contraints.SpringEntity;
 
 import miweinst.engine.beziercurve.BezierCurveEntity;
 import miweinst.engine.collisiondetection.TestCollisionVisualizer;
@@ -84,6 +85,13 @@ public class MWorld extends GameWorld {
                 PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
                 pin.setMass(1f);
                 this.addEntity(pin);
+                
+                Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+                SpringEntity spring = new SpringEntity(this, springEntityShape);
+                spring.setMass(1f);
+                spring.setSpringConstant(100f);
+                spring.setFrictionConstant(1f);
+                this.addEntity(spring);
 
                 //Key code order: Left(37), Up(38), Right(39), Down(40)
                 _arrowKeyStates = new boolean[4];
@@ -141,26 +149,12 @@ public class MWorld extends GameWorld {
                                 }                                                                                
                                 //Cast PhysicsEntity to specific subclass
                                 if (entity instanceof Player) {
-                                        _player = (Player) entity;
                                         entity = _player;
-                                }        
-                                else if (entity instanceof Grenade) {
-                                        entity = (Grenade) entity;
-                                }
-                                else if (entity instanceof StaticBoundary) {
-                                        entity = (StaticBoundary) entity;
-                                }
+                                }       
                                 else if (entity instanceof WhileSensorEntity) {
                                         WhileSensorEntity playerSensor = (WhileSensorEntity) entity;
                                         playerSensor.setEntities(_player);
-                                        entity = playerSensor;
                                 }                        
-                                else if (entity instanceof RelayEntity) {
-                                        entity = (RelayEntity) entity;
-                                }
-                                else if (entity instanceof BezierCurveEntity) {
-                                        entity = (BezierCurveEntity) entity;
-                                }
                                 if (entity != null) {
                                         //Shapes in Entity
                                         for (ShapeData s: ent.getShapes()) {

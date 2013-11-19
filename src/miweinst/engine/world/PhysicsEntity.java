@@ -6,6 +6,7 @@ import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.gfx.shape.Shape;
+import miweinst.m.Player;
 import cs195n.Vec2f;
 
 public class PhysicsEntity extends MovingEntity {
@@ -24,11 +25,11 @@ public class PhysicsEntity extends MovingEntity {
 
 	//Most recent MTV
 	private Vec2f _lastMTV;
-	
+
 	private boolean _isStatic;
 	private boolean _isVisited;
 	private boolean _isInteractive;
-//	private boolean _isRotatable;
+	private boolean _isRotatable;
 
 	//Input to change whether interactive/visible; for traps, dynamic mechanics, etc...
 	public Input doDisappear = new Input() 
@@ -41,7 +42,7 @@ public class PhysicsEntity extends MovingEntity {
 				setVisible(Boolean.parseBoolean(args.get("visible")));
 			}
 		}
-		
+
 	};
 
 	public PhysicsEntity(GameWorld world) {
@@ -57,7 +58,7 @@ public class PhysicsEntity extends MovingEntity {
 		_isStatic = false;		
 		_isVisited = false;		
 		_isInteractive = true;
-//		_isRotatable = true;
+		_isRotatable = true;
 		//Moves on set dx/dy without having to call move() manually
 		this.setFreeMoving(true);
 	}
@@ -155,9 +156,11 @@ public class PhysicsEntity extends MovingEntity {
 	 * (ex: start moving)*/
 	public void applyForce(Vec2f f, Vec2f point) {
 		if (_isStatic == false) {
-			Vec2f r = point.minus(super.getShape().getCentroid());
+			Vec2f r = point.minus(getCentroid());
 			_force = _force.plus(f);
-			_angularForce += r.cross(_force);
+			if(_isRotatable) {
+				_angularForce += r.cross(_force);
+			}
 		}
 	}
 	/*Accumulates impulse. Called for 
@@ -167,7 +170,9 @@ public class PhysicsEntity extends MovingEntity {
 		if (_isStatic == false) {
 			Vec2f r = point.minus(getShape().getCentroid());
 			_impulse = _impulse.plus(i);
-			_angularImpulse += r.cross(_impulse);
+			if(_isRotatable) {
+				_angularImpulse += r.cross(_impulse);
+			}
 		}
 	}
 
@@ -233,7 +238,7 @@ public class PhysicsEntity extends MovingEntity {
 	public boolean collides(PhysicsEntity s) {
 		boolean collision = super.collides(s);	
 		if (_isInteractive && s.isInteractive())
-//////Shouldn't have to check if POI is null, because collision only works when vertex is contained by other shape
+			//////Shouldn't have to check if POI is null, because collision only works when vertex is contained by other shape
 			if (collision && s.getShape().poi(getShape()) != null) 
 				this.collisionResponse(s);	
 		return collision;
@@ -255,11 +260,10 @@ public class PhysicsEntity extends MovingEntity {
 			Vec2f otherNewLoc = other.getLocation();
 			Vec2f thisNewLoc = this.getLocation();				
 			Vec2f poi = this.getShape().poi(other.getShape());
-			
+
 			//Point of intersection should be same when called from either direction
 			assert poi == other.getShape().poi(this.getShape());
-			
-			//If other shape is static, move full MTV. Else each move MTV/2
+
 			if (!other.isStatic()) {
 				//s new location
 				float mult = _mass/(_mass+other.getMass());
@@ -282,7 +286,7 @@ public class PhysicsEntity extends MovingEntity {
 			//3 Then set the impulse
 			other.applyImpulse(imps[0], poi);
 			this.applyImpulse(imps[1], poi);
-			
+
 			//Updates reference to most recent MTV
 			other.setLastMTV(otherMTV);
 			this.setLastMTV(thisMTV);
@@ -305,31 +309,31 @@ public class PhysicsEntity extends MovingEntity {
 		//Impulse array, equal but opposite: [impulseA, impulseB]
 		Vec2f[] imps = new Vec2f[2];
 		float cor = (float) Math.sqrt(this.getRestitution()*other.getRestitution());
-		
+
 		float m_a = this.getMass();
 		float m_b = other.getMass();		
 		Vec2f u_a = this.getVelocity().projectOnto(this.getShape().getCollisionInfo().getMTV());
 		Vec2f u_b = other.getVelocity().projectOnto(other.getShape().getCollisionInfo().getMTV());	
-				
-			Vec2f poi = this.getShape().poi(other.getShape());
-			Vec2f n = this.getShape().getCollisionInfo().getMTV().normalized();
 
-			Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
-			float denominator = 1f/m_a + 1f/m_b;
-			//Only non-static entities have non-null getCentroid() and getMomentOfInertia() [i.e. BezierCurveEntity does not]
-			if (!this.isStatic()) {
-				Vec2f r1Perp = getCentroid().minus(poi).getNormal();
-				denominator += (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);;
-			}
-			if (!other.isStatic()) {
-				Vec2f r2Perp = other.getCentroid().minus(poi).getNormal();
-				denominator += (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass());;
-			}
-			imps[1] = (numerator.sdiv(denominator));
-			imps[0] = imps[1].invert();
+		Vec2f poi = this.getShape().poi(other.getShape());
+		Vec2f n = this.getShape().getCollisionInfo().getMTV().normalized();
+
+		Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
+		float denominator = 1f/m_a + 1f/m_b;
+		//Only non-static entities have non-null getCentroid() and getMomentOfInertia() [i.e. BezierCurveEntity does not]
+		if (!this.isStatic()) {
+			Vec2f r1Perp = getCentroid().minus(poi).getNormal();
+			denominator += (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);;
+		}
+		if (!other.isStatic()) {
+			Vec2f r2Perp = other.getCentroid().minus(poi).getNormal();
+			denominator += (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass());;
+		}
+		imps[1] = (numerator.sdiv(denominator));
+		imps[0] = imps[1].invert();
 
 		//Old, non-rotating collision response (flat impulse calculation)
-/*		if (!this.isRotatable() && !other.isRotatable()) {
+		/*		if (!this.isRotatable() && !other.isRotatable()) {
 			//Don't delete yet; impulse calculation for non-rotating entities
 			//	Vec2f i_a = (u_b.minus(u_a)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));
 			imps[0] = (u_a.minus(u_b)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));		
@@ -372,12 +376,9 @@ public class PhysicsEntity extends MovingEntity {
 	public void setInteractive(boolean r) {
 		_isInteractive = r;
 	}	
-/*	public boolean isRotatable() {
-		return _isRotatable;
-	}
 	public void setRotatable(boolean r) {
 		_isRotatable = r;
-	}*/
+	}
 
 	/* Properties of PhysicsEntity, mapped from Strings to
 	 * values as Strings.*/
@@ -385,7 +386,7 @@ public class PhysicsEntity extends MovingEntity {
 	public void setProperties(Map<String, String> props) {
 		//restitution
 		if (props.containsKey("restitution")) 
-			this.setRestitution(Float.parseFloat(props.get("restitution")));						
+			this.setRestitution(Float.parseFloat(props.get("restitution")));
 		//mass
 		if (props.containsKey("mass")) 
 			this.setMass(Float.parseFloat(props.get("mass")));						

@@ -28,7 +28,6 @@ public class PinEntity extends PhysicsEntity {
 		super(world);
 		setShape(shape);
 		_pinLoc = pinLoc;
-		System.out.println(this.getShape());
 		init();
 	}
 
@@ -60,7 +59,6 @@ public class PinEntity extends PhysicsEntity {
 		assert(_pinLoc != null);
 
 		Vec2f shapeCentroid = PolygonShape.getCentroidOf(Arrays.asList(((PolygonShape)getShape()).getVertices()));
-		System.out.println(shapeCentroid);
 
 		//init _pinOffsetFromCentroid
 		_pinOffsetFromCentroid = _pinLoc.minus(shapeCentroid);
