@@ -80,10 +80,9 @@ public class MWorld extends GameWorld {
                 //Initialize Player to avoid NullPointer, in case not instantiated in level editor
                 _player = new Player(this);
                 
-                Shape pinEntityShape = new AARectShape(new Vec2f(40f, 50f), new Vec2f(10f, 1f)).rectToPoly();
-                PinEntity pin = new PinEntity(this, pinEntityShape.getCentroid());
-                pin.setShape(pinEntityShape);
-                pin.setMass(pinEntityShape.getArea());
+                Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
+                PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
+                pin.setMass(1f);
                 this.addEntity(pin);
 
                 //Key code order: Left(37), Up(38), Right(39), Down(40)

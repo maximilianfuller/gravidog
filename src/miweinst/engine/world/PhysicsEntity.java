@@ -41,6 +41,7 @@ public class PhysicsEntity extends MovingEntity {
 				setVisible(Boolean.parseBoolean(args.get("visible")));
 			}
 		}
+		
 	};
 
 	public PhysicsEntity(GameWorld world) {
@@ -119,7 +120,7 @@ public class PhysicsEntity extends MovingEntity {
 		//		_pos = this.getLocation();
 		//Applies gravitational force down as Y-component
 		Vec2f g = new Vec2f(0, GRAVITY);		
-		this.applyForce(g.smult(_mass), getCentroid());						
+		this.applyForce(g.smult(_mass), getShape().getCentroid());						
 		//Update vel, pos; reset force, impulse
 		this.symplecticUpdate(nanosSincePreviousTick);
 		//		this.setLocation(_pos);
