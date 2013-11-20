@@ -353,6 +353,12 @@ public final class Vec2f implements Serializable {
 		}
 		return new Vec2f(xSum/vectors.size(), ySum/vectors.size());
 	}
+	public static Vec2f sum(List<Vec2f> vectors) {
+		Vec2f sum = new Vec2f(0, 0);
+		for (Vec2f v: vectors) 
+			sum = sum.plus(v);
+		return sum;
+	}
 	
 	/*
 	 * Object overrides

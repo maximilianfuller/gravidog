@@ -182,25 +182,24 @@ public class CubicBezierCurve extends BezierCurve {
 		Vec2f dt = findDerivative(t);
 		return new Vec2f(-dt.y, dt.x).normalized();
 	}
-	
-	/*Find tangent at given point C(t)*/
+/*	
+	Find tangent at given point C(t)
 	public Vec2f findTangentAt(Vec2f c_t) {
 		return new Vec2f((float)Math.tan(c_t.x), (float)Math.tan(c_t.y)).normalized();
 	}
-	/*Find normal at given point C(t).*/
+	Find normal at given point C(t).
 	public Vec2f findNormalAt(Vec2f c_t) {
 		return new Vec2f(-findTangentAt(c_t).y, findTangentAt(c_t).x);
-	}
+	}*/
 
 	/*Find the point P (defined by P(t)) on the Bezier curve that is closest to 
 	 * the point M, which can be anywhere. The line seg MP (i.e. M-P) is orthogonal
 	 * to the tangent/derivative of P (dP/dt), so MP.dot(dP/dt) == 0. 
 	 * Therefore M.minus(P).dot(derivative(getT(P))) == 0, then use root finding.*/
-	public Vec2f nearestPointOnCurve(Vec2f m) {
+	public float nearestTOnCurve(Vec2f m) {
 		//Minimum distance between M and P, i.e. M.minus(P).dot(derivative(getT(P))) == 0
 		float res = 1000;
-		float t_val = 0;
-		
+		float t_val = 0;		
 ///Iterating for now, but will solve cubic equation once my cubicRoots() method is fully functioning
 		//Dot/Orthoganal check
 		float minDot = Float.POSITIVE_INFINITY;
@@ -214,7 +213,10 @@ public class CubicBezierCurve extends BezierCurve {
 				t_val = t;
 			 }
 		}
-		return getCasteljauPoint(t_val);
+		return t_val;
+	}
+	public Vec2f nearestPointOnCurve(Vec2f m) {
+		return getCasteljauPoint(nearestTOnCurve(m));
 	}
 ///////^^^
 
@@ -569,8 +571,9 @@ public class CubicBezierCurve extends BezierCurve {
 		Vec2f[] verts = p.getVertices();
 		
 		ArrayList<Vec2f> mtvs = new ArrayList<Vec2f>();
-		Vec2f mintv = null;
-		float minDist = Float.POSITIVE_INFINITY;
+//		Vec2f mintv = null;
+//		float minDist = Float.POSITIVE_INFINITY;
+		float maxMag = 0;
 		
 		for (int i=0; i<verts.length; i++) {
 			Vec2f src = verts[i];
@@ -584,28 +587,31 @@ public class CubicBezierCurve extends BezierCurve {
 			ArrayList<Vec2f> pts = this.collidesLine(seg);
 			if (!pts.isEmpty()) {
 				collision = true;
-				_pois = pts;
 ///////// MTV calc...
 				for (Vec2f poi: pts) {
-					float ldist = poi.dist2(dst);
-					float rdist = poi.dist2(src);
-					if (ldist < rdist) {
-						mtvs.add(dst.minus(poi));
-						if (ldist < minDist) {
-							minDist = ldist;
-							mintv = dst.minus(poi);
+					float ldist = dst.dist(poi);
+					float rdist = src.dist(poi);
+					if (Math.abs(ldist) < Math.abs(rdist)) {
+						mtvs.add(poi.minus(dst));
+						if (Math.abs(ldist) > Math.abs(maxMag)) {
+							maxMag = ldist;
+							
+//							minDist = ldist;
+//							mintv = dst.minus(poi);
 						}
 					}
 					else {
-						mtvs.add(src.minus(poi));
-						if (rdist < minDist) {
-							minDist = rdist;
-							mintv = src.minus(poi);
+						mtvs.add(poi.minus(src));
+						if (Math.abs(rdist) > Math.abs(maxMag)) {
+							maxMag = rdist;
+//							minDist = rdist;
+//							mintv = src.minus(poi);
 						}
 					}
 				}	
+				_pois = pts;
 			}				
-///////////	VIEW POIS
+///////////	VISUALIZE POIS
 /*			for (Vec2f pt: pts) {
 				float rad = .8f;
 				CircleShape c = new CircleShape(new Vec2f(pt.x-rad, pt.y-rad), rad);
@@ -614,22 +620,33 @@ public class CubicBezierCurve extends BezierCurve {
 			}*/
 ////////^^^^^^
 		}
-		
 		if (!mtvs.isEmpty()) {
-			Vec2f mtv = Vec2f.average(mtvs);
-//			Vec2f mtv = mintv;
+//////////  ITERATE UNTIL TRANSLATED OUT SUCCESSFULLY?			
+			//Calculate MTV from line segment mtvs
+			Vec2f poi = Vec2f.average(_pois);
+			//get t-val of neraest point on curve to poi
+			float ct = this.nearestTOnCurve(poi);
+			//get curve normal at nearest point
+			Vec2f norm = this.findNormal(ct).normalized();
+////Shouldn't have to get sign of gravity, needs to work no matter what!
+			Vec2f mtv = norm.smult(maxMag);
+/////////^^^^		
+			//Tried:
+//			Vec2f mtv = Vec2f.sum(mtvs);	//sum
+//			Vec2f mtv = Vec2f.average(mtvs); 	//average
+//			Vec2f mtv = mintv;	//minimum mtv
 			this.setCollisionInfo(new CollisionInfo(this, p, mtv));
-			p.setCollisionInfo(new CollisionInfo(p, this, mtv.smult(-1)));
+			p.setCollisionInfo(new CollisionInfo(p, this, mtv.smult(1)));
 		}
 		
 		return collision;
 	}
 	@Override
 	public Vec2f poiPolygon(PolygonShape p) {
-		// TODO Auto-generated method stub
 		//update _pois
-//		return p.getCentroid();
-		collidesPolygon(p);
+//		collidesPolygon(p);
+		if (_pois.size() > 1) 
+			System.out.println(_pois.size());
 		if (_pois.isEmpty())
 			return null;
 		return Vec2f.average(_pois);

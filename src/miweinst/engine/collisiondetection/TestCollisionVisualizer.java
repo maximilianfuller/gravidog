@@ -97,7 +97,7 @@ public class TestCollisionVisualizer {
 				}
 			}
 //////		GRAVITY
-			_testArr[i].onTick(nanos);
+//			_testArr[i].onTick(nanos);
 		}
 
 //////	TESTER FOR ONLY CHECKING ONE SHAPE AGAINST THE OTHER
@@ -218,7 +218,7 @@ private class TestEntity extends PhysicsEntity {
 			curve.setBorderColor(Color.RED);
 			curve.setBorderWidth(1);
 //			curve.rotate(curve.start, 5);
-//			curve.translate(new Vec2f(-8, 0));
+			curve.translate(new Vec2f(-8, 0));
 			test_shape = curve;
 //////
 			this.setStatic(true);

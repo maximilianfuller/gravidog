@@ -170,10 +170,10 @@ public class MWorld extends GameWorld {
                                                 }
                                                 //Parse Shape properties in Entity
                                                 if (shape != null) {                                                        
-                                                        //Set properties of Shape
-                                                        shape.setProperties(s.getProperties());                                                        
-                                                        //Add Shape to Entity
-                                                        entity.setShape(shape);
+                                                    //Set properties of Shape
+                                            		shape.setProperties(s.getProperties());                                                        
+                                                    //Add Shape to Entity
+                                                    entity.setShape(shape);
                                                 }                
                                         }
                                         //Set PhysicsEntity properties                                                
