@@ -370,7 +370,7 @@ public final class Vec2f implements Serializable {
 		return sum;
 	}
 	
-	public static Vec2f lineIntersect(Vec2f l1start, )
+	/*public static Vec2f lineIntersect(Vec2f start1,, )
 	
 	/*
 	 * Object overrides
