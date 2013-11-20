@@ -345,6 +345,11 @@ public final class Vec2f implements Serializable {
 	public final Vec2f invert() {
 		return new Vec2f(0, 0).minus(this);
 	}
+	/**
+	 * gets the average of the given vectors
+	 * @param vectors
+	 * @return
+	 */
 	public static Vec2f average(List<Vec2f> vectors) {
 		float xSum = 0f, ySum = 0f;
 		for(Vec2f v : vectors) {
@@ -353,12 +358,19 @@ public final class Vec2f implements Serializable {
 		}
 		return new Vec2f(xSum/vectors.size(), ySum/vectors.size());
 	}
+	/**
+	 * sums the given vectors
+	 * @param vectors
+	 * @return
+	 */
 	public static Vec2f sum(List<Vec2f> vectors) {
 		Vec2f sum = new Vec2f(0, 0);
 		for (Vec2f v: vectors) 
 			sum = sum.plus(v);
 		return sum;
 	}
+	
+	public static Vec2f lineIntersect(Vec2f l1start, )
 	
 	/*
 	 * Object overrides
