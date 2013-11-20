@@ -28,7 +28,7 @@ public class CubicBezierCurve extends BezierCurve {
 		_points = new Vec2f[4];
 		//List to be populated by findDrawingPoints
 		_segs = new ArrayList<LineSegment>();
-		this.init(new Vec2f(40, 50), new Vec2f(45.5f, 57), new Vec2f(50, 42), new Vec2f(60, 68.6f));
+		this.init(new Vec2f(20, 20), new Vec2f(45.5f, 57), new Vec2f(50, 42), new Vec2f(60, 80.6f));
 	}
 	public CubicBezierCurve(Vec2f point1, Vec2f point2, Vec2f point3, Vec2f point4) {
 		super(point1, new Vec2f(0, 0));
@@ -575,6 +575,8 @@ public class CubicBezierCurve extends BezierCurve {
 //		float minDist = Float.POSITIVE_INFINITY;
 		float maxMag = 0;
 		
+		_pois.clear();
+		
 		for (int i=0; i<verts.length; i++) {
 			Vec2f src = verts[i];
 			//if not last segment, endpoint is next vertex
@@ -608,8 +610,8 @@ public class CubicBezierCurve extends BezierCurve {
 //							mintv = src.minus(poi);
 						}
 					}
+					_pois.add(poi);
 				}	
-				_pois = pts;
 			}				
 ///////////	VISUALIZE POIS
 /*			for (Vec2f pt: pts) {
@@ -645,7 +647,7 @@ public class CubicBezierCurve extends BezierCurve {
 	public Vec2f poiPolygon(PolygonShape p) {
 		//update _pois
 //		collidesPolygon(p);
-		if (_pois.size() > 1) 
+		if (_pois.size() > 2) 
 			System.out.println(_pois.size());
 		if (_pois.isEmpty())
 			return null;
