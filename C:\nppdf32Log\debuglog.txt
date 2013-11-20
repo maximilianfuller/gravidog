@@ -1,0 +1,130 @@
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_Initialize : called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_SetWindow : called for instance 8e31980
+Window from browser - 48234498
+NPP_SetWindow : called for instance 8e31980
+Window from browser - 48234498
+NPP_NewStream : called for instance 8e31980, stream 8e203d0, URL http://www.mathcentre.ac.uk/resources/uploaded/mc-ty-cubicequations-2009-1.pdf, stream size 0, seekable 0
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 0, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 16384, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 32768, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 49152, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 65536, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 81920, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 98304, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 114688, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 131072, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 147456, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 163840, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 180224, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 196608, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 212992, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 229376, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 245760, length = 16384, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_Write : called for instance 8e31980, stream 8e203d0, offset = 262144, length = 12746, streamlength = 0
+Trying for window attributes
+Trying for query tree
+NPP_Write : will wait for NPP_StreamAsFile
+NPP_StreamAsFile : called for instance 8e31980 and stream 8e203d0, filename /tmp/plugtmp/plugin-mc-ty-cubicequations-2009-1.pdf
+NPP_DestroyStream : called for instance 8e31980 and stream 8e203d0
+NPP_Destroy : called for instance 8e31980
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_SetWindow : called for instance 8e20380
+Window from browser - 48234500
+NPP_SetWindow : called for instance 8e20380
+Window from browser - 48234500
+NPP_NewStream : called for instance 8e20380, stream 8e82d28, URL http://www.tinaja.com/glib/cubemath.pdf, stream size 44803, seekable 1
+NPP_Write : called for instance 8e20380, stream 8e82d28, offset = 0, length = 16384, streamlength = 44803
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 8e20380, stream 8e82d28, offset = 16384, length = 16384, streamlength = 44803
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 8e20380, stream 8e82d28, offset = 32768, length = 12035, streamlength = 44803
+Trying for window attributes
+Trying for query tree
+NPP_DestroyStream : called for instance 8e20380 and stream 8e82d28
+NPP_Destroy : called for instance 8e20380
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e80748
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e20380
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e80748
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e20380
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e80748
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e20380
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e80748
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e20380
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e80748
+NPP_GetValue is called
+NPP_Destroy : called for instance 8e20380
+NPP_Shutdown : called
+
+
+

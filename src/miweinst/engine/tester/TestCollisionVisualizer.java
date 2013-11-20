@@ -1,4 +1,4 @@
-package miweinst.engine.collisiondetection;
+package miweinst.engine.tester;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -173,6 +173,7 @@ private class TestEntity extends PhysicsEntity {
 			Vec2f squareLoc = new Vec2f(13, 13);
 			Vec2f squareDim = new Vec2f(3, 3);
 			AARectShape square = new AARectShape(squareLoc, squareDim);
+			
 			square.setColor(Color.ORANGE);
 			square.setBorderColor(Color.WHITE);
 			square.setBorderWidth(0);
@@ -180,13 +181,13 @@ private class TestEntity extends PhysicsEntity {
 		} else if (shape == "rect") {
 			Vec2f rectloc  = new Vec2f(42, 20);
 			Vec2f rectdim = new Vec2f(7, 4);
-			AARectShape rect = new AARectShape(rectloc, rectdim);
+			PolygonShape rect = new AARectShape(rectloc, rectdim).rectToPoly();
 			rect.setColor(Color.GREEN);
 			rect.setBorderColor(Color.WHITE);
 			rect.setBorderWidth(0);
 			test_shape = rect;	
 //////
-			this.setStatic(true);
+//			this.setStatic                                                                                                            (true);
 		} else if (shape == "compound") {
 			Shape[] shapes = new Shape[3];
 			shapes[0] = new CircleShape(new Vec2f(3, 10), 4);
@@ -222,7 +223,7 @@ private class TestEntity extends PhysicsEntity {
 			test_shape = curve;
 //////
 			this.setStatic(true);
-			this.setRestitution(5);
+			this.setRestitution(0);
 			this.setMass(1);
 		}
 /////

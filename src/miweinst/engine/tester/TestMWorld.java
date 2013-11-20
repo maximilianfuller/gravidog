@@ -1,49 +1,29 @@
-package miweinst.m;
+package miweinst.engine.tester;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
-
-import javax.swing.SwingUtilities;
 
 import miweinst.engine.App;
 import miweinst.engine.FileIO;
 import miweinst.engine.Tuple;
-import miweinst.engine.beziercurve.BezierCurveEntity;
-import miweinst.engine.contraints.PinEntity;
 import miweinst.engine.contraints.SpringEntity;
-import miweinst.engine.beziercurve.BezierCurveEntity;
-import miweinst.engine.entityIO.Connection;
-import miweinst.engine.entityIO.Input;
-import miweinst.engine.entityIO.Output;
 import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.PolygonShape;
 import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.graph.HashDecorator;
 import miweinst.engine.screen.Viewport;
-import miweinst.engine.tester.TestCollisionVisualizer;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
-import miweinst.engine.world.RelayEntity;
-import miweinst.engine.world.WhileSensorEntity;
-import cs195n.CS195NLevelReader;
-import cs195n.CS195NLevelReader.InvalidLevelException;
-import cs195n.LevelData;
-import cs195n.LevelData.ConnectionData;
-import cs195n.LevelData.EntityData;
-import cs195n.LevelData.ShapeData;
-import cs195n.LevelData.ShapeData.Type;
+import miweinst.m.Grenade;
+import miweinst.m.LoseScreen;
+import miweinst.m.MTestObject;
+import miweinst.m.Player;
+import miweinst.m.WinScreen;
 import cs195n.Vec2f;
 
-public class MWorld extends GameWorld {        
+public class TestMWorld extends GameWorld {        
         public final String string = "MWorld";
 //        private ArrayList<PhysicsEntity> _shapes;
 //        private StaticBoundary[] _boundaries;
@@ -64,28 +44,22 @@ public class MWorld extends GameWorld {
         private Vec2f _deltaPlayerPos;
         
 ////////
-//        private TestCollisionVisualizer _testVisualizer;
+        private TestCollisionVisualizer _testVisualizer;
         
         //Class.string mapped to instance of Class<?>
         private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
         //Variable name mapped to PhysicsEntity instance
         private HashDecorator<String, PhysicsEntity> _entities;
 
-        public MWorld(App app, Viewport viewport) {
+        public TestMWorld(App app, Viewport viewport) {
                 super(app, viewport);
 /////
-//                _testVisualizer = new TestCollisionVisualizer(this);
+                _testVisualizer = new TestCollisionVisualizer(this);
 
                 _app = app;
                 //Initialize Player to avoid NullPointer, in case not instantiated in level editor
                 _player = new Player(this);
-                
 
-                Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
-                PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
-                pin.setMass(1f);
-                this.addEntity(pin);
-                
                 Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
                 SpringEntity spring = new SpringEntity(this, springEntityShape);
                 spring.setMass(1f);
@@ -100,131 +74,7 @@ public class MWorld extends GameWorld {
                 _jumping = false;
                 _currMouseLoc = null;
                 _lazorBool = false;
-
-////////////// START LEVEL READER /////////////////////
-                
-                //Map of Strings to Class<?>, for interpreting level data
-                _classes = new HashDecorator<String, Class<? extends PhysicsEntity>>();                
-                _classes.setDecoration("PhysicsEntity", PhysicsEntity.class);
-                _classes.setDecoration("StaticBoundary", StaticBoundary.class);
-                _classes.setDecoration("Player", Player.class);
-                _classes.setDecoration("Grenade", Grenade.class);
-                _classes.setDecoration("WhileSensorEntity", WhileSensorEntity.class);
-                _classes.setDecoration("RelayEntity", RelayEntity.class);
-                _classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
-                
-                ///Decoration set to each Entity read from LevelEditor!
-                _entities = new HashDecorator<String, PhysicsEntity>();                                        
-                
-                File f = new File("src/miweinst/resources/level_one.nlf");
-                LevelData level = null;
-                try {
-                        level = CS195NLevelReader.readLevel(f);
-                }
-                catch (InvalidLevelException le) {
-                        System.err.println("The level you loaded is invalid!! MWorld()");
-                        le.printStackTrace();
-                }
-                catch (FileNotFoundException fe) {
-                        System.err.println("File not found!! MWorld()");
-                        fe.printStackTrace();
-                }                        
-                if (level != null) {
-                        //Properties of entire level
-                        this.setProperties(level.getProperties());
-                        
-                        //Each Entity in Level
-                        for (EntityData ent: level.getEntities()) {
-                                //Make instance of PhysicsEntity
-                                String entityClass = ent.getEntityClass();
-                                String entityName = ent.getName();
-                                //Create new Entity instance out of Class 
-                                PhysicsEntity entity = null;
-                                try {
-                                        Constructor<?> c = _classes.getDecoration(entityClass).getConstructor(GameWorld.class);
-                                        entity = (PhysicsEntity) c.newInstance(this);
-                                } catch (Exception e) {
-                                        System.err.println("Exception...: " + e.getMessage());
-                                        e.printStackTrace();
-                                }                                                                                
-                                //Cast PhysicsEntity to specific subclass
-                                if (entity instanceof Player) {
-                                        entity = _player;
-                                }       
-                                else if (entity instanceof WhileSensorEntity) {
-                                        WhileSensorEntity playerSensor = (WhileSensorEntity) entity;
-                                        playerSensor.setEntities(_player);
-                                }                        
-                                if (entity != null) {
-                                        //Shapes in Entity
-                                        for (ShapeData s: ent.getShapes()) {
-                                                Type shapeType = s.getType();
-                                                Shape shape = null;
-                                                if (shapeType == Type.CIRCLE){
-                                                        float rad = s.getRadius();
-                                                        shape = new CircleShape(s.getMin(), rad);
-                                                } else if (shapeType == Type.BOX) {
-                                                        shape = new AARectShape(s.getMin(), new Vec2f(s.getWidth(), s.getHeight()));
-                                                } else if (shapeType == Type.POLY) {
-                                                        shape = new PolygonShape(PolygonShape.getCentroidOf(s.getVerts()), s.getVerts().toArray(new Vec2f[s.getVerts().size()]));
-                                                }
-                                                //Parse Shape properties in Entity
-                                                if (shape != null) {                                                        
-                                                    //Set properties of Shape
-                                            		shape.setProperties(s.getProperties());                                                        
-                                                    //Add Shape to Entity
-                                                    entity.setShape(shape);
-                                                }                
-                                        }
-                                        //Set PhysicsEntity properties                                                
-                                        entity.setProperties(ent.getProperties());
-                                                                                
-                                        //Add Entity to World Map
-                                        _entities.setDecoration(entityName, entity);
-                                        //Add Entity to GameWorld List
-                                        this.addEntity(entity);
-                                }
-                        }                                
-                        //Each Connection in Level
-                        for (ConnectionData c: level.getConnections()) {
-                                String src = c.getSource();
-                                String srcOut = c.getSourceOutput();
-                                String dst = c.getTarget();
-                                String dstIn = c.getTargetInput();
-                                
-                                PhysicsEntity source = null;
-                                PhysicsEntity target = null;
-                                if (_entities.contains(src)) 
-                                        source = _entities.getDecoration(src);
-                                else System.err.println("Connection source " + src + " does not exist!");
-                                if (_entities.contains(dst)) 
-                                        target = _entities.getDecoration(dst);
-                                else System.err.println("Connection target " + dst + " does not exist!");
-                                
-                                if (source != null && target != null) {                
-                                        Connection toAdd = null;
-                                        Output onOut = source.getOutput(srcOut);
-                                        Input doIn = target.getInput(dstIn);
-                                        if (doIn != null) {
-                                                //Pass in Input target to constructor
-                                                toAdd = new Connection(doIn);        
-                                                //Connect Output source here
-                                                if (onOut !=  null) 
-                                                        onOut.connect(toAdd);
-                                                else System.err.println("Source " + src + " has no output " + srcOut);
-                                        }
-                                        else System.err.println("Target " + dst + " has no input " + dstIn);
-                                        //If valid Connection, parse Connection properties
-                                        if (toAdd != null) {
-                                                //Properties of connection
-                                                toAdd.setProperties(c.getProperties());
-                                        }
-                                }
-                        }
-                }
-                else
-                        System.err.println("Level is null! MWorld()");
-                
+   
                 //Get initial distance of Player from screen origin (game units) to maintain panning onTick
                 _deltaPlayerPos = new Vec2f(_player.getX() - super._viewport.getScreenInGameLoc().x, _player.getY() - super._viewport.getScreenInGameLoc().y);
         
@@ -282,17 +132,17 @@ public class MWorld extends GameWorld {
                                         if (Math.abs(_player.getLastMTV().x) < Math.abs(_player.getLastMTV().y)) 
                                                 _jumping = false;        
                         
-                        //Move camera to keep _player on screen; delta b/w locations before/after move
+                        /*//Move camera to keep _player on screen; delta b/w locations before/after move
                         if (_deltaPlayerPos != null) {
                                 float x = _player.getLocation().x - super._viewport.getScreenInGameLoc().x;
                                 float y = _player.getLocation().y - super._viewport.getScreenInGameLoc().y;
                                 if (super._viewport.isMathCoordinateSystem())
                                         y = super._viewport.getScreenSize().y/super.getScale() - _player.getLocation().y - super._viewport.getScreenInGameLoc().y;
                                 super._viewport.pan(x - _deltaPlayerPos.x, y - _deltaPlayerPos.y);
-                        }
+                        }*/
                 }
 /////
-//                _testVisualizer.onTick(nanos);
+                _testVisualizer.onTick(nanos);
         }
         
         /* Called when user adds a PhysicsEntity to the screen,        
@@ -313,16 +163,7 @@ public class MWorld extends GameWorld {
         @Override
         public void draw(Graphics2D g) {                
                 super.draw(g);                        
-                //Draw Path2D lazor while space bar is held down; raycast visualizer
-                if (_lazorBool && _lazor != null) {
-                        Color col = g.getColor();
-                        g.setColor(Color.RED);
-                        g.setStroke(new BasicStroke(.25f));
-                        g.draw(_lazor);
-                        g.setColor(col);
-                }
-/////////
-//                _testVisualizer.draw(g);
+                _testVisualizer.draw(g);
         }
         
         
@@ -378,7 +219,7 @@ public class MWorld extends GameWorld {
                 if (super._viewport.isMathCoordinateSystem())
                         toUnits = new Vec2f(toUnits.x, super.getViewportDimensions().y/super.getScale() - toUnits.y);
                 //Left click
-                if (SwingUtilities.isLeftMouseButton(e)) {
+              /*  if (SwingUtilities.isLeftMouseButton(e)) {
                 //+Shift
                         //Lowest mass Polygon
                         if (e.isShiftDown()) {
@@ -407,16 +248,16 @@ public class MWorld extends GameWorld {
                                         }
                                 }
                         }
-                }
+                }*/
                 
 /////        
-//                _testVisualizer.onMousePressed(toUnits);
+                _testVisualizer.onMousePressed(toUnits);
         }
         public void onMouseDragged(MouseEvent e) {
                 Vec2f toUnits = super.toUnits(new Vec2f(e.getX(), e.getY()));
                 toUnits = new Vec2f(toUnits.x, super.getViewportDimensions().y/super.getScale()-toUnits.y);
 /////
-//                _testVisualizer.onMouseDragged(toUnits); 
+                _testVisualizer.onMouseDragged(toUnits); 
         }
         public void onMouseMoved(MouseEvent e) {
                 Vec2f toUnits = super.toUnits(new Vec2f(e.getX(), e.getY()));
