@@ -12,7 +12,6 @@ import miweinst.engine.App;
 import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.screen.Viewport;
 import miweinst.m.MScreen;
-import miweinst.m.MenuScreen;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 
@@ -20,7 +19,7 @@ public class TestScreen extends MScreen {
 	
 	private App _app;
 	private Viewport _viewport;
-	private TestMWorld _testWorld;
+	private TestWorld _testWorld;
 	private Vec2f _lastMouse;
 	public TestScreen(App a) {
 		super(a);
@@ -39,7 +38,7 @@ public class TestScreen extends MScreen {
 
 		_viewport.setScreenInGameLoc(new Vec2f(0, 25));
 				
-		_testWorld = new TestMWorld(a,_viewport);
+		_testWorld = new TestWorld(a,_viewport);
 		_viewport.setWorld(_testWorld);
 		_viewport.setMathCoordinateSystem(true);
 	}
@@ -66,7 +65,7 @@ public class TestScreen extends MScreen {
 			_testWorld.quitReset();
 			System.exit(0);
 		}
-		if (e.getKeyChar() == 'r') _app.setScreen(new MenuScreen(_app));
+		if (e.getKeyChar() == 'r') _app.setScreen(new TestScreen(_app));
 		_testWorld.onKeyPressed(e);
 	}
 

@@ -1,25 +1,31 @@
 
 
-
-BUG: For entities with CircleShapes, you have to set the restitution too damn high
+BUG: Fix zoom
 BUG: When player goes too fast, you can't change direction with goal velocity
 BUG: POI error; talk to TA
 	Find a way to calculate the POI when no vertices are contained in other shape
-BUG: Fix zoom
 BUG: If the ball just sits on a curve for a really long time, it eventually suddenly falls through...
 
-TODO: Squares to polygons
+TODO: delete AAB
+	TODO: Squares to polygons
 TODO: Pan screen to follow player (use Max's engine algorithm; right now just keeps in same pos relative to screen)
+
 TODO (if we want):
 - Create _rotatable boolean
 - Jumping on slanted surfaces
 - Jumping at right moment on bounce; not only after being totally settled
-- Make level editor more extensible; move most of it to engine (GameWorld)
-- Fix mass to area? Or just make a density var?
+- Make level editor more extensible! Move most of it to engine (GameWorld)
+- Fix entity mass to area? Or just make a density var?
 	(use static PolygonShape.getArea method)
 
 Bezier Curve Aspirations
+- Solve equation of circle-curve collision, optimize
 - Quadratic Bezier Curves
+- Recursively check collision until translated out?
+- Create curve through three points (or more points)
 - Poly-Bezier curves: Combining cubic and quadratic into higher degree
-- Bounding boxes
-- Create curve through three points
+- Optimize drawing and collision detection
+	- Bounding boxes
+- Call collision detection recursively until translated out?
+
+

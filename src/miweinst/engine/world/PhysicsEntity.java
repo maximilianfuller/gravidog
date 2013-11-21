@@ -6,7 +6,6 @@ import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.gfx.shape.Shape;
-import miweinst.m.Player;
 import cs195n.Vec2f;
 
 public class PhysicsEntity extends MovingEntity {

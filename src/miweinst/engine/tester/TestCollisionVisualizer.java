@@ -97,7 +97,7 @@ public class TestCollisionVisualizer {
 				}
 			}
 //////		GRAVITY
-//			_testArr[i].onTick(nanos);
+			_testArr[i].onTick(nanos);
 		}
 
 //////	TESTER FOR ONLY CHECKING ONE SHAPE AGAINST THE OTHER
@@ -145,6 +145,7 @@ public class TestCollisionVisualizer {
 		PhysicsEntity[] testarr = toArr();
 		for (int i=0; i<testarr.length; i++)
 			testarr[i].draw(g);
+		_showPoi = false;
 		if (_showPoi) {
 			_poi.draw(g);
 		}
@@ -187,7 +188,7 @@ private class TestEntity extends PhysicsEntity {
 			rect.setBorderWidth(0);
 			test_shape = rect;	
 //////
-//			this.setStatic                                                                                                            (true);
+//			this.setStatic(true);
 		} else if (shape == "compound") {
 			Shape[] shapes = new Shape[3];
 			shapes[0] = new CircleShape(new Vec2f(3, 10), 4);
@@ -215,9 +216,11 @@ private class TestEntity extends PhysicsEntity {
 			poly.setOutline(Color.MAGENTA, .14f);
 			test_shape = poly;
 		} else if (shape == "curve") {
-			CubicBezierCurve curve = new CubicBezierCurve();
-			curve.setBorderColor(Color.RED);
-			curve.setBorderWidth(1);
+			CubicBezierCurve curve = new CubicBezierCurve
+					(new Vec2f(35, 40), new Vec2f(45.5f, 63), 
+							new Vec2f(40, 22), new Vec2f(70, 40.6f));
+			curve.setBorderColor(Color.BLACK);
+			curve.setBorderWidth(.5f);
 //			curve.rotate(curve.start, 5);
 			curve.translate(new Vec2f(-8, 0));
 			test_shape = curve;
