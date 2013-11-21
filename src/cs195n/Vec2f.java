@@ -370,7 +370,27 @@ public final class Vec2f implements Serializable {
 		return sum;
 	}
 	
-	/*public static Vec2f lineIntersect(Vec2f start1,, )
+	/**
+	 * Gets the intersection point of line a (defined by two points on the line a1
+	 * and a2) and line b (defined by the two points on the line b1 and b2)
+	 * 
+	 * @param a1 the first line start point
+	 * @param a2 the first line end point
+	 * @param b1 the second line start point
+	 * @param b2 the second line end point
+	 * @return The point of intersection of line a and b. Null if a and b are parallel
+	 */
+	public static Vec2f lineIntersect(Vec2f a1, Vec2f a2, Vec2f b1, Vec2f b2) {
+		float denominator = (a1.x - a2.x)*(b1.y - b2.y) - (a1.y - a2.y)*(b1.x - b2.x);
+		if(denominator == 0f) {
+			return null;
+		}
+		float aDet = a1.x*a2.y - a1.y*a2.x;
+		float bDet = b1.x*b2.y - b1.y*b2.x;
+		float xNumerator = aDet*(b1.x - b2.x) - (a1.x - a2.x)*bDet;
+		float yNumerator = aDet*(b1.y - b2.y) - (a1.y - a2.y)*bDet;
+		return new Vec2f(xNumerator/denominator, yNumerator/denominator);
+	}
 	
 	/*
 	 * Object overrides
