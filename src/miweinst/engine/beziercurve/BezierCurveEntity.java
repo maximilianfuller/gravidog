@@ -12,11 +12,19 @@ public class BezierCurveEntity extends PhysicsEntity {
 	
 	private CubicBezierCurve _curve = new CubicBezierCurve();
 	private boolean[] _points = {false, false, false, false};
+	
+/////
+//	private BezierPath _path;
 
 	public BezierCurveEntity(GameWorld world) {
 		super(world);		
 		this.setStatic(true);
+		this.setInteractive(true);
 		super.setShape(_curve);
+////
+		//If want to use path
+/*		_path = new BezierPath();
+		super.setShape(_path);*/
 	}
 
 	@Override
@@ -29,6 +37,10 @@ public class BezierCurveEntity extends PhysicsEntity {
 	 * endpoint, and the other circle is the end endpoint.*/
 	@Override
 	public void setShape(Shape s) {
+		//If want to use path
+/*		_path.addPoint(s.getLocation());
+		super.setShape(_path);*/
+		
 		super.setShape(_curve);
 		if (s instanceof AARectShape) {
 			if (!_points[1]) {
@@ -58,4 +70,5 @@ public class BezierCurveEntity extends PhysicsEntity {
 		}
 		_curve.updatePointArr();
 	}
+
 }

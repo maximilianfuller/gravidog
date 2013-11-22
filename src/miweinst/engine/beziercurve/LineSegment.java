@@ -2,6 +2,8 @@ package miweinst.engine.beziercurve;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import cs195n.Vec2f;
 
@@ -26,11 +28,22 @@ public class LineSegment {
 		end = e;
 	}
 	
+	/* Takes in list of points as Vec2f, then returns a list of LineSegments
+	 * that use points as endpoints.*/
+	public static ArrayList<LineSegment> pointsToSegs(List<Vec2f> pointList) {
+		ArrayList<LineSegment> segList = new ArrayList<LineSegment>();
+		for (int i=0; i < pointList.size()-1; i++) {			
+			LineSegment seg = new LineSegment(pointList.get(i), pointList.get(i+1));
+			segList.add(seg);
+		}	
+		return segList;
+	}
+	
 	/* Returns point of intersection between two line segments,
 	 * if intersection occurs within both line segments' endpoints. 
 	 * Else returns null. Also null if line segments are parallel (determinant == 0).
 	 * Converts each line into form Ax + By = C. then solves for intersection.*/
-	public Vec2f intersectsLine(LineSegment other) {
+/*	public Vec2f intersectsLine(LineSegment other) {
 		Vec2f poi = Vec2f.lineIntersect(this.start, this.end, other.start, other.end);	
 		float x = poi.x;
 		float y = poi.y;
@@ -50,7 +63,7 @@ public class LineSegment {
 		//If lies outside of segments, no intersection
 		else 
 			return null;	
-	}
+	}*/
 	
 	/*Translates line segment by delta values.*/
 	public void translate(Vec2f delta) {

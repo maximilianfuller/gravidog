@@ -190,7 +190,6 @@ public class Player extends PhysicsEntity {
 		if (!other.isInteractive()) 
 			collision = false;
 		if (collision) {
-//			System.out.println("time since last collision: " + _collisionTimer);
 			//if collisions are < 6 ms apart, Player is touching an object
 			if (_collisionTimer <= 9) 
 				_jumping = false;

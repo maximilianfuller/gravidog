@@ -46,10 +46,6 @@ public abstract class BezierCurve extends Shape {
 		return false;
 	}
 
-	/*No centroid in BezierCurve, which is OK
-	 * because it should always be static!*/
-	@Override
-	public abstract Vec2f getCentroid();
 	/*No momentOfInertia because BezierCurve should
 	 * not be rotatable and is always static.*/
 	@Override
@@ -68,6 +64,11 @@ public abstract class BezierCurve extends Shape {
 		// TODO Won't have curve-curve collisions ever!?
 		return null;
 	}
+	
+	/*No centroid in BezierCurve, which is OK
+	 * because it should always be static!*/
+	@Override
+	public abstract Vec2f getCentroid();
 	
 	@Override
 	public abstract boolean collidesPolygon(PolygonShape p);

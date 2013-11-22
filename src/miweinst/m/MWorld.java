@@ -95,120 +95,120 @@ public class MWorld extends GameWorld {
                 _classes.setDecoration("WhileSensorEntity", WhileSensorEntity.class);
                 _classes.setDecoration("RelayEntity", RelayEntity.class);
                 _classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
-                
+
                 ///Decoration set to each Entity read from LevelEditor!
                 _entities = new HashDecorator<String, PhysicsEntity>();                                        
-                
+
                 File f = new File("src/miweinst/resources/level_one.nlf");
                 LevelData level = null;
                 try {
-                        level = CS195NLevelReader.readLevel(f);
+                	level = CS195NLevelReader.readLevel(f);
                 }
                 catch (InvalidLevelException le) {
-                        System.err.println("The level you loaded is invalid!! MWorld()");
-                        le.printStackTrace();
+                	System.err.println("The level you loaded is invalid!! MWorld()");
+                	le.printStackTrace();
                 }
                 catch (FileNotFoundException fe) {
-                        System.err.println("File not found!! MWorld()");
-                        fe.printStackTrace();
+                	System.err.println("File not found!! MWorld()");
+                	fe.printStackTrace();
                 }                        
                 if (level != null) {
-                        //Properties of entire level
-                        this.setProperties(level.getProperties());
-                        
-                        //Each Entity in Level
-                        for (EntityData ent: level.getEntities()) {
-                                //Make instance of PhysicsEntity
-                                String entityClass = ent.getEntityClass();
-                                String entityName = ent.getName();
-                                //Create new Entity instance out of Class 
-                                PhysicsEntity entity = null;
-                                try {
-                                        Constructor<?> c = _classes.getDecoration(entityClass).getConstructor(GameWorld.class);
-                                        entity = (PhysicsEntity) c.newInstance(this);
-                                } catch (Exception e) {
-                                        System.err.println("Exception...: " + e.getMessage());
-                                        e.printStackTrace();
-                                }                                                                                
-                                //Cast PhysicsEntity to specific subclass
-                                if (entity instanceof Player) {
-                                        entity = _player;
-                                }       
-                                else if (entity instanceof WhileSensorEntity) {
-                                        WhileSensorEntity playerSensor = (WhileSensorEntity) entity;
-                                        playerSensor.setEntities(_player);
-                                }                        
-                                if (entity != null) {
-                                        //Shapes in Entity
-                                        for (ShapeData s: ent.getShapes()) {
-                                                Type shapeType = s.getType();
-                                                Shape shape = null;
-                                                if (shapeType == Type.CIRCLE){
-                                                        float rad = s.getRadius();
-                                                        shape = new CircleShape(s.getMin(), rad);
-                                                } else if (shapeType == Type.BOX) {
-                                                        shape = new AARectShape(s.getMin(), new Vec2f(s.getWidth(), s.getHeight()));
-                                                } else if (shapeType == Type.POLY) {
-                                                        shape = new PolygonShape(PolygonShape.getCentroidOf(s.getVerts()), s.getVerts().toArray(new Vec2f[s.getVerts().size()]));
-                                                }
-                                                //Parse Shape properties in Entity
-                                                if (shape != null) {                                                        
-                                                    //Set properties of Shape
-                                            		shape.setProperties(s.getProperties());                                                        
-                                                    //Add Shape to Entity
-                                                    entity.setShape(shape);
-                                                }                
-                                        }
-                                        //Set PhysicsEntity properties                                                
-                                        entity.setProperties(ent.getProperties());
-                                                                                
-                                        //Add Entity to World Map
-                                        _entities.setDecoration(entityName, entity);
-                                        //Add Entity to GameWorld List
-                                        this.addEntity(entity);
-                                }
-                        }                                
-                        //Each Connection in Level
-                        for (ConnectionData c: level.getConnections()) {
-                                String src = c.getSource();
-                                String srcOut = c.getSourceOutput();
-                                String dst = c.getTarget();
-                                String dstIn = c.getTargetInput();
-                                
-                                PhysicsEntity source = null;
-                                PhysicsEntity target = null;
-                                if (_entities.contains(src)) 
-                                        source = _entities.getDecoration(src);
-                                else System.err.println("Connection source " + src + " does not exist!");
-                                if (_entities.contains(dst)) 
-                                        target = _entities.getDecoration(dst);
-                                else System.err.println("Connection target " + dst + " does not exist!");
-                                
-                                if (source != null && target != null) {                
-                                        Connection toAdd = null;
-                                        Output onOut = source.getOutput(srcOut);
-                                        Input doIn = target.getInput(dstIn);
-                                        if (doIn != null) {
-                                                //Pass in Input target to constructor
-                                                toAdd = new Connection(doIn);        
-                                                //Connect Output source here
-                                                if (onOut !=  null) 
-                                                        onOut.connect(toAdd);
-                                                else System.err.println("Source " + src + " has no output " + srcOut);
-                                        }
-                                        else System.err.println("Target " + dst + " has no input " + dstIn);
-                                        //If valid Connection, parse Connection properties
-                                        if (toAdd != null) {
-                                                //Properties of connection
-                                                toAdd.setProperties(c.getProperties());
-                                        }
-                                }
-                        }
+                	//Properties of entire level
+                	this.setProperties(level.getProperties());
+
+                	//Each Entity in Level
+                	for (EntityData ent: level.getEntities()) {
+                		//Make instance of PhysicsEntity
+                		String entityClass = ent.getEntityClass();
+                		String entityName = ent.getName();
+                		//Create new Entity instance out of Class 
+                		PhysicsEntity entity = null;
+                		try {
+                			Constructor<?> c = _classes.getDecoration(entityClass).getConstructor(GameWorld.class);
+                			entity = (PhysicsEntity) c.newInstance(this);
+                		} catch (Exception e) {
+                			System.err.println("Exception...: " + e.getMessage());
+                			e.printStackTrace();
+                		}                                                                                
+                		//Cast PhysicsEntity to specific subclass
+                		if (entity instanceof Player) {
+                			entity = _player;
+                		}       
+                		else if (entity instanceof WhileSensorEntity) {
+                			WhileSensorEntity playerSensor = (WhileSensorEntity) entity;
+                			playerSensor.setEntities(_player);
+                		}                        
+                		if (entity != null) {
+                			//Shapes in Entity
+                			for (ShapeData s: ent.getShapes()) {
+                				Type shapeType = s.getType();
+                				Shape shape = null;
+                				if (shapeType == Type.CIRCLE){
+                					float rad = s.getRadius();
+                					shape = new CircleShape(s.getMin(), rad);
+                				} else if (shapeType == Type.BOX) {
+                					shape = new AARectShape(s.getMin(), new Vec2f(s.getWidth(), s.getHeight()));
+                				} else if (shapeType == Type.POLY) {
+                					shape = new PolygonShape(PolygonShape.getCentroidOf(s.getVerts()), s.getVerts().toArray(new Vec2f[s.getVerts().size()]));
+                				}
+                				//Parse Shape properties in Entity
+                				if (shape != null) {                                                        
+                					//Set properties of Shape
+                					shape.setProperties(s.getProperties());                                                        
+                					//Add Shape to Entity
+                					entity.setShape(shape);
+                				}                
+                			}
+                			//Set PhysicsEntity properties                                                
+                			entity.setProperties(ent.getProperties());
+
+                			//Add Entity to World Map
+                			_entities.setDecoration(entityName, entity);
+                			//Add Entity to GameWorld List
+                			this.addEntity(entity);
+                		}
+                	}                                
+                	//Each Connection in Level
+                	for (ConnectionData c: level.getConnections()) {
+                		String src = c.getSource();
+                		String srcOut = c.getSourceOutput();
+                		String dst = c.getTarget();
+                		String dstIn = c.getTargetInput();
+
+                		PhysicsEntity source = null;
+                		PhysicsEntity target = null;
+                		if (_entities.contains(src)) 
+                			source = _entities.getDecoration(src);
+                		else System.err.println("Connection source " + src + " does not exist!");
+                		if (_entities.contains(dst)) 
+                			target = _entities.getDecoration(dst);
+                		else System.err.println("Connection target " + dst + " does not exist!");
+
+                		if (source != null && target != null) {                
+                			Connection toAdd = null;
+                			Output onOut = source.getOutput(srcOut);
+                			Input doIn = target.getInput(dstIn);
+                			if (doIn != null) {
+                				//Pass in Input target to constructor
+                				toAdd = new Connection(doIn);        
+                				//Connect Output source here
+                				if (onOut !=  null) 
+                					onOut.connect(toAdd);
+                				else System.err.println("Source " + src + " has no output " + srcOut);
+                			}
+                			else System.err.println("Target " + dst + " has no input " + dstIn);
+                			//If valid Connection, parse Connection properties
+                			if (toAdd != null) {
+                				//Properties of connection
+                				toAdd.setProperties(c.getProperties());
+                			}
+                		}
+                	}
                 }
                 else
-                        System.err.println("Level is null! MWorld()");
+                	System.err.println("Level is null! MWorld()");
 /////////////////^^^^^^^^^^                
-        
+                        
                 Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
                 PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
                 pin.setMass(1f);

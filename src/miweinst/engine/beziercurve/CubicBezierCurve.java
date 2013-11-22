@@ -79,13 +79,9 @@ public class CubicBezierCurve extends BezierCurve {
 	private void updateSegs() {
 		//Populate list of LineSegments _segs
 		ArrayList<Vec2f> pointList = new ArrayList<Vec2f>();
-		ArrayList<LineSegment> segList = new ArrayList<LineSegment>();
 		for (float t=0; t <= 1; t += .01f) 
 			pointList.add(getCasteljauPoint(t)); 
-		for (int i=0; i < pointList.size()-1; i++) {			
-			LineSegment seg = new LineSegment(pointList.get(i), pointList.get(i+1));
-			segList.add(seg);
-		}	
+		ArrayList<LineSegment> segList = LineSegment.pointsToSegs(pointList);
 		_segs = segList;
 	}
 		
@@ -126,6 +122,29 @@ public class CubicBezierCurve extends BezierCurve {
 		this.updatePointVars();
 		this.updateSegs();
 	}
+	
+////////////
+	/*Trying to generate curve that actually goes through three points p1, p2, p3*/
+/*	public static CubicBezierCurve generateBezierCurve(Vec2f p1, Vec2f p2, Vec2f p3) {
+		CubicBezierCurve curve = new CubicBezierCurve(p1, p2, p2, p3);
+		Vec2f[] pts = {curve.start, curve.ctrl_one, curve.ctrl_two, curve.end};
+		float ratio = calculateProjectionRatio(.5f);
+		
+		return null;
+	}
+	 Finds unique ratio for third-degree Casteljau algorithm's 
+	 * projection intermediate points, (A-B):(B-C).
+	 * For cubic curve, ratio(t):
+	 * (ttt + (1-t)^3) / (ttt + (1-t)^3 - 1)
+	public static float calculateProjectionRatio(float t) {
+		float ttt = t*t*t;
+		float u = 1-t;
+		float uuu = u*u*u;
+		float num = ttt+uuu;
+		float den = num-1;
+		return Math.abs(num/den);
+	}*/
+////////////^^^^^^
 	
 	/*Calculates a point at parameter t along this instance of CubicBezierCurve,
 	 * using addition/assignment of each term of the following cubic equation: */
@@ -384,38 +403,6 @@ public class CubicBezierCurve extends BezierCurve {
 			s[ i ] -= sub;  
 		return num;  
 	}  
-	
-////////////////
-	/*Trying Newton-Raphson root finding :( */
-/*	public ArrayList<Float> findYRoots() {
-		ArrayList<Float> y_roots = new ArrayList<Float>();
-		float res = 200f;
-		for (float t=0; t<=1; t = t+1/res) {
-			Vec2f dP = findDerivative(t);
-			Vec2f ddP = findSecondDerivative(t);
-			if(t+res == t - dP.y/ddP.y) {
-				y_roots.add(t);		
-//////				
-				System.out.println(t);
-			}
-
-			if (dP.y == 0) {
-				y_roots.add(t);
-			}
-			else {
-				//Intersect derivative line with x-axis
-				Vec2f ypoint = Vec2f.lineIntersect(dP, dP.plus(dP), new Vec2f(0, 0), new Vec2f(1, 0));	
-				
-			}
-		}
-		return y_roots;
-	}
-	public ArrayList<Float> findXRoots() {
-		ArrayList<Float> x_roots = new ArrayList<Float>();
-		return x_roots;
-	}*/
-/////////////////^^^^
-
 	
 	/*Calculates intersection between curve and line.
 	 * Useful for POI and collision detection. */
