@@ -19,7 +19,7 @@ public class Viewport {
 	//World of game space in game units
 	private GameWorld _gameWorld;
 	
-	//Dimensions of _viewport, passed in constructor
+	//Dimensions of viewport, passed in constructor
 	private Vec2f _screenDim;	
 	
 	//Dimensions of game world, passed in constructor
@@ -143,7 +143,7 @@ public class Viewport {
 	 * of the game map that is visible at any given time.
 	 * The screen size is in pixels.
 	 * 
-	 * @param Vec2f newSize; size of visible _viewport screen
+	 * @param Vec2f newSize; size of visible viewport screen
 	 */
 	public void setScreenSize(Vec2f newSize) {
 		_screenDim = newSize;
@@ -159,7 +159,7 @@ public class Viewport {
 	 * but should be set depending on the application from
 	 * any subclass.
 	 * The screen location is in pixels.
-	 * @param Vec2f newLoc; upper left of _viewport screen in pixels
+	 * @param Vec2f newLoc; upper left of viewport screen in pixels
 	 */
 	public void setScreenLoc(Vec2f newLoc) {
 		_screenLoc = newLoc;
@@ -307,7 +307,7 @@ public class Viewport {
 					
 			//Store reference to curr clip
 			java.awt.Shape clip = g.getClip();	
-			//Clip graphics to the _viewport screen rectangle, outside AffineTransform
+			//Clip graphics to the viewport screen rectangle, outside AffineTransform
 			Vec2i screenLoc = new Vec2i((int) _screenLoc.x, (int) _screenLoc.y);
 			Vec2i screenDim = new Vec2i((int) _screenDim.x, (int) _screenDim.y);
 			g.clipRect(screenLoc.x, screenLoc.y, screenDim.x, screenDim.y);

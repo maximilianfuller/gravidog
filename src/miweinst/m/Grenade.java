@@ -14,7 +14,7 @@ public class Grenade extends PhysicsEntity {
 	public static final String string = "Grenade";
 
 	private GameWorld _world;
-	private Player _player;
+//	private Player _player;
 	private CircleShape _grenade;
 	private CircleShape _fire;
 	private float _fireRad;
@@ -37,7 +37,7 @@ public class Grenade extends PhysicsEntity {
 	public Grenade(GameWorld world, Player player) {
 		super(world);		
 		_world = world;
-		_player = player;
+//		_player = player;
 		Vec2f initialLoc = player.getCenter();
 		_grenade = new CircleShape(initialLoc, .75f);
 		_grenade.setColor(new Color(26, 143, 26));
@@ -55,9 +55,9 @@ public class Grenade extends PhysicsEntity {
 	
 	/*In case must pass in null Player, set valid reference
 	 * here after constructor.*/
-	public void setPlayer(Player player) {
+/*	public void setPlayer(Player player) {
 		_player = player;
-	}
+	}*/
 	
 	/*Sets/Gets blast radius of grenade impulse*/
 	public float getBlastRadius() {

@@ -128,6 +128,12 @@ public class Player extends PhysicsEntity {
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
+	//collisionTimer measures ms between collisions
+	private float _collisionTimer;
+	//jumpDelay is delay before Player can jump again
+	private float _jumpDelay;
+	//boolean for whether jump is allowed
+	private boolean _jumping;
 
 	public Player(GameWorld world) {
 		super(world);
@@ -152,8 +158,9 @@ public class Player extends PhysicsEntity {
 		_gravitySwitched = false;
 		_dataWritten = false;
 		this.setRestitution(100f);
-////
-//		this.setRotatable(false);
+		_jumpDelay = 5;
+		_collisionTimer = 0;
+		_jumping = false;
 	}
 	
 	/*Allows method to override the built in check
@@ -172,8 +179,38 @@ public class Player extends PhysicsEntity {
 				_world.removeEntity(_grenade);
 				_grenade = null;
 			}
-		}
+		}		
+		_collisionTimer += nanosSincePreviousTick/1000000;
+		_jumpDelay += nanosSincePreviousTick/1000000;
 	}	
+	
+	@Override
+	public boolean collides(PhysicsEntity other) {
+		boolean collision = super.collides(other);	
+		if (!other.isInteractive()) 
+			collision = false;
+		if (collision) {
+//			System.out.println("time since last collision: " + _collisionTimer);
+			//if collisions are < 6 ms apart, Player is touching an object
+			if (_collisionTimer <= 9) 
+				_jumping = false;
+			//starts timer on collision
+			_collisionTimer = 0;
+		}
+		return collision;
+	}
+	
+	public void jump() {
+		Vec2f mtv = this.getLastMTV();
+		if (Math.abs(mtv.y) > Math.abs(mtv.x)/2) {
+			if (!_jumping && _jumpDelay > 50) {
+				System.out.println(mtv.normalized().smult(20));
+				this.applyImpulse(mtv.normalized().smult(20), getCentroid());
+				_jumping = true;
+				_jumpDelay = 0;
+			}
+		}
+	}
 	
 	/*Center of Player's body when circular.*/
 	public Vec2f getCenter() {
@@ -196,20 +233,6 @@ public class Player extends PhysicsEntity {
 		return _grenade != null;
 	}
 	
-	/* Returns whether or not player is on solid object/ground,
-	 * so it is able to jump. Checks if MTV of most recent collision
-	 * was positive and very very small, therefore standing
-	 * still with an upwards normal force.*/
-	public boolean isStable() {
-		//MTV of last collision
-		Vec2f mtv = this.getLastMTV();	
-		if (mtv != null) 
-			if (Math.abs(mtv.x) < Math.abs(mtv.y)) 
-				if (mtv.y >= 0 && mtv.y <= .01f)  
-					return true;
-		return false;
-	}
-	
 	@Override
 	public void draw(Graphics2D g) {
 		super.draw(g);
@@ -217,7 +240,6 @@ public class Player extends PhysicsEntity {
 			_grenade.draw(g);
 	}
 
-///////	
 	@Override
 	public Input getInput(String s) {
 		if (new String("doGravitySwitch").equals(s)) {

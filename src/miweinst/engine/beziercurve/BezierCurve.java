@@ -49,9 +49,7 @@ public abstract class BezierCurve extends Shape {
 	/*No centroid in BezierCurve, which is OK
 	 * because it should always be static!*/
 	@Override
-	public Vec2f getCentroid() {
-		return null;
-	}
+	public abstract Vec2f getCentroid();
 	/*No momentOfInertia because BezierCurve should
 	 * not be rotatable and is always static.*/
 	@Override

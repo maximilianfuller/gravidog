@@ -15,7 +15,6 @@ public class BezierCurveEntity extends PhysicsEntity {
 
 	public BezierCurveEntity(GameWorld world) {
 		super(world);		
-//		_curve = new CubicBezierCurve();
 		this.setStatic(true);
 		super.setShape(_curve);
 	}

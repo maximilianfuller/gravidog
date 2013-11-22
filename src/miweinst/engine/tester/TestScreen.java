@@ -30,7 +30,7 @@ public class TestScreen extends MScreen {
 		Vec2f windowDim = new Vec2f(a.getDimensions().x-50, a.getDimensions().y-75);
 		AARectShape window = new AARectShape(new Vec2f(25, 25), windowDim);		
 
-		//Instantiate world and _viewport; pass reference both ways
+		//Instantiate world and viewport; pass reference both ways
 		_viewport = new Viewport(window);
 		
 		//Semi-transparent background; overrides any properties from level editor 

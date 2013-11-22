@@ -11,7 +11,6 @@ import java.util.Map;
 import miweinst.engine.App;
 import miweinst.engine.Tuple;
 import miweinst.engine.collisiondetection.Ray;
-import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.screen.Viewport;
 import cs195n.Vec2f;
 
@@ -23,7 +22,7 @@ import cs195n.Vec2f;
 
 public class GameWorld {
 	public final String string = "GameWorld";
-
+	
 	//Dimensions of game world
 	private Vec2f _worldDim;	
 	//Dimensions of Viewport
@@ -31,14 +30,13 @@ public class GameWorld {
 	private int _timestep;
 	private int _iters;		
 	private ArrayList<PhysicsEntity> _entities;		
-		
-	public Viewport _viewport;
+	protected Viewport viewport;
 
 	public GameWorld(App app, Viewport v) {
 		//Default initialized dimensions; mutate in setDimensions()
 		_worldDim = new Vec2f(375, 135);		
-		_viewport = v;
-		_windowDim = _viewport.getScreenSize();
+		viewport = v;
+		_windowDim = viewport.getScreenSize();
 		
 		_entities = new ArrayList<PhysicsEntity>();
 		
@@ -51,11 +49,11 @@ public class GameWorld {
 	 * onTick methods; iterations calculated by fixed timestep.*/
 	public void onTick(long nanosSincePreviousTick) {
 		//accumulatedTime += nanosSincePreviousTick (or % timestep);
-		//nanosSincePreviousTick+accumulatedTime (if %)
-		_iters = (int) (nanosSincePreviousTick/_timestep);
-		
+			//nanosSincePreviousTick+accumulatedTime (if %)
+		_iters = (int) (nanosSincePreviousTick/_timestep);		
 		//Iterations of fixed timestep
 		for (int iter=1; iter <= _iters; iter++) {
+			
 			//Collision detection
 			for (int i=0; i<_entities.size(); i++) {
 				for (int j=i; j < _entities.size(); j++) {	
@@ -67,9 +65,6 @@ public class GameWorld {
 				if (_entities.get(i).isStatic() == false) 
 					//Send tick to every entity in list
 					_entities.get(i).onTick(nanosSincePreviousTick/_iters);
-/////////				
-//				Shape s = _entities.get(i).getShape();
-//				s.setAngle((float) (s.getAngle()+Math.PI/100));
 			}
 		}
 		// accumulatedTime -= _iters * _timestep; 
@@ -102,18 +97,18 @@ public class GameWorld {
 	
 	/*Gets/Sets Viewport's scale.*/
 	public void setScale(float newScale) {
-		_viewport.setScale(newScale);
+		viewport.setScale(newScale);
 //		_scale = (int) newScale;
 	}
 	public float getScale() {
-		return _viewport.getScale();
+		return viewport.getScale();
 	}
 	
 	/*Accessor/Mutator for screen location of the game origin,
 	 * used for conversion between game units and pixels for all
 	 * measurements inside the GameWorld. */
 	public Vec2f getPixelGameLocation() {
-		return _viewport.getPixelGameLocation();
+		return viewport.getPixelGameLocation();
 	}
 	
 	/* Calculates pixel equivalent of specified point
@@ -122,10 +117,10 @@ public class GameWorld {
 	 * container of all game objects, which are 
 	 * all set in game units. */
 	public Vec2f toPixels(Vec2f gLoc) {
-		return _viewport.gamePointToScreen(gLoc);
+		return viewport.gamePointToScreen(gLoc);
 	}
 	public Vec2f toUnits(Vec2f pxlLoc) {
-		return _viewport.screenPointToGame(pxlLoc);
+		return viewport.screenPointToGame(pxlLoc);
 	}
 	
 	/*If specific game is using the math coordinate system (origin
@@ -247,10 +242,10 @@ public class GameWorld {
 	 * AffineTransform should really only be set by GameWorld object,
 	 * not some sneaky Enemy or something, hence protected.*/
 	protected AffineTransform getTransform() {
-		return _viewport.getTransform();
+		return viewport.getTransform();
 	}
 	protected void setTransform(AffineTransform transform) {
-		_viewport.setTransform(transform);
+		viewport.setTransform(transform);
 	}
 	
 	
@@ -259,7 +254,7 @@ public class GameWorld {
 	public void setProperties(Map<String, String> props) {
 		if (props.containsKey("bgcolor")) {
 			//WON'T WORK IF VIEWPORT SCREEN IS ALREADY SET TO COLOR OR TRANSPARENCY IN PLAYSCREEN!
-			_viewport.setScreenColor(stringToColor(props.get("bgcolor")));
+			viewport.setScreenColor(stringToColor(props.get("bgcolor")));
 		}
 		if (props.containsKey("gravity")) {
 			PhysicsEntity.setGravity(Float.parseFloat(props.get("gravity")));
@@ -267,13 +262,13 @@ public class GameWorld {
 		if (props.containsKey("scale")) {
 			this.setScale(Float.parseFloat(props.get("scale")));
 		}
-		//X coordinate of _viewport window in game world (game units)
+		//X coordinate of viewport window in game world (game units)
 		if (props.containsKey("x")) {
-			_viewport.setScreenInGameLoc(new Vec2f(Float.parseFloat(props.get("x")), _viewport.getScreenInGameLoc().y));
+			viewport.setScreenInGameLoc(new Vec2f(Float.parseFloat(props.get("x")), viewport.getScreenInGameLoc().y));
 		}
-		//Y coordinate of _viewport window in game world (game units)
+		//Y coordinate of viewport window in game world (game units)
 		if (props.containsKey("y")) {
-			_viewport.setScreenInGameLoc(new Vec2f(_viewport.getScreenInGameLoc().x, Float.parseFloat(props.get("y"))));
+			viewport.setScreenInGameLoc(new Vec2f(viewport.getScreenInGameLoc().x, Float.parseFloat(props.get("y"))));
 		}
 	}
 	

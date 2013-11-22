@@ -1,7 +1,5 @@
 package miweinst.m;
 
-import cs195n.Vec2f;
-
 public class Constants {
 	//Dimensions of Game World, in game units
 //	public static final Vec2f GAME_DIMENSIONS = new Vec2f(151.5f, 75);

@@ -56,7 +56,7 @@ public class MTestObject extends PhysicsEntity {
 			shape = new CircleShape(location, 8.5f); 
 			shape.setColor(new Color(54, 85, 93));	//turquoise
 			this.setMass(2);
-			this.setRestitution(20f);
+			this.setRestitution(.65f);
 		}				
 		if (shape != null) 
 			this.setShape(shape);

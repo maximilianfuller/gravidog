@@ -1,11 +1,14 @@
 
 
-BUG: Fix zoom
-BUG: When player goes too fast, you can't change direction with goal velocity
-BUG: POI error; talk to TA
-	Find a way to calculate the POI when no vertices are contained in other shape
-BUG: If the ball just sits on a curve for a really long time, it eventually suddenly falls through...
 
+BUG: Fix zoom
+BUG: Curve collision only works in one direction
+	- Fix or find workaround
+
+BUG: Collisions only getting called in one direction, if you extend functionality of collides (i.e. Player for jumping) it might never actually get called. Could change PhysicsEntity so it's not calling other.getShape().collides but rather calling other.collides().
+	- Buuuut for now we can just make sure the Player is added to beginning of list...
+
+TODO: Add accumulatedTime to fixed timestep in GameWorld
 TODO: delete AAB
 	TODO: Squares to polygons
 TODO: Pan screen to follow player (use Max's engine algorithm; right now just keeps in same pos relative to screen)
@@ -19,8 +22,9 @@ TODO (if we want):
 	(use static PolygonShape.getArea method)
 
 Bezier Curve Aspirations
-- Solve equation of circle-curve collision, optimize
-- Quadratic Bezier Curves
+- Optimize collision detection!
+	- Solve equation of circle-curve collision, optimize
+- Quadratic Bezier Curves (will be eaiser)
 - Recursively check collision until translated out?
 - Create curve through three points (or more points)
 - Poly-Bezier curves: Combining cubic and quadratic into higher degree

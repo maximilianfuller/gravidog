@@ -140,7 +140,12 @@ public class CircleShape extends Shape {
 			c.setCollisionInfo(new CollisionInfo(c, this, mtv.smult(-1)));
 			return true;
 		}
-		else return false;
+		else {
+///////
+//			this.setCollisionInfo(null);
+//			c.setCollisionInfo(null);	
+			return false;
+		}
 	}
 
 	@Override

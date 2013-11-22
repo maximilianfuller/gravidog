@@ -24,7 +24,6 @@ public class PolygonShape extends Shape {
 	public static final String string = "PolygonShape";
 	
 	//Location stored in Shape, reference
-//	private Vec2f _location;
 	//Stores points of path
 	private Vec2f[] _vertices;
 	private Vec2f[] _relativeVertices;
@@ -35,14 +34,26 @@ public class PolygonShape extends Shape {
 //	private HashDecorator<Shape, Vec2f> _collisionDecorator;
 	private CollisionInfo _collisionInfo;
 	
+	//Takes in a location for superclass' reference
 	//Vals array should already be in counter-clockwise order
 	public PolygonShape(Vec2f loc, Vec2f[] ccverts) {
 		super(loc, new Vec2f(0, 0));	//dimensions N.A for poly
-//		_location = loc;
 		super.setLocation(loc);
 		_vertices = ccverts;
 		_collisionInfo = null;
 		
+		_relativeVertices = new Vec2f[ccverts.length];
+		_centroid = getCentroidOf(Arrays.asList(ccverts));
+		for (int i=0; i<ccverts.length; i++) {
+			_relativeVertices[i] = ccverts[i].minus(_centroid);
+		}
+//		_area = getArea();
+	}
+	//Doesn't take in a location
+	public PolygonShape(Vec2f[] ccverts) {
+		super(ccverts[0], new Vec2f(0, 0));	//dimensions N.A for poly
+		_vertices = ccverts;
+		_collisionInfo = null;	
 		_relativeVertices = new Vec2f[ccverts.length];
 		_centroid = getCentroidOf(Arrays.asList(ccverts));
 		for (int i=0; i<ccverts.length; i++) {
@@ -342,6 +353,9 @@ public class PolygonShape extends Shape {
 			SeparatingAxis sepAxis = new SeparatingAxis(axis);
 			Float mtv1d = sepAxis.intervalMTV(sepAxis.project(c), sepAxis.project(this));
 			if (mtv1d == null) {
+///////
+//				this.setCollisionInfo(null);
+//				c.setCollisionInfo(null);	
 				return false;
 			}
 			if (Math.abs(mtv1d) < minMag) {
@@ -444,6 +458,9 @@ public class PolygonShape extends Shape {
 
 				//If ranges don't overlap on every axis, collision NOT detected
 				if (sepAxis.isOverlapping(arange, brange)==false) {
+///////
+//					this.setCollisionInfo(null);
+//					p.setCollisionInfo(null);	
 					return false;
 				}
 				

@@ -131,3 +131,156 @@ NPP_Shutdown : called
 NPP_GetValue is called
 NPP_GetValue is called
 NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_Initialize : called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_NewStream : called for instance 9226980, stream 92153b8, URL http://www.tinaja.com/glib/bezdist.pdf, stream size 18217, seekable 1
+NPP_Write : called for instance 9226980, stream 92153b8, offset = 0, length = 16384, streamlength = 18217
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 9226980, stream 92153b8, offset = 16384, length = 1833, streamlength = 18217
+Trying for window attributes
+Trying for query tree
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_SetWindow : called for instance 9226980
+Window from browser - 46137346
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_GetValue is called
+NPP_SetWindow : called for instance 92782b8
+Window from browser - 46137348
+NPP_SetWindow : called for instance 92782b8
+Window from browser - 46137348
+NPP_NewStream : called for instance 92782b8, stream 9278270, URL http://www.math.ucla.edu/~baker/149.1.02w/handouts/bb_bezier.pdf, stream size 136556, seekable 1
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 0, length = 13172, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 13172, length = 5392, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 18564, length = 8088, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 26652, length = 1348, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 28000, length = 1348, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 29348, length = 8088, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 37436, length = 16384, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 53820, length = 2488, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 56308, length = 5392, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 61700, length = 8088, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 69788, length = 2696, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 72484, length = 6740, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 79224, length = 16384, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 95608, length = 3836, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 99444, length = 2696, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 102140, length = 1348, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 103488, length = 4044, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 107532, length = 5392, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 112924, length = 6740, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 119664, length = 10784, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_Write : called for instance 92782b8, stream 9278270, offset = 130448, length = 6108, streamlength = 136556
+Trying for window attributes
+Trying for query tree
+NPP_SetWindow : called for instance 92782b8
+NPP_GetValue is called
+NPP_Destroy : called for instance 9283e38
+NPP_GetValue is called
+NPP_Destroy : called for instance 9275898
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 9226980
+NPP_SetWindow : called for instance 9226980
+NPP_SetWindow : called for instance 9226980
+NPP_SetWindow : called for instance 9226980
+NPP_SetWindow : called for instance 92782b8
+NPP_SetWindow : called for instance 92782b8
+NPP_GetValue is called
+NPP_Destroy : called for instance 92782c8
+NPP_GetValue is called
+NPP_Destroy : called for instance 9283dd0
+NPP_GetValue is called
+NPP_Destroy : called for instance 92782c8
+NPP_GetValue is called
+NPP_Destroy : called for instance 9283dd0
+NPP_GetValue is called
+NPP_Destroy : called for instance 92782c8
+NPP_GetValue is called
+NPP_Destroy : called for instance 9283dd0
+NPP_SetWindow : called for instance 92782b8
+NPP_DestroyStream : called for instance 92782b8 and stream 9278270
+NPP_Destroy : called for instance 92782b8
+NPP_SetWindow : called for instance 9226980
+NPP_SetWindow : called for instance 9226980
+NPP_SetWindow : called for instance 9226980
+NPP_SetWindow : called for instance 9226980
+NPP_DestroyStream : called for instance 9226980 and stream 92153b8
+NPP_Destroy : called for instance 9226980
+NPP_Shutdown : called
+
+
+

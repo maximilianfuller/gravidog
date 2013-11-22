@@ -184,17 +184,13 @@ public class PhysicsEntity extends MovingEntity {
 	 * x, y are almost never set together.*/
 	public void goalVelocityX(float vx) {		
 		float dV = vx - _vel.x;
-		if (Math.abs(_vel.x) < Math.abs(vx)) {		
-			Vec2f F = new Vec2f(dV*2.5f, 0);
-			this.applyForce(F, getCentroid());
-		}
+		Vec2f F = new Vec2f(dV*2.5f, 0);
+		this.applyForce(F, getCentroid());
 	}
 	public void goalVelocityY(float vy) {		
 		float dV = vy - _vel.y;
-		if (Math.abs(_vel.y) < Math.abs(vy)) {		
-			Vec2f F = new Vec2f(0, dV*2.5f);
-			this.applyForce(F, getCentroid());
-		}
+		Vec2f F = new Vec2f(0, dV*2.5f);
+		this.applyForce(F, getCentroid());
 	}
 
 	/*Bypass force and impulse to mutate velocity directly.*/
@@ -234,12 +230,13 @@ public class PhysicsEntity extends MovingEntity {
 	 * This does not override super's method, b/c takes
 	 * PhysicsEntity. Super's method called if MovingEntity
 	 * of different subclass is passed in, w/o collision response.*/
-	public boolean collides(PhysicsEntity s) {
-		boolean collision = super.collides(s);	
-		if (_isInteractive && s.isInteractive())
-			//////Shouldn't have to check if POI is null, because collision only works when vertex is contained by other shape
-			if (collision && s.getShape().poi(getShape()) != null) 
-				this.collisionResponse(s);	
+	public boolean collides(PhysicsEntity other) {
+		boolean collision = super.collides(other);  
+		if (_isInteractive && other.isInteractive()) {
+			if (collision && other.getShape().poi(getShape()) != null) {
+				this.collisionResponse(other);	
+			}
+		}
 		return collision;
 	}
 

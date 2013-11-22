@@ -19,7 +19,6 @@ import miweinst.engine.Tuple;
 import miweinst.engine.beziercurve.BezierCurveEntity;
 import miweinst.engine.contraints.PinEntity;
 import miweinst.engine.contraints.SpringEntity;
-import miweinst.engine.beziercurve.BezierCurveEntity;
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
@@ -29,7 +28,6 @@ import miweinst.engine.gfx.shape.PolygonShape;
 import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.graph.HashDecorator;
 import miweinst.engine.screen.Viewport;
-import miweinst.engine.tester.TestCollisionVisualizer;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.RelayEntity;
@@ -56,13 +54,13 @@ public class MWorld extends GameWorld {
 
         //Player movement using boolean state array
         private boolean[] _arrowKeyStates;
-        private boolean _jumping;
+//        private boolean _jumping;
         //Lazor visualization for raycasting
         private Path2D.Float _lazor;
         private Vec2f _currMouseLoc;
         private boolean _lazorBool;
         private Vec2f _deltaPlayerPos;
-        
+//        private boolean _jumping;
 ////////
 //        private TestCollisionVisualizer _testVisualizer;
         
@@ -79,25 +77,10 @@ public class MWorld extends GameWorld {
                 _app = app;
                 //Initialize Player to avoid NullPointer, in case not instantiated in level editor
                 _player = new Player(this);
-                
-
-                Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
-                PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
-                pin.setMass(1f);
-                this.addEntity(pin);
-                
-                Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
-                SpringEntity spring = new SpringEntity(this, springEntityShape);
-                spring.setMass(1f);
-                spring.setSpringConstant(100f);
-                spring.setFrictionConstant(1f);
-                this.addEntity(spring);
-
+               
                 //Key code order: Left(37), Up(38), Right(39), Down(40)
                 _arrowKeyStates = new boolean[4];
                 for (int i=0; i<_arrowKeyStates.length; i++) _arrowKeyStates[i]=false;
-                //Avoids keyRepeat on jumping, i.e. so impulse not applied multiple times for one MTV
-                _jumping = false;
                 _currMouseLoc = null;
                 _lazorBool = false;
 
@@ -224,9 +207,22 @@ public class MWorld extends GameWorld {
                 }
                 else
                         System.err.println("Level is null! MWorld()");
+/////////////////^^^^^^^^^^                
+        
+                Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
+                PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
+                pin.setMass(1f);
+                this.addEntity(pin);
+                
+                Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+                SpringEntity spring = new SpringEntity(this, springEntityShape);
+                spring.setMass(1f);
+                spring.setSpringConstant(100f);
+                spring.setFrictionConstant(1f);
+                this.addEntity(spring);
                 
                 //Get initial distance of Player from screen origin (game units) to maintain panning onTick
-                _deltaPlayerPos = new Vec2f(_player.getX() - super._viewport.getScreenInGameLoc().x, _player.getY() - super._viewport.getScreenInGameLoc().y);
+                _deltaPlayerPos = new Vec2f(_player.getX() - super.viewport.getScreenInGameLoc().x, _player.getY() - super.viewport.getScreenInGameLoc().y);
         
                 //Restore save_data
                 _player.doRead.run(FileIO.read());
@@ -252,45 +248,35 @@ public class MWorld extends GameWorld {
          * based on boolean state array mutated in onKeyPressed.*/
         @Override
         public void onTick(long nanosSincePreviousTick) {
-                super.onTick(nanosSincePreviousTick);
-                long nanos = nanosSincePreviousTick/super.getIterations();
-                for (int i=1; i<=super.getIterations(); i++) {
-                        //Conditions by array of boolean key states
-                        //Left key down
-                        if (_arrowKeyStates[0]) {
-                                _player.goalVelocityX(-100);
-                        }
-                        //Up key down
-                        if (_arrowKeyStates[1]) {
-                                if (_player.isStable()) {
-                                        if (_jumping == false) {
-                                                _player.applyImpulse(new Vec2f(0, 45), _player.getCentroid());
-                                                _jumping = true;
-                                        }
-                                }
-                        }
-                        //Right key down
-                        if (_arrowKeyStates[2]) {
-                                _player.goalVelocityX(100);        
-                        }
-                        //Down key down
-                        if (_arrowKeyStates[3]) 
-                                _player.goalVelocityY(-140);                
-                        //Reset Jumping variable if stable on ground
-                        if (_player.isStable()==false) 
-                                if (_player.getLastMTV() != null) 
-                                        if (Math.abs(_player.getLastMTV().x) < Math.abs(_player.getLastMTV().y)) 
-                                                _jumping = false;        
-                        
-                        //Move camera to keep _player on screen; delta b/w locations before/after move
-                        if (_deltaPlayerPos != null) {
-                                float x = _player.getLocation().x - super._viewport.getScreenInGameLoc().x;
-                                float y = _player.getLocation().y - super._viewport.getScreenInGameLoc().y;
-                                if (super._viewport.isMathCoordinateSystem())
-                                        y = super._viewport.getScreenSize().y/super.getScale() - _player.getLocation().y - super._viewport.getScreenInGameLoc().y;
-                                super._viewport.pan(x - _deltaPlayerPos.x, y - _deltaPlayerPos.y);
-                        }
-                }
+        	super.onTick(nanosSincePreviousTick);
+//        	long nanos = nanosSincePreviousTick/super.getIterations();
+        	for (int i=1; i<=super.getIterations(); i++) {
+        		//Conditions by array of boolean key states
+        		//Left key down
+        		if (_arrowKeyStates[0]) {
+        			_player.goalVelocityX(-100);
+        		}
+        		//Up key down
+        		if (_arrowKeyStates[1]) {
+        			_player.jump();
+        		}
+        		//Right key down
+        		if (_arrowKeyStates[2]) {
+        			_player.goalVelocityX(100);        
+        		}
+        		//Down key down
+        		if (_arrowKeyStates[3]) 
+        			_player.goalVelocityY(-140);           
+
+        		//Move camera to keep _player on screen; delta b/w locations before/after move
+        		if (_deltaPlayerPos != null) {
+        			float x = _player.getLocation().x - super.viewport.getScreenInGameLoc().x;
+        			float y = _player.getLocation().y - super.viewport.getScreenInGameLoc().y;
+        			if (super.viewport.isMathCoordinateSystem())
+        				y = super.viewport.getScreenSize().y/super.getScale() - _player.getLocation().y - super.viewport.getScreenInGameLoc().y;
+        			super.viewport.pan(x - _deltaPlayerPos.x, y - _deltaPlayerPos.y);
+        		}
+        	}
 /////
 //                _testVisualizer.onTick(nanos);
         }
@@ -375,7 +361,7 @@ public class MWorld extends GameWorld {
         public void onMousePressed(MouseEvent e) {
                 //convert loc to Game Units, switch y if math coordinates
                 Vec2f toUnits = super.toUnits(new Vec2f(e.getX(), e.getY()));
-                if (super._viewport.isMathCoordinateSystem())
+                if (super.viewport.isMathCoordinateSystem())
                         toUnits = new Vec2f(toUnits.x, super.getViewportDimensions().y/super.getScale() - toUnits.y);
                 //Left click
                 if (SwingUtilities.isLeftMouseButton(e)) {
@@ -420,7 +406,7 @@ public class MWorld extends GameWorld {
         }
         public void onMouseMoved(MouseEvent e) {
                 Vec2f toUnits = super.toUnits(new Vec2f(e.getX(), e.getY()));
-                if (super._viewport.isMathCoordinateSystem())
+                if (super.viewport.isMathCoordinateSystem())
                         toUnits = new Vec2f(toUnits.x, super.getViewportDimensions().y/super.getScale()-toUnits.y);
                 _currMouseLoc = toUnits;
         }

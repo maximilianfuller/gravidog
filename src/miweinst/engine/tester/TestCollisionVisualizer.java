@@ -2,6 +2,7 @@ package miweinst.engine.tester;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.Random;
 
 import miweinst.engine.beziercurve.CubicBezierCurve;
@@ -34,7 +35,7 @@ public class TestCollisionVisualizer {
 	private TestEntity[] _testArr;
 	
 	private boolean _showPoi;
-	private CircleShape _poi;
+	private ArrayList<CircleShape> _pois;
 	
 	private Vec2f _mouseLast;
 	private int _currIndex;
@@ -42,8 +43,7 @@ public class TestCollisionVisualizer {
 	public TestCollisionVisualizer(GameWorld world) {
 		
 /////
-		_poi = new CircleShape(new Vec2f(0, 0), 1);
-		_poi.setColor(Color.BLACK);
+		_pois = new ArrayList<CircleShape>();
 		_showPoi = false;
 
 		_testCircle = new TestEntity(world, "circle");
@@ -88,7 +88,7 @@ public class TestCollisionVisualizer {
 						Vec2f poi = _testArr[i].getShape().poi(_testArr[j].getShape());
 						if (poi != null) {
 							_showPoi = true;
-							_poi = new CircleShape(poi, .85f);
+							_pois.add(new CircleShape(poi, .4f));
 						}
 						else {
 							_showPoi = false;
@@ -145,10 +145,10 @@ public class TestCollisionVisualizer {
 		PhysicsEntity[] testarr = toArr();
 		for (int i=0; i<testarr.length; i++)
 			testarr[i].draw(g);
-		_showPoi = false;
-		if (_showPoi) {
-			_poi.draw(g);
-		}
+//		_showPoi = false;
+		if (_showPoi) 
+			for (CircleShape poi: _pois) 
+				poi.draw(g);
 	}
 
 /**This is an inner class in order to use Visualizer with
@@ -180,7 +180,7 @@ private class TestEntity extends PhysicsEntity {
 			square.setBorderWidth(0);
 //			test_shape = square;
 		} else if (shape == "rect") {
-			Vec2f rectloc  = new Vec2f(42, 20);
+			Vec2f rectloc  = new Vec2f(42, 10);
 			Vec2f rectdim = new Vec2f(7, 4);
 			PolygonShape rect = new AARectShape(rectloc, rectdim).rectToPoly();
 			rect.setColor(Color.GREEN);
@@ -218,7 +218,7 @@ private class TestEntity extends PhysicsEntity {
 		} else if (shape == "curve") {
 			CubicBezierCurve curve = new CubicBezierCurve
 					(new Vec2f(35, 40), new Vec2f(45.5f, 63), 
-							new Vec2f(40, 22), new Vec2f(70, 40.6f));
+							new Vec2f(40, 22), new Vec2f(80, 55.6f));
 			curve.setBorderColor(Color.BLACK);
 			curve.setBorderWidth(.5f);
 //			curve.rotate(curve.start, 5);
@@ -232,6 +232,7 @@ private class TestEntity extends PhysicsEntity {
 /////
 //		this.setInteractive(false);
 		super.setShape(test_shape);
-	}	
+	}
 }
 }
+
