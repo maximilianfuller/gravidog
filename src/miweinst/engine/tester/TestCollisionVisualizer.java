@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Random;
 
+import miweinst.engine.beziercurve.BezierPath;
 import miweinst.engine.beziercurve.CubicBezierCurve;
 import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.gfx.shape.CircleShape;
@@ -32,6 +33,7 @@ import cs195n.Vec2f;
 public class TestCollisionVisualizer {
 	
 	private TestEntity _testCircle, _testRect, _testPolygonA, _testPolygonB, _testCurve;
+	private TestEntity _closedBezier;
 	private TestEntity[] _testArr;
 	
 	private boolean _showPoi;
@@ -53,8 +55,9 @@ public class TestCollisionVisualizer {
 		_testPolygonA = new TestEntity(world, "polygonA");
 		_testPolygonB = new TestEntity(world, "polygonB");
 		_testCurve = new TestEntity(world, "curve");
+		_closedBezier = new TestEntity(world, "closed bezier");
 		
-		_testArr = new TestEntity[5];
+		_testArr = new TestEntity[6];
 		_testArr[0] = _testCircle; 
 //		_testArr[1] = _testSquare; 
 		_testArr[1] = _testRect;
@@ -62,6 +65,7 @@ public class TestCollisionVisualizer {
 		_testArr[2] = _testPolygonA;
 		_testArr[3] = _testCurve;
 		_testArr[4] = _testPolygonB;
+		_testArr[5] = _closedBezier;
 	}
 	
 	//Returns all shapes
@@ -97,7 +101,7 @@ public class TestCollisionVisualizer {
 				}
 			}
 //////		GRAVITY
-			_testArr[i].onTick(nanos);
+//			_testArr[i].onTick(nanos);
 		}
 
 //////	TESTER FOR ONLY CHECKING ONE SHAPE AGAINST THE OTHER
@@ -105,9 +109,6 @@ public class TestCollisionVisualizer {
 			_testArr[2].setShapeColor(new Color(r,g,b));
 			_testArr[3].setShapeColor(new Color(r,g,b));
 		}*/
-		//Gravity
-/*		_testArr[0].onTick(nanos);
-		_testArr[3].onTick(nanos);*/
 ////^^^	
 				
 	}
@@ -122,8 +123,8 @@ public class TestCollisionVisualizer {
 			if (arr[i].contains(e)) {
 				inShape = true;
 				_currIndex = i;
-/////
-//				System.out.println("Shape Color: " + arr[i].getShapeColor() + " (TestCollisionVisualizer.onMousePressed)");
+/////		If you want to find cool colors, prints randomized color
+				System.out.println("Shape Color: " + arr[i].getShapeColor() + " (TestCollisionVisualizer.onMousePressed)");
 			}
 		}
 		//If pressing outside of Shape, no selected shape
@@ -228,6 +229,20 @@ private class TestEntity extends PhysicsEntity {
 			this.setStatic(true);
 			this.setRestitution(0);
 			this.setMass(1);
+		} else if (shape == "closed bezier") {
+			Vec2f[] knots = new Vec2f[4];
+			knots[0] = new Vec2f(100, 75);
+			knots[1] = new Vec2f(150, 50);
+			knots[2] = new Vec2f(100, 25);
+			knots[3] = new Vec2f(50, 50);
+			ArrayList<Vec2f> firstControls = new ArrayList<Vec2f>(knots.length);
+			ArrayList<Vec2f> secondControls = new ArrayList<Vec2f>(knots.length);
+			BezierPath closedCurve = CubicBezierCurve.generateClosedCurve(knots, firstControls, secondControls);
+			
+			test_shape = closedCurve;
+			this.setStatic(true);
+			this.setRestitution(0);
+			this.setMass(1);;
 		}
 /////
 //		this.setInteractive(false);

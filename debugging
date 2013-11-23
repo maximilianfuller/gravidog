@@ -2,8 +2,10 @@
 
 
 BUG: Fix zoom
-BUG: Curve collision only works in one direction
+BUG: Curve collision only works in one direction (only for Polygons; no problem with Circles)
 	- Fix or find workaround
+
+BUG: Polygon-Curve collisions funky when ClosedBezierCurve is lopsided (i.e. not a Circle/Ellipse)
 
 BUG: Collisions only getting called in one direction, if you extend functionality of collides (i.e. Player for jumping) it might never actually get called. Could change PhysicsEntity so it's not calling other.getShape().collides but rather calling other.collides().
 	- Buuuut for now we can just make sure the Player is added to beginning of list...

@@ -1,0 +1,447 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY>
+
+<P>
+Parallel Java 2 (PJ2) is
+an API and middleware for parallel programming in 100% Java
+on shared memory multiprocessor (SMP) parallel computers,
+cluster parallel computers,
+and hybrid SMP cluster parallel computers.
+PJ2 was developed by Professor Alan Kaminsky
+in the Department of Computer Science
+at the Rochester Institute of Technology.
+
+<P>
+I am happy to answer general questions about the Parallel Java 2 Library,
+receive bug reports,
+and entertain requests for additional features.
+Please contact me by email at
+ark<FONT SIZE="1" COLOR="#FFFFFF">&shy;</FONT>&#64;<FONT SIZE="1" COLOR="#FFFFFF">&shy;</FONT>cs.rit.edu.
+I regret that I am unable to provide technical support,
+specific installation instructions for your system,
+or advice about configuring your parallel computer hardware.
+
+<P>
+<A HREF="#requirements">System Requirements</A>
+<BR><A HREF="#installation">Installation</A>
+<BR><A HREF="#usage">Usage</A>
+<BR><A HREF="#programming">Parallel Programming with PJ2</A>
+<BR><A HREF="#license">License</A>
+<BR><A HREF="#history">Revision History</A>
+
+<P>
+<HR>
+<A NAME="requirements"><H2>System Requirements</H2></A>
+
+<P>
+PJ2 was developed using
+Java Development Kit (JDK) 1.7.
+When compiling and running PJ2 programs,
+you must use JDK 1.7.
+PJ2 uses features of the Java language and platform
+introduced in JDK 1.7
+and will not compile with earlier JDK versions.
+
+<P>
+<HR>
+<A NAME="installation"><H2>Installation</H2></A>
+
+<P>
+There are two versions of the PJ2 distribution,
+an executable distribution
+and a source distribution.
+
+<P>
+<B>Executable distribution.</B>
+The executable distribution comes in a Java Archive (JAR) file
+named <TT>"pj2_<I>YYYYMMDD</I>.jar"</TT>,
+where <I>YYYYMMDD</I> are the year, month, and date.
+The executable distribution includes the PJ2 class files only.
+To install the executable distribution,
+simply store the JAR file somewhere.
+You may wish to change the file name,
+say to <TT>"pj2.jar"</TT>.
+
+<P>
+<B>Source distribution.</B>
+The source distribution comes in a Java Archive (JAR) file
+named <TT>"pj2src_<I>YYYYMMDD</I>.jar"</TT>,
+where <I>YYYYMMDD</I> are the year, month, and date.
+The source distribution includes the PJ2 class files,
+source files, and documentation files (Javadoc).
+To install the source distribution,
+just unpack the JAR file.
+The source distribution expands into a subdirectory
+named <TT>"pj2"</TT>.
+If you already have a subdirectory of that name
+which you want to save,
+be sure to unpack the JAR file
+in some other directory.
+Documentation is stored under the directory
+<TT>"pj2/doc"</TT>;
+point your HTML browser to that directory.
+Java source files and class files
+are stored under the directory
+<TT>"pj2/lib"</TT>.
+
+<P>
+<B>Installation on a SMP computer.</B>
+To run PJ2 programs on a shared memory multiprocessor (SMP) parallel computer,
+no further installation is required.
+
+<P>
+<B>Installation on a cluster.</B>
+To run PJ2 programs on a cluster parallel computer,
+on a computing grid, or in the cloud,
+in addition to installing the PJ2 JAR file,
+you must configure and run certain daemon processes
+on the frontend and backend processors of the cluster.
+For further information, see package
+<A HREF="edu/rit/pj2/tracker/package-summary.html">edu.rit.pj2.tracker</A>.
+
+<P>
+<HR>
+<A NAME="usage"><H2>Usage</H2></A>
+
+<P>
+<B>Executable distribution.</B>
+When compiling and executing Java programs
+that use PJ2,
+if you have installed the executable distribution,
+you must set your classpath
+to include the PJ2 JAR file.
+Here is an example of a command for the <TT>bash</TT> shell
+to set the classpath to the current directory
+plus the PJ2 JAR file:
+
+<P>
+<TT>export&nbsp;CLASSPATH=.:/home/fac/ark/public_html/pj2.jar</TT>
+
+<P>
+Here is an example of a command for the <TT>csh</TT> shell
+to set the classpath to the current directory
+plus the PJ2 JAR file:
+
+<P>
+<TT>setenv&nbsp;CLASSPATH&nbsp;.:/home/fac/ark/public_html/pj2.jar</TT>
+
+<P>
+<B>Source distribution.</B>
+When compiling and executing Java programs
+that use PJ2,
+if you have installed the source distribution,
+you must set your classpath
+to include the top-level directory
+under which PJ2's Java class files are stored.
+Here is an example of a command for the <TT>bash</TT> shell
+to set the classpath to the current directory
+plus the PJ2 directory:
+
+<P>
+<TT>export&nbsp;CLASSPATH=.:/home/fac/ark/public_html/pj2/lib</TT>
+
+<P>
+Here is an example of a command for the <TT>csh</TT> shell
+to set the classpath to the current directory
+plus the PJ2 directory:
+
+<P>
+<TT>setenv&nbsp;CLASSPATH&nbsp;.:/home/fac/ark/public_html/pj2/lib</TT>
+
+<P>
+<HR>
+<A NAME="programming"><H2>Parallel Programming with PJ2</H2></A>
+
+<OL TYPE=1>
+<P><LI>
+Install PJ2 as described above.
+<P><LI>
+Set the Java classpath as described above.
+<P><LI>
+Read the documentation for the PJ2 classes. Start with these:
+<BR>&mdash; Package <A HREF="edu/rit/pj2/package-summary.html">edu.rit.pj2</A>
+<BR>&mdash; PJ2 launcher program, <A HREF="pj2.html"><TT>pj2</TT></A>
+<BR>&mdash; Class <A HREF="edu/rit/pj2/Task.html">edu.rit.pj2.Task</A>
+<BR>&mdash; Class <A HREF="edu/rit/pj2/Job.html">edu.rit.pj2.Job</A>
+<P><LI>
+Study and run the example programs in package
+<A HREF="edu/rit/pj2/example/package-summary.html">edu.rit.pj2.example</A>.
+<P><LI>
+Write and run your own PJ2 programs!
+</OL>
+
+<P>
+<HR>
+<A NAME="license"><H2>License</H2></A>
+
+<P>
+The documentation files, Java source files, and Java class files
+in the Parallel Java 2 Library
+("PJ2")
+are copyright &copy; 2013
+by Alan Kaminsky.
+All rights reserved.
+For further information, contact the author, Alan Kaminsky,
+at ark<FONT SIZE="1" COLOR="\#FFFFFF">&shy;</FONT>&#64;<FONT SIZE="1" COLOR="\#FFFFFF">&shy;</FONT>cs.rit.edu.
+<P>
+PJ2 is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation;
+either version 3 of the License, or (at your option) any later version.
+<P>
+PJ2 is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+<P>
+A copy of the GNU General Public License
+is provided in the file <A HREF="doc-files/gpl.txt"><TT>gpl.txt</TT></A>.
+You may also obtain a copy of the GNU General Public License
+on the World Wide Web at
+<A HREF="http://www.gnu.org/licenses/gpl.html" TARGET="_top">http://www.gnu.org/licenses/gpl.html</A>.
+
+<P>
+<HR>
+<A NAME="history"><H2>Revision History</H2></A>
+
+<DL COMPACT>
+
+<P><DT>21-Nov-2013
+<DD>
+In package edu.rit.pjmr:
+Changed the reducer task
+to optionally sort the (key, value) pairs
+before reducing them;
+this is specified by the <TT>comesBefore()</TT> method
+of class Customizer.
+Changed the example PJMR map-reduce programs
+in package edu.rit.pjmr.example
+to use the new capability.
+
+<P><DT>20-Nov-2013
+<DD>
+Fixed several bugs in package edu.rit.pjmr.
+Added more example PJMR map-reduce programs
+in package edu.rit.pjmr.example.
+
+<P><DT>19-Nov-2013
+<DD>
+Added the Parallel Java Map Reduce Framework (PJMR),
+a simple parallel map-reduce framework
+built on top of Parallel Java 2,
+in package edu.rit.pjmr.
+Added example PJMR map-reduce programs
+in package edu.rit.pjmr.example.
+<P>
+In package edu.rit.pj2:
+The parallel for loop body classes were refactored.
+Class Loop is the body for an integer parallel for loop;
+class LongLoop is the body for a long integer parallel for loop;
+class ObjectLoop is the body for an iterator parallel for loop;
+these all extend a common LoopBody base class.
+This change improves the compile time type safety
+of the loop body classes
+and eliminates a bug
+where the iterator parallel for loop body's <TT>run()</TT> method
+could not be overridden properly.
+However,
+this requires changing programs
+with long integer parallel for loops
+to use class LongLoop instead of class Loop,
+and changing programs
+with iterator parallel for loops
+to use class ObjectLoop instead of class Loop.
+Also,
+made the <TT>threadLocal()</TT> method a generic method;
+this eliminates the need to downcast the return value.
+<P>
+In package edu.rit.pj2:
+Changed all the shared variable classes
+to extend class Tuple
+and to define the <TT>toString()</TT> method.
+Added class StringVbl.
+Added the <TT>parallelDo(int,Section)</TT> method
+to class Task;
+this executes a number of copies of the same section in parallel.
+<P>
+In package edu.rit.io:
+Added class SerializedObject.
+In package edu.rit.pj2.tracker:
+Changed the backend, job, launcher, and tracker sender and receiver classes
+to use DataInputStream and DataOutputStream with class SerializedObject,
+rather than ObjectInputStream and ObjectOutputStream.
+This fixed an intermittent bug
+where an end-of-file was encountered
+in the middle of a message.
+However,
+the message format is now incompatible
+with earlier versions of the Library.
+
+<P><DT>29-Oct-2013
+<DD>
+Fixed a bug in class edu.rit.pj2.tracker.JobSender;
+the methods were not all properly synchronized.
+
+<P><DT>24-Oct-2013
+<DD>
+Fixed a bug in class edu.rit.pj2.TupleSpace;
+removal of tuples did not work properly
+if the same tuple object was put into tuple space multiple times
+(which is allowed).
+Thank you to Pankaj Deshmukh for discovering the bug.
+
+<P><DT>06-Oct-2013
+<DD>
+In the <TT>pj2</TT> program,
+added the <TT>timelimit</TT> parameter.
+In class edu.rit.pj2.Job,
+added the <TT>timeLimit()</TT> method.
+
+<P><DT>05-Oct-2013
+<DD>
+In class edu.rit.pj2.Debug:
+Added the <TT>makespan</TT> debug printout.
+<P>
+In package edu.rit.pj2.example:
+Changed class PiClu to a hybrid parallel program.
+Added classes BCAClu, BCASmp, and TotientClu.
+<P>
+In class edu.rit.pj2.Tracker:
+Added the time each job has spent waiting or running
+on the Tracker's web interface summary page.
+
+<P><DT>19-Sep-2013
+<DD>
+In class edu.rit.pj2.Loop:
+Made the <TT>threadLocal()</TT> method a generic method;
+this eliminates the need to downcast the return value.
+Thank you to Matthew Fluet for suggesting this change.
+<P>
+In package edu.rit.pj2.example:
+Added class MineCoinClu3.
+
+<P><DT>13-Sep-2013
+<DD>
+In class edu.rit.pj2.Task:
+Changed the names of the methods that take tuples out of tuple space;
+they are now called <TT>takeTuple()</TT> and <TT>tryToTakeTuple()</TT>.
+Added methods that read tuples without taking them out of tuple space;
+they are called <TT>readTuple()</TT> and <TT>tryToReadTuple()</TT>.
+<P>
+In package edu.rit.pj2:
+Changed class Vbl to an interface.
+Eliminated class ObjectVbl;
+to do parallel reduction on an object,
+write a class that implements interface Vbl.
+This change eliminates a layer of indirection
+and simplifies programs involving parallel reduction on objects.
+
+<P><DT>02-Sep-2013
+<DD>
+In package edu.rit.pj2:
+Fixed a bug in class Job;
+tuple take requests were not processed properly
+in all cases.
+Fixed a bug in class Tuple;
+a null field was not printed properly.
+
+<P><DT>30-Aug-2013
+<DD>
+In package edu.rit.pj2:
+In class Task:
+Added the non-blocking <TT>tryToGetTuple()</TT> method.
+<P>
+In package edu.rit.util:
+In class Packing:
+Added methods to pack and unpack
+short integers to integers,
+short integers to long integers,
+and integers to long integers.
+
+<P><DT>12-Aug-2013
+<DD>
+In class edu.rit.draw.item.Arrow:
+Added the ability to specify the arrow width.
+<P>
+In package edu.rit.crypto:
+Added classes/interfaces CipherInputStream, CipherOutputStream,
+RC4, and StreamCipher.
+<P>
+In package edu.rit.pj2:
+In class Job:
+Fixed a bug;
+printouts on the standard output or standard error
+from tasks in other nodes
+were not synchronized properly.
+In class Task:
+Changed the <TT>putTuple(int,Tuple)</TT> method;
+the number of copies is now the first argument.
+<P>
+In package edu.rit.swing:
+Added a "PNG Setup" dialog to class DisplayableFrame
+that lets the user specify scale factor and resolution
+when saving a PNG file.
+As a consequence,
+the View program (in the unnamed package)
+now writes PNG files
+with a user-selectable scale factor and resolution.
+
+<P><DT>19-Jul-2013
+<DD>
+In package edu.rit.util:
+Added classes/interfaces
+LongAction,
+LongActionResult,
+LongList,
+and LongPredicate.
+<P>
+In package edu.rit.image:
+Added the ability
+to specify the physical pixel dimensions
+in the PNG image writer classes.
+<P>
+In class edu.rit.swing.DisplayableIO:
+Added the ability
+to specify the physical pixel dimensions
+in the PNG image writing methods.
+As a consequence,
+the View program (in the unnamed package)
+now writes PNG files
+at a resolution of 300&times;300 pixels per inch.
+<P>
+Added package edu.rit.crypto
+with classes/interfaces
+HashFunction
+and SHA256.
+<P>
+In package edu.rit.pj2:
+Added class TerminateException.
+Code in a job or task must not call <TT>System.exit()</TT>;
+rather, it should throw a TerminateException
+or another runtime exception
+to terminate the program.
+<P>
+In package edu.rit.pj2.example:
+Changed the Totient programs to use class LongList.
+Changed the MineCoin programs to use class SHA256.
+Changed all the programs to exit by throwing an IllegalArgumentException
+if the command line arguments are bad.
+<P>
+In package edu.rit.pj2.tracker:
+Changed class Launcher;
+the command that launches the JVM
+can now include arguments after the command name.
+
+<P><DT>12-Jul-2013
+<DD>
+The initial version of PJ2 was released.
+This version supports tightly coupled multicore parallel programming
+(class <A HREF="edu/rit/pj2/Task.html">edu.rit.pj2.Task</A>)
+and loosely coupled cluster parallel programming
+(class <A HREF="edu/rit/pj2/Job.html">edu.rit.pj2.Job</A>).
+
+</DL>
+
+</BODY>
+</HTML>

@@ -7,8 +7,8 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import cs195n.Vec2f;
 import miweinst.engine.gfx.shape.Shape;
+import cs195n.Vec2f;
 
 
 public class Text {

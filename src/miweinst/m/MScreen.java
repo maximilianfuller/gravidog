@@ -3,6 +3,7 @@ package miweinst.m;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -33,12 +34,7 @@ public class MScreen extends Screen {
 		_mText.setFont(mFont, false);
 		_mText.setFontSize(400);
 		_mText.centerTextHorizontal();
-		
-////SYSTEM FONTS
-/*		String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-		for (int i=0; i<fonts.length; i++) {
-			System.out.println(fonts[i]);
-		}*/	
+	
 	}
 	
 	/*Sets bgcolor of all screens in M*/

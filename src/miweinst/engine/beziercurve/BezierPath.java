@@ -30,7 +30,7 @@ public class BezierPath extends Shape {
 		_segs = getDrawingSegments();
 		_curves = new ArrayList<CubicBezierCurve>();
 		_lastCurve = null;
-		_drawDots = new ArrayList<CircleShape>();
+		_drawDots = new ArrayList<CircleShape>();		
 	}
 	public BezierPath(ArrayList<Vec2f> points) {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));
@@ -39,13 +39,19 @@ public class BezierPath extends Shape {
 		_curves = new ArrayList<CubicBezierCurve>();
 		
 		_drawDots = new ArrayList<CircleShape>();
+		for (int i=0; i<points.size(); i++) {
+			CircleShape circle = new CircleShape(points.get(i), .5f);
+			circle.setColor(Color.BLACK);
+			_drawDots.add(circle);
+		}
+		updateSegs();
 	}
 	
 	public void addPoint(Vec2f pt) {
 		_pts.add(pt);
 		updateSegs();
 ///////		
-		CircleShape circle = new CircleShape(pt, .5f);
+		CircleShape circle = new CircleShape(pt, 1f);
 		circle.setColor(Color.BLACK);
 		_drawDots.add(circle);
 	}
@@ -89,12 +95,12 @@ public class BezierPath extends Shape {
 			curve.draw(g);
 		}*/
 /////
-/*		for (CircleShape dot: _drawDots) {
+		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
-		}*/
+		}		
 	}
 	@Override
-	public boolean collides(Shape s) {
+	public boolean collides(Shape s) {	
 		//Optimizes by checking curve of last collision first.
 		if (_lastCurve != null) {
 			if (s.collides(_lastCurve)) {
