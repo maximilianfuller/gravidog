@@ -31,7 +31,7 @@ public class MainMenuScreen extends GravidogScreen {
 		_background.setColor(new Color(185, 185, 185));
 
 		String s = "GRAVI-DOG";
-		_textOne = new Text(_background, s, new Vec2f(d.x/12f, d.y*3/5));
+		_textOne = new Text(_background, s, new Vec2f(d.x/4f, d.y*3/5));
 		_textTwo = new Text(_background, s, _textOne.getLocation().plus(55, -55));
 		_textThree = new Text(_background, s, _textOne.getLocation().plus(-55, 55));
 		_textOne.setVisible(true);
@@ -42,9 +42,9 @@ public class MainMenuScreen extends GravidogScreen {
 		_textTwo.setFont(new Font("Walshes", Font.ROMAN_BASELINE, 100), false);
 		_textThree.setFont(new Font("Walshes", Font.ROMAN_BASELINE, 100), false);
 		//FONTS SIZE!
-		_textOne.setFontSize(250);
-		_textTwo.setFontSize(250);
-		_textThree.setFontSize(250);
+		_textOne.setFontSize(150);
+		_textTwo.setFontSize(150);
+		_textThree.setFontSize(150);
 		//FONTS COLORS!
 		_textThree.setColor(new Color(47, 125, 147, 255));
 		_textOne.setColor(new Color(47, 125, 147, 130));

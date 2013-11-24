@@ -225,7 +225,7 @@ private class TestEntity extends PhysicsEntity {
 //			curve.rotate(curve.start, 5);
 			curve.translate(new Vec2f(-8, 0));
 			test_shape = curve;
-//////
+
 			this.setStatic(true);
 			this.setRestitution(0);
 			this.setMass(1);
@@ -237,15 +237,14 @@ private class TestEntity extends PhysicsEntity {
 			knots[3] = new Vec2f(50, 50);
 			ArrayList<Vec2f> firstControls = new ArrayList<Vec2f>(knots.length);
 			ArrayList<Vec2f> secondControls = new ArrayList<Vec2f>(knots.length);
-			BezierPath closedCurve = CubicBezierCurve.generateClosedCurve(knots, firstControls, secondControls);
+			BezierPath closedCurve = BezierPath.generateClosedCurve(knots, firstControls, secondControls);
 			
 			test_shape = closedCurve;
 			this.setStatic(true);
 			this.setRestitution(0);
 			this.setMass(1);;
 		}
-/////
-//		this.setInteractive(false);
+
 		super.setShape(test_shape);
 	}
 }
