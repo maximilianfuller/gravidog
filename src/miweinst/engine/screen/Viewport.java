@@ -301,6 +301,7 @@ public class Viewport {
 	public void draw(Graphics2D g) {
 		//Updates transform in case scale or pxlGameLoc has changed with pan() or zoom()
 		this.updateTransform();
+
 		if (_gameWorld != null) {		
 			_screen.setDimensions(_screenDim);
 			_screen.draw(g);	

@@ -43,26 +43,16 @@ import cs195n.Vec2f;
 
 public class MWorld extends GameWorld {        
         public final String string = "MWorld";
-//        private ArrayList<PhysicsEntity> _shapes;
-//        private StaticBoundary[] _boundaries;
-        //Math-coordinate AffineTransform
-//        private AffineTransform _tx;
-//        private WhileSensorEntity _playerSensor;
-
+        
         private App _app;
         private Player _player;
-
         //Player movement using boolean state array
         private boolean[] _arrowKeyStates;
-//        private boolean _jumping;
         //Lazor visualization for raycasting
         private Path2D.Float _lazor;
         private Vec2f _currMouseLoc;
         private boolean _lazorBool;
         private Vec2f _deltaPlayerPos;
-//        private boolean _jumping;
-////////
-//        private TestCollisionVisualizer _testVisualizer;
         
         //Class.string mapped to instance of Class<?>
         private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
@@ -71,13 +61,9 @@ public class MWorld extends GameWorld {
 
         public MWorld(App app, Viewport viewport) {
                 super(app, viewport);
-/////
-//                _testVisualizer = new TestCollisionVisualizer(this);
-
                 _app = app;
                 //Initialize Player to avoid NullPointer, in case not instantiated in level editor
-                _player = new Player(this);
-               
+                _player = new Player(this);             
                 //Key code order: Left(37), Up(38), Right(39), Down(40)
                 _arrowKeyStates = new boolean[4];
                 for (int i=0; i<_arrowKeyStates.length; i++) _arrowKeyStates[i]=false;
@@ -209,7 +195,7 @@ public class MWorld extends GameWorld {
                 	System.err.println("Level is null! MWorld()");
 /////////////////^^^^^^^^^^                
                         
-                Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
+/*                Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
                 PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
                 pin.setMass(1f);
                 this.addEntity(pin);
@@ -219,7 +205,7 @@ public class MWorld extends GameWorld {
                 spring.setMass(1f);
                 spring.setSpringConstant(100f);
                 spring.setFrictionConstant(1f);
-                this.addEntity(spring);
+                this.addEntity(spring);*/
                 
                 //Get initial distance of Player from screen origin (game units) to maintain panning onTick
                 _deltaPlayerPos = new Vec2f(_player.getX() - super.viewport.getScreenInGameLoc().x, _player.getY() - super.viewport.getScreenInGameLoc().y);

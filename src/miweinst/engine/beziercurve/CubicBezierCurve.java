@@ -219,8 +219,7 @@ public class CubicBezierCurve extends BezierCurve {
 				minDist = dist;
 				t_val = t;
 			}
-		}
-		
+		}		
 		return t_val;
 	}
 	public Vec2f nearestPointOnCurve(Vec2f m) {

@@ -48,6 +48,10 @@ public class BezierPath extends Shape {
 		updateSegs();
 	}
 	
+	public ArrayList<CubicBezierCurve> getCurves() {
+		return _curves;
+	}
+	
 	public void addPoint(Vec2f pt) {
 		_pts.add(pt);
 		updateSegs();
@@ -60,8 +64,9 @@ public class BezierPath extends Shape {
 		_segs = getDrawingSegments();
 	}
 	
-	/*Populates a_ctrls and b_ctrls arrays. Creates a curve between each knot, so
-	 * returns BezierPath with n curves, and ~n*3 points*/
+	/* Creates a curve between each knot, so returns 
+	 * BezierPath with n curves, and ~n*3 points. 
+	 * Populates a_ctrls and b_ctrls arrays. */
 	public static BezierPath generateClosedCurve(Vec2f[] knots, ArrayList<Vec2f> a_ctrls, 
 											ArrayList<Vec2f> b_ctrls) {
 		int n = knots.length;
@@ -99,8 +104,6 @@ public class BezierPath extends Shape {
 		double[] y = new double[n];
 		Tridiagonal.solveCyclic(d, e, f, rhs, y);
 		
-//		a_ctrls = new ArrayList<Vec2f>(n);
-//		b_ctrls = new ArrayList<Vec2f>(n);	
 		for (int i=0; i<n; i++) {
 			//First controls
 			a_ctrls.add(i, new Vec2f((float)x[i], (float)y[i]));
@@ -126,9 +129,12 @@ public class BezierPath extends Shape {
 			}
 		}
 		BezierPath path = new BezierPath(orderedPoints);
+		System.out.println(path.getCurves().size());
 		return path;
 	}
 	
+	
+	/*Return LineSegments for drawing.*/
 	public ArrayList<LineSegment> getDrawingSegments() {
 		float resolution = 100;
 		ArrayList<Vec2f> drawingPoints = new ArrayList<Vec2f>();
@@ -165,9 +171,9 @@ public class BezierPath extends Shape {
 			curve.draw(g);
 		}*/
 /////
-		for (CircleShape dot: _drawDots) {
+/*		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
-		}		
+		}*/
 	}
 	@Override
 	public boolean collides(Shape s) {	
