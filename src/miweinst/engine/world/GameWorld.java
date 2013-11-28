@@ -42,12 +42,12 @@ public class GameWorld {
 		_entities = new ArrayList<PhysicsEntity>();
 		
 		//Initialize timestep to 5 ms
-		_timestep = 2500000;
+		_timestep = 2000000;
 		_accumulatedTime = 0;
 		_iters = 1;
 	}
 	
-	/*For all Entities in world, do collision detection and 
+	/* For all Entities in world, do collision detection and 
 	 * onTick methods; iterations calculated by fixed timestep.*/
 	public void onTick(long nanosSincePreviousTick) {
 		_accumulatedTime += nanosSincePreviousTick; 

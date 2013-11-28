@@ -1,17 +1,17 @@
 
+
+BUG: Player disappears from curve after a bit (possibly has to do with time step?)
 BUG: Jumping is sticky on curves
-BUG: Knots between curves in BezierPath
-	- Fly out of the motherfucking shape
-	- Fucks with speed while holding left or right
 
+TODO: Make closestPointOnCurve faster!!
+	TRY?: Using RootBisection to find roots of equation for closestPointOnCurve. Just turn that dot product into a class that implements the Function class, with a method f that returns f(x) at a specified x. Then RootBisection should find roots using midpoint iterations. Returns root within a given interval (specified as a Bracket object)
 
-BUG: Curve collision only works in one direction (only for Polygons; no problem with Circles)
+BUG: Curve collision only works on one side of curves (only for Polygons; no problem with Circles)
 	- Fix or find workaround
 BUG: Collisions only getting called in one direction, if you extend functionality of collides (i.e. Player for jumping) it might never actually get called. Could change PhysicsEntity so it's not calling other.getShape().collides but rather calling other.collides().
 	- Buuuut for now we can just make sure the Player is added to beginning of list...
 BUG?: Polygon-Curve collisions funky when ClosedBezierCurve is lopsided (i.e. not a Circle/Ellipse)
 
-TODO: Add accumulatedTime to fixed timestep in GameWorld
 TODO: delete AAB
 	TODO: Squares to polygons
 TODO: Pan screen to follow player (use Max's engine algorithm; right now just keeps in same pos relative to screen)

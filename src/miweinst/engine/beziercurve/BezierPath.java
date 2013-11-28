@@ -5,32 +5,30 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-import support.pj2.lib.edu.rit.util.Tridiagonal;
+import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.collisiondetection.SeparatingAxis;
 import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.gfx.shape.CircleShape;
 import miweinst.engine.gfx.shape.CompoundShape;
 import miweinst.engine.gfx.shape.PolygonShape;
 import miweinst.engine.gfx.shape.Shape;
+import support.pj2.lib.edu.rit.util.Tridiagonal;
 import cs195n.Vec2f;
 
 public class BezierPath extends Shape {
 	
 	//All endpoints/ctrl points in path
 	private ArrayList<Vec2f> _pts;	
-	private ArrayList<LineSegment> _segs;
-	
+	private ArrayList<LineSegment> _segs;	
 	private ArrayList<CubicBezierCurve> _curves;
-	private CubicBezierCurve _lastCurve;
-/////	
-	private ArrayList<CircleShape> _drawDots;
+//// Visualization
+	private static ArrayList<CircleShape> _drawDots;
 
 	public BezierPath() {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));
 		_pts = new ArrayList<Vec2f>();
 		_segs = getDrawingSegments();
 		_curves = new ArrayList<CubicBezierCurve>();
-		_lastCurve = null;
 		_drawDots = new ArrayList<CircleShape>();		
 	}
 	public BezierPath(ArrayList<Vec2f> points) {
@@ -56,9 +54,9 @@ public class BezierPath extends Shape {
 		_pts.add(pt);
 		updateSegs();
 /////// VISUALIZER	
-		CircleShape circle = new CircleShape(pt, 1f);
+/*		CircleShape circle = new CircleShape(pt, 1f);
 		circle.setColor(Color.BLACK);
-		_drawDots.add(circle);
+		_drawDots.add(circle);*/
 	}
 	public void updateSegs() {
 		_segs = getDrawingSegments();
@@ -67,8 +65,9 @@ public class BezierPath extends Shape {
 	/* Creates a curve between each knot, so returns 
 	 * BezierPath with n curves, and ~n*3 points. 
 	 * Populates a_ctrls and b_ctrls arrays. */
-	public static BezierPath generateClosedCurve(Vec2f[] knots, ArrayList<Vec2f> a_ctrls, 
-											ArrayList<Vec2f> b_ctrls) {
+	public static BezierPath generateClosedCurve(Vec2f[] knots, 
+				ArrayList<Vec2f> a_ctrls, ArrayList<Vec2f> b_ctrls) 
+	{
 		int n = knots.length;
 		if (n <= 2) 
 			return null;
@@ -91,8 +90,8 @@ public class BezierPath extends Shape {
 			//right hand side: 4*p0 + 2*p1
 			rhs[i] = 4*knots[i].x + 2*knots[j].x;
 		}
-		/*Solve Ax=B where A is cyclic matrix (f,d,e), x is solution vector, 
-		 b is right hand side (rhs)*/
+		//Solve Ax=B where A is cyclic matrix (f,d,e), x is solution vector, 
+		 	//b is right hand side (rhs) 
 		double[] x = new double[n];
 		Tridiagonal.solveCyclic(d, e, f, rhs, x);
 		
@@ -107,12 +106,32 @@ public class BezierPath extends Shape {
 		for (int i=0; i<n; i++) {
 			//First controls
 			a_ctrls.add(i, new Vec2f((float)x[i], (float)y[i]));
-			/* Second controls. Calculated with equation from first derivative continuity:
-			 * P1i + P2i = 2Pi for (i=0, ..., n-1)*/
+			//Second controls. Calculated with equation from first derivative continuity:
+				//P1i + P2i = 2Pi for (i=0, ..., n-1) 
 			b_ctrls.add(i, new Vec2f((float)(2*knots[i].x-x[i]), (float)(2*knots[i].y - y[i])));
+		}		
+//////TESTING USING EQUIVALENT LIBRARY METHOD TO SEE IF BUGS GO AWAY
+/*
+		double[] knots_x = new double[knots.length];
+		double[] knots_y = new double[knots.length];
+		for (int i=0; i<knots.length; i++) {
+			Vec2f k = knots[i];
+			knots_x[i] = k.x;
+			knots_y[i] = k.y;
 		}
+		double[] a_ctrls_x = new double[n];
+		double[] a_ctrls_y = new double[n];
+		double[] b_ctrls_x = new double[n];
+		double[] b_ctrls_y = new double[n];		
+		CurveSmoothing.computeBezierClosed(knots_x, a_ctrls_x, b_ctrls_x, 0, n);
+		CurveSmoothing.computeBezierClosed(knots_y, a_ctrls_y, b_ctrls_y, 0, n);
+		for (int i=0; i<knots.length; i++) {
+			a_ctrls.add(new Vec2f((float)a_ctrls_x[i], (float)a_ctrls_y[i]));
+			b_ctrls.add(new Vec2f((float)b_ctrls_x[i], (float)b_ctrls_y[i]));
+		}
+*/
+//////^^^^^^^		
 		ArrayList<Vec2f> orderedPoints = new ArrayList<Vec2f>();
-
 		for (int i=0; i < n; i++) {
 			if (i < n-1) {
 				//0 - n-2 curves
@@ -129,10 +148,15 @@ public class BezierPath extends Shape {
 			}
 		}
 		BezierPath path = new BezierPath(orderedPoints);
-		System.out.println(path.getCurves().size());
+////// DRAW KNOTS FOR VISUALIZATION
+		_drawDots.clear();
+		for (Vec2f knot: knots) {
+			CircleShape circle = new CircleShape(knot, 2f);
+			circle.setColor(Color.BLACK);
+			_drawDots.add(circle);
+		}
 		return path;
 	}
-	
 	
 	/*Return LineSegments for drawing.*/
 	public ArrayList<LineSegment> getDrawingSegments() {
@@ -153,12 +177,34 @@ public class BezierPath extends Shape {
 			for (int j=1; j<resolution; j++) {
 				float t = j/resolution;
 				drawingPoints.add(CubicBezierCurve.calculateBezierPoint(t, p0, p1, p2, p3));
-			}
-////		
+			}	
 			CubicBezierCurve curve = new CubicBezierCurve(p0, p1, p2, p3);
 			_curves.add(curve);
 		}		
 		return LineSegment.pointsToSegs(drawingPoints);
+	}
+	
+	/* Returns the curve in path that is closest to Shape s.
+	 * Compares distances to each curve in path. Optimized by
+	 * only comparing curves that s is nearby (Convex hull check). 
+	 * Returns null if no curves are nearby. Called in collision
+	 * methods below, solved bug where shapes would fall out or
+	 * slow down at knots between curves.*/
+	public CubicBezierCurve findClosestCurve(Shape s) {
+		float minDist = Float.POSITIVE_INFINITY;
+		CubicBezierCurve curve = null;
+		for (CubicBezierCurve seg: _curves) {
+			//Optimize by checking convex hull collision first
+			if (seg.getWideBounds().collides(s)) {
+				Vec2f point = seg.nearestPointOnCurve(s.getCentroid());
+				float dist = point.dist2(s.getCentroid());
+				if (dist < minDist) {
+					minDist = dist;
+					curve = seg;
+				}
+			}
+		}
+		return curve;
 	}
 	
 	public void draw(Graphics2D g) {
@@ -171,58 +217,56 @@ public class BezierPath extends Shape {
 			curve.draw(g);
 		}*/
 /////
-/*		for (CircleShape dot: _drawDots) {
+		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
-		}*/
+		}
 	}
 	@Override
 	public boolean collides(Shape s) {	
-		//Optimizes by checking curve of last collision first.
-		if (_lastCurve != null) {
-			if (s.collides(_lastCurve)) {
-				this.setCollisionInfo(_lastCurve.getCollisionInfo());
-				return true;
-			}
-		}
 		//If any curve collides, collision detected
 		for (CubicBezierCurve curve: _curves) {
 			boolean collision = s.collides(curve);
 			if (collision) {
-				_lastCurve = curve;
 				this.setCollisionInfo(curve.getCollisionInfo());
 				return true;
 			}
 		}
 		return false;
 	}	
+	/* Optimized by only colliding with the curve that
+	 * is closest to c. Avoids bugs at knots between curves.*/
 	@Override
 	public boolean collidesCircle(CircleShape c) {
-		for (CubicBezierCurve curve: _curves) {
-			if (curve.collidesCircle(c)) {
-				this.setCollisionInfo(curve.getCollisionInfo());
-				return true;
-			}
-		}	
+		//Only collides with curve that is closest to c
+		CubicBezierCurve closestCurve = this.findClosestCurve(c);
+		//Null check
+		if (closestCurve == null)
+			return false;
+		if (closestCurve.collidesCircle(c)) {
+			this.setCollisionInfo(closestCurve.getCollisionInfo());
+			return true;
+		}
 		return false;
 	}
+	
 	@Override
 	public boolean collidesAAB(AARectShape aab) {
-		for (CubicBezierCurve curve: _curves) {
-			if (curve.collidesAAB(aab)) {
-				this.setCollisionInfo(curve.getCollisionInfo());
-				return true;
-			}
+		PolygonShape poly = aab.rectToPoly();
+		if (collidesPolygon(poly)) {
+			aab.setCollisionInfo(poly.getCollisionInfo());
+			return true;
 		}
 		return false;
 	}
 	
 	@Override
 	public boolean collidesPolygon(PolygonShape p) {
-		for (CubicBezierCurve curve: _curves) {
-			if (curve.collidesPolygon(p)) {
-				this.setCollisionInfo(curve.getCollisionInfo());
-				return true;
-			}
+		CubicBezierCurve closestCurve = this.findClosestCurve(p);
+		if (closestCurve == null)
+			return false;
+		if (closestCurve.collidesPolygon(p)) {
+			this.setCollisionInfo(closestCurve.getCollisionInfo());
+			return true;
 		}
 		return false;
 	}

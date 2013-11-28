@@ -192,7 +192,7 @@ public class GravidogWorld extends GameWorld {
         		System.err.println("Level is null! MWorld()");
 /////////////////^^^^^^^^^^                
 
-/*      		Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
+/*        		Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
                 PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
                 pin.setMass(1f);
                 this.addEntity(pin);
@@ -204,6 +204,12 @@ public class GravidogWorld extends GameWorld {
                 spring.setFrictionConstant(1f);
                 this.addEntity(spring);
 */
+        	
+            PolygonShape entityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+            PhysicsEntity test = new PhysicsEntity(this);
+            test.setShape(entityShape);
+            test.setMass(1f);
+            this.addEntity(test);
 
         	//Get initial distance of Player from screen origin (game units) to maintain panning onTick
 //        	_deltaPlayerPos = new Vec2f(_player.getX() - super.viewport.getScreenInGameLoc().x, _player.getY() - super.viewport.getScreenInGameLoc().y);

@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import miweinst.engine.FileIO;
+import miweinst.engine.beziercurve.CubicBezierCurve;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.gfx.shape.CircleShape;
+import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import cs195n.Vec2f;
@@ -104,7 +106,7 @@ public class Player extends PhysicsEntity {
 	};
 	
 //	private GameWorld _world;
-	private CircleShape _shape;
+	private Shape _shape;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
@@ -119,7 +121,24 @@ public class Player extends PhysicsEntity {
 		super(world);
 //		_world = world;
 		Vec2f location = new Vec2f(50, 50);
-		CircleShape shape = new CircleShape(location, 5f);		
+		float radius = 5f;
+		CircleShape shape = new CircleShape(location, radius);	
+
+/*///////TEST PLAYER AS POLYGON SHAPE
+		Vec2f[] verts = new Vec2f[6];
+		//Upper right
+		verts[0] = new Vec2f(location.x + radius*2, location.y);
+		//Upper left
+		verts[1] = new Vec2f(location.x, location.y);
+		//Middle left
+		verts[2] = new Vec2f(location.x - radius*2, location.y + radius*2);
+		//Bottom left
+		verts[3] = new Vec2f(location.x, location.y + 4*radius);
+		//Bottom right
+		verts[4] = new Vec2f(location.x + radius*2, location.y + 4*radius);
+		//Middle right
+		verts[5] = new Vec2f(location.x + 4*radius, location.y + 2*radius);
+		PolygonShape shape = new PolygonShape(verts);*/
 		
 		//Pretty yellow
 		Color col = new Color(235, 235, 110);	//Yellow pastel
@@ -139,7 +158,7 @@ public class Player extends PhysicsEntity {
 		this.setRestitution(100f);
 		_jumpDelay = 5;
 		_collisionTimer = 0;
-		_jumping = false;
+		_jumping = false;		
 	}
 	
 	/*Allows method to override the built in check
@@ -154,12 +173,21 @@ public class Player extends PhysicsEntity {
 		super.onTick(nanosSincePreviousTick);
 		_collisionTimer += nanosSincePreviousTick/1000000;
 		_jumpDelay += nanosSincePreviousTick/1000000;
-		if (getLastMTV() != null) {
-			float mag = GRAVITY.mag();
-			Vec2f mtv = getLastMTV().normalized();
-			//Reverse direction of MTV by putting negative sign in front of mag
-			GRAVITY = mtv.smult(-mag);		
+		Vec2f mtv = getLastMTV();
+		//Gravity follows Player only on curved surfaces. Otherwise touching an enemy/object switches it.
+		if (getShape().getCollisionInfo() != null) {
+			Shape other = getShape().getCollisionInfo().getOther();
+			if (other instanceof CubicBezierCurve) {
+				System.out.println(other);
+				if (mtv != null) {
+					float mag = GRAVITY.mag();
+					Vec2f mtv_norm = mtv.normalized();
+					//Reverse direction of MTV by putting negative sign in front of mag
+					GRAVITY = mtv_norm.smult(-mag);		
+				}
+			}
 		}
+//		System.out.println(mtv);
 //		System.out.println(PhysicsEntity.GRAVITY);
 //		System.out.println("velocity: " + this.getVelocity());
 	}	
@@ -185,7 +213,7 @@ public class Player extends PhysicsEntity {
 			//This condition was here to not jump off vertical walls, but now has to be described relative to current Gravity...
 //			if (Math.abs(mtv.y) > Math.abs(mtv.x)/2) {
 				if (!_jumping && _jumpDelay > 50) {
-					this.applyImpulse(mtv.normalized().smult(1600), getCentroid());
+					this.applyImpulse(mtv.normalized().smult(5000), getCentroid());
 					_jumping = true;
 					_jumpDelay = 0;
 				}
@@ -193,9 +221,11 @@ public class Player extends PhysicsEntity {
 		}
 	}
 	
-	/*Center of Player's body when circular.*/
+	/*Center of Player's body.*/
 	public Vec2f getCenter() {
-		return new Vec2f(this.getLocation().x + _shape.getRadius(), this.getLocation().y + _shape.getRadius());
+		return _shape.getCentroid();
+		//When circular
+//		return new Vec2f(this.getLocation().x + _shape.getRadius(), this.getLocation().y + _shape.getRadius());
 	}
 
 	@Override

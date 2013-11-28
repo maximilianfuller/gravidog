@@ -184,6 +184,10 @@ public class Player extends PhysicsEntity {
 		_jumpDelay += nanosSincePreviousTick/1000000;
 	}	
 	
+	/* This method has to be called, so make sure Player is
+	 * first in GameWorld's list _entities so _entities(i).collides
+	 * will call this method! Otherwise the other entity's collides
+	 * will be called against only Player's shape's collides method.*/
 	@Override
 	public boolean collides(PhysicsEntity other) {
 		boolean collision = super.collides(other);	
@@ -199,6 +203,8 @@ public class Player extends PhysicsEntity {
 		return collision;
 	}
 	
+	/*Applies impulse in direction of MTV (normal to curve) if
+	 * certain conditions are met.*/
 	public void jump() {
 		Vec2f mtv = this.getLastMTV();
 		if (Math.abs(mtv.y) > Math.abs(mtv.x)/2) {

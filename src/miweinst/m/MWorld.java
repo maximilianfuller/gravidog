@@ -32,6 +32,7 @@ import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.RelayEntity;
 import miweinst.engine.world.WhileSensorEntity;
+import miweinst.gravidog.ClosedCurveBoundary;
 import cs195n.CS195NLevelReader;
 import cs195n.CS195NLevelReader.InvalidLevelException;
 import cs195n.LevelData;
@@ -81,11 +82,12 @@ public class MWorld extends GameWorld {
                 _classes.setDecoration("WhileSensorEntity", WhileSensorEntity.class);
                 _classes.setDecoration("RelayEntity", RelayEntity.class);
                 _classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
+                _classes.setDecoration("ClosedCurveBoundary", ClosedCurveBoundary.class);
 
                 ///Decoration set to each Entity read from LevelEditor!
                 _entities = new HashDecorator<String, PhysicsEntity>();                                        
 
-                File f = new File("src/miweinst/resources/level_one.nlf");
+                File f = new File("src/miweinst/resources/m_level.nlf");
                 LevelData level = null;
                 try {
                 	level = CS195NLevelReader.readLevel(f);
