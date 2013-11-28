@@ -31,11 +31,10 @@ public class PlayScreen extends GravidogScreen {
 		//Semi-transparent background; overrides any properties from level editor 
 		_viewport.getScreen().setOutline(new Color(15, 15, 15, 15), 4);	
 
-		_viewport.setScreenInGameLoc(new Vec2f(0, 0));
+		_viewport.setScreenLoc(new Vec2f(0, 0));
 				
 		_gameWorld = new GravidogWorld(a,_viewport);
 		_viewport.setWorld(_gameWorld);
-		_viewport.setMathCoordinateSystem(true);	
 
 		this.setBackgroundColor(Color.BLACK);
 	}
@@ -95,7 +94,7 @@ public class PlayScreen extends GravidogScreen {
 			if (_lastMouse != null) {
 				float dx = _lastMouse.x - e.getX();
 				float dy = _lastMouse.y - e.getY();
-				_viewport.pan(dx, dy);
+				_viewport.panInPixels(new Vec2f(dx, dy));
 			}
 		}
 		_gameWorld.onMouseDragged(e);	

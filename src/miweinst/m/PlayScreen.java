@@ -54,7 +54,6 @@ public class PlayScreen extends MScreen {
 		Vec2f playerOffsetFromCenter = playerLocOnScreen.minus(_viewport.getCenterOfScreen());
 		Vec2f offsetNorm = playerOffsetFromCenter.normalized();
 		Vec2f screenCameraOffset = offsetNorm.smult(_cameraRadius);
-		screenCameraLimit = _viewport.getCenterOfScreen().plus(screenCameraOffset);
 		if(playerOffsetFromCenter.mag() > screenCameraOffset.mag()) {	
 			Vec2f panOffset = playerOffsetFromCenter.minus(screenCameraOffset);
 			_viewport.panInPixels(panOffset);
@@ -62,7 +61,6 @@ public class PlayScreen extends MScreen {
 		
 	}
 	
-	Vec2f screenCameraLimit;
 
 	@Override
 	public void onDraw(Graphics2D g) {

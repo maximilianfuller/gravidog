@@ -302,17 +302,9 @@ public class GravidogWorld extends GameWorld {
 
         public void onMousePressed(MouseEvent e) {
         	//convert loc to Game Units, switch y if math coordinates
-        	Vec2f toUnits = super.toUnits(new Vec2f(e.getX(), e.getY()));
-        	if (super.viewport.isMathCoordinateSystem())
-        		toUnits = new Vec2f(toUnits.x, super.getViewportDimensions().y/super.getScale() - toUnits.y);
         }
         public void onMouseDragged(MouseEvent e) {
-        	Vec2f toUnits = super.toUnits(new Vec2f(e.getX(), e.getY()));
-        	toUnits = new Vec2f(toUnits.x, super.getViewportDimensions().y/super.getScale()-toUnits.y);
         }
         public void onMouseMoved(MouseEvent e) {
-        	Vec2f toUnits = super.toUnits(new Vec2f(e.getX(), e.getY()));
-        	if (super.viewport.isMathCoordinateSystem())
-        		toUnits = new Vec2f(toUnits.x, super.getViewportDimensions().y/super.getScale()-toUnits.y);
         }
 }

@@ -184,15 +184,9 @@ public class Viewport {
 	public void panInPixels(Vec2f pixelDiff) {
 		//Vec2f gameDiff = diff.sdiv(_scale);
 		//panInGameUnits(new Vec2f(gameDiff.x, -gameDiff.y));
-		System.out.println("pixelDiff" + pixelDiff);
-		System.out.println("getCenterOfScreen" + getCenterOfScreen());
 		Vec2f goalLocInPixels = getCenterOfScreen().plus(pixelDiff);
-		System.out.println("goalLocInPixels" + goalLocInPixels);
-		System.out.println("getCenterOfPort" + getCenterOfPortInGameUnits());
 		Vec2f goalLocInUnits = screenPointToGame(goalLocInPixels);
-		System.out.println("screenPointToGame" + goalLocInUnits);
 		Vec2f unitDiff = goalLocInUnits.minus(getCenterOfPortInGameUnits());
-		System.out.println("unitDiff" + unitDiff);
 		panInGameUnits(unitDiff);
 	}
 	
@@ -251,12 +245,7 @@ public class Viewport {
 	 * to scale according to _scale and translate according to the screen's 
 	 * location of game origin (in pxls).*/
 	public void draw(Graphics2D g) {
-		//Updates transform in case scale or pxlGameLoc has changed with pan() or zoom()
-<<<<<<< HEAD
-=======
-		this.updateTransform();
 
->>>>>>> e2b9375cc93e0c48ef1e873b0fc2c4593057308c
 		if (_gameWorld != null) {		
 			_screen.setDimensions(_screenDim);
 			_screen.draw(g);	

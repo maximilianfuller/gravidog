@@ -40,7 +40,6 @@ public class TestScreen extends MScreen {
 				
 		_testWorld = new TestWorld(a,_viewport);
 		_viewport.setWorld(_testWorld);
-		_viewport.setMathCoordinateSystem(true);
 	}
 	
 	@Override
@@ -97,7 +96,7 @@ public class TestScreen extends MScreen {
 			if (_lastMouse != null) {
 				float dx = _lastMouse.x - e.getX();
 				float dy = _lastMouse.y - e.getY();
-				_viewport.panInPixels(dx, dy);
+				_viewport.panInPixels(new Vec2f(dx, dy));
 			}
 		}
 		_testWorld.onMouseDragged(e);	
