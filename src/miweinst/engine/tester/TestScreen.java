@@ -36,7 +36,7 @@ public class TestScreen extends MScreen {
 		//Semi-transparent background; overrides any properties from level editor 
 		_viewport.getScreen().setOutline(new Color(15, 15, 15, 15), 4);	
 
-		_viewport.setScreenInGameLoc(new Vec2f(0, 25));
+		_viewport.setPortCenterInGameUnits(new Vec2f(0, 25));
 				
 		_testWorld = new TestWorld(a,_viewport);
 		_viewport.setWorld(_testWorld);
@@ -97,7 +97,7 @@ public class TestScreen extends MScreen {
 			if (_lastMouse != null) {
 				float dx = _lastMouse.x - e.getX();
 				float dy = _lastMouse.y - e.getY();
-				_viewport.pan(dx, dy);
+				_viewport.panInPixels(dx, dy);
 			}
 		}
 		_testWorld.onMouseDragged(e);	

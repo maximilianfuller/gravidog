@@ -97,31 +97,14 @@ public class GameWorld {
 	
 	/*Gets/Sets Viewport's scale.*/
 	public void setScale(float newScale) {
-		viewport.setScale(newScale);
+		viewport.zoom(newScale);
 //		_scale = (int) newScale;
 	}
 	public float getScale() {
 		return viewport.getScale();
 	}
 	
-	/*Accessor/Mutator for screen location of the game origin,
-	 * used for conversion between game units and pixels for all
-	 * measurements inside the GameWorld. */
-	public Vec2f getPixelGameLocation() {
-		return viewport.getPixelGameLocation();
-	}
 	
-	/* Calculates pixel equivalent of specified point
-	 * in game units, based on pixelGameLocation that
-	 * is passed in by Viewport. GameWorld is the 
-	 * container of all game objects, which are 
-	 * all set in game units. */
-	public Vec2f toPixels(Vec2f gLoc) {
-		return viewport.gamePointToScreen(gLoc);
-	}
-	public Vec2f toUnits(Vec2f pxlLoc) {
-		return viewport.screenPointToGame(pxlLoc);
-	}
 	
 	/*If specific game is using the math coordinate system (origin
 	 * lower left), by toggling Viewport's setMathCoordinateSystem(bool),
@@ -235,18 +218,7 @@ public class GameWorld {
 		return firstHit;
 	}
 	
-	/* This allows subclasses to send
-	 * new Transform more specific to the game.
-	 * GameWorld superclass forwards methods to and from
-	 * the Viewport, where the Transform is actually applied.
-	 * AffineTransform should really only be set by GameWorld object,
-	 * not some sneaky Enemy or something, hence protected.*/
-	protected AffineTransform getTransform() {
-		return viewport.getTransform();
-	}
-	protected void setTransform(AffineTransform transform) {
-		viewport.setTransform(transform);
-	}
+	
 	
 	
 	/*Set properties of GameWorld based on the String it's mapped to,
@@ -262,17 +234,13 @@ public class GameWorld {
 		if (props.containsKey("scale")) {
 			this.setScale(Float.parseFloat(props.get("scale")));
 		}
-		//X coordinate of viewport window in game world (game units)
-		if (props.containsKey("x")) {
-			viewport.setScreenInGameLoc(new Vec2f(Float.parseFloat(props.get("x")), viewport.getScreenInGameLoc().y));
+		//X and Y coordinate of viewport window in game world (game units)
+		if (props.containsKey("x") && props.containsKey("y")) {
+			viewport.setPortCenterInGameUnits(new Vec2f(Float.parseFloat(props.get("x")), Float.parseFloat(props.get("y"))));
 		}
-		//Y coordinate of viewport window in game world (game units)
-		if (props.containsKey("y")) {
-			viewport.setScreenInGameLoc(new Vec2f(viewport.getScreenInGameLoc().x, Float.parseFloat(props.get("y"))));
-		}
+		
 	}
 	
-	/**Static*/
 	/*Turns a string into a Color. Takes String in form
 	 * of Java color, i.e. "BLACK", "YELLOW". Also takes
 	 * Strings in rgb form with syntax "r,g,b", no spaces. 

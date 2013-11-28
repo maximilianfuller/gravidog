@@ -10,16 +10,18 @@ import javax.swing.SwingUtilities;
 
 import miweinst.engine.App;
 import miweinst.engine.gfx.shape.AARectShape;
+import miweinst.engine.gfx.shape.CircleShape;
 import miweinst.engine.screen.Viewport;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 
 public class PlayScreen extends MScreen {
-	
+
 	private App _app;
 	private Viewport _viewport;
 	private MWorld _gameWorld;
 	private Vec2f _lastMouse;
+	private float _cameraRadius;
 	public PlayScreen(App a) {
 		super(a);
 		_app = a;
@@ -31,22 +33,37 @@ public class PlayScreen extends MScreen {
 
 		//Instantiate world and viewport; pass reference both ways
 		_viewport = new Viewport(window);
-		
+
 		//Semi-transparent background; overrides any properties from level editor 
 		_viewport.getScreen().setOutline(new Color(15, 15, 15, 15), 4);	
 
-		_viewport.setScreenInGameLoc(new Vec2f(0, 25));
-				
+		_viewport.setPortCenterInGameUnits(new Vec2f(0, 25));
+
 		_gameWorld = new MWorld(a,_viewport);
 		_viewport.setWorld(_gameWorld);
-		_viewport.setMathCoordinateSystem(true);
+		Vec2f cameraDim = _viewport.getScreenSize();
+		_cameraRadius = Math.min(cameraDim.x, cameraDim.y)/4;
 	}
-	
+
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		_gameWorld.onTick(nanosSincePreviousTick);
+		//player panning
+		
+		Vec2f playerLocOnScreen = _viewport.gamePointToScreen(_gameWorld.getPlayer().getLocation());
+		Vec2f playerOffsetFromCenter = playerLocOnScreen.minus(_viewport.getCenterOfScreen());
+		Vec2f offsetNorm = playerOffsetFromCenter.normalized();
+		Vec2f screenCameraOffset = offsetNorm.smult(_cameraRadius);
+		screenCameraLimit = _viewport.getCenterOfScreen().plus(screenCameraOffset);
+		if(playerOffsetFromCenter.mag() > screenCameraOffset.mag()) {	
+			Vec2f panOffset = playerOffsetFromCenter.minus(screenCameraOffset);
+			_viewport.panInPixels(panOffset);
+		}
+		
 	}
 	
+	Vec2f screenCameraLimit;
+
 	@Override
 	public void onDraw(Graphics2D g) {
 		super.onDraw(g);
@@ -66,6 +83,26 @@ public class PlayScreen extends MScreen {
 		}
 		if (e.getKeyChar() == 'r') _app.setScreen(new MenuScreen(_app));
 		_gameWorld.onKeyPressed(e);
+		
+		/* testing for viewport */
+		if(e.getKeyChar() == 'a') {
+			_viewport.panInPixels(new Vec2f(-5f, 0f));
+		}
+		if(e.getKeyChar() == 'd') {
+			_viewport.panInPixels(new Vec2f(5f, 0f));
+		}
+		if(e.getKeyChar() == 'w') {
+			_viewport.panInPixels(new Vec2f(0f, 5f));
+		}
+		if(e.getKeyChar() == 's') {
+			_viewport.panInPixels(new Vec2f(0f, -5f));
+		}
+		if(e.getKeyChar() == 'z') {
+			_viewport.rotate(.05f);
+		}
+		if(e.getKeyChar() == 'x') {
+			_viewport.rotate(-.05f);
+		}
 	}
 
 	@Override
@@ -92,15 +129,6 @@ public class PlayScreen extends MScreen {
 
 	@Override
 	public void onMouseDragged(MouseEvent e) {
-		if (SwingUtilities.isRightMouseButton(e)) {
-			if (_lastMouse != null) {
-				float dx = _lastMouse.x - e.getX();
-				float dy = _lastMouse.y - e.getY();
-				_viewport.pan(dx, dy);
-			}
-		}
-		_gameWorld.onMouseDragged(e);	
-		_lastMouse = new Vec2f(e.getX(), e.getY());
 	}
 
 	@Override
@@ -110,10 +138,9 @@ public class PlayScreen extends MScreen {
 
 	@Override
 	public void onMouseWheelMoved(MouseWheelEvent e) {
-		float newScale = _viewport.getScale() + e.getWheelRotation();
-		if (newScale > 0) {
-			_viewport.zoom(newScale);
-		}
+		double rot = e.getPreciseWheelRotation();
+		float zoom = rot < 0 ? 1.0f/1.1f : 1.1f;
+		_viewport.zoom(zoom*_viewport.getScale());
 	}
 
 	@Override

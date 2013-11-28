@@ -3,14 +3,20 @@ package miweinst.engine.screen;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 
 import miweinst.engine.gfx.shape.AARectShape;
+import miweinst.engine.gfx.shape.CircleShape;
 import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 
+//graphics uses math coordinates
 public class Viewport {	
+	
+	
 	
 	//Shape of Viewport screen, container with border
 //	private Shape _screen;
@@ -19,86 +25,43 @@ public class Viewport {
 	//World of game space in game units
 	private GameWorld _gameWorld;
 	
-	//Dimensions of viewport, passed in constructor
+	/**Dimensions of viewport, passed in constructor*/
 	private Vec2f _screenDim;	
-	
-	//Dimensions of game world, passed in constructor
-//	private Vec2f _gameDim;
 	
 	//Upper left of screen in pixels
 	private Vec2f _screenLoc;
 	
-	//Upper left of screen in game units
-	private Vec2f _screenGameLoc;
-	
-	/*Upper left of game world in pixels.
-	 * (This is the reference sent to world 
-	 * and used for entity unit conversion)*/
-	private Vec2f _pxlGameLoc;
-	
+	//Center of screen in game units
+	private Vec2f _centerInGameUnits;
 	//Scale in px/unit 
 	private float _scale;
+	//viewport angle (CCW)
+	private float _theta;
 	
-	private boolean _mathCoords;
-	private AffineTransform _tx;
 	
 	//Container is the rectangle Viewport screen; (Not drawn, so can be generic superclass)
 	//gameDim is the size of the game world, in game units
 	public Viewport(Shape container) {	
-		//Reference to GameWorld
-//		_gameWorld = game;	
-		
-		//Constructor Default: 400x200
 		_screenDim = container.getDimensions();
-		
-		//Constructor Default: container x and y
 		_screenLoc = new Vec2f(container.getX(), container.getY());
-		
-		//Constructor Default: 480x240 (4800x2400px at scale=100; 12 screen sizes in game)
-//		_gameDim = game.getDimensions();
-		
-		//Default scale; modified in mutator
-		_scale = 5;
+		_scale = 5f;
 		
 		//Default starting game view; upper left flush with world's
-		_screenGameLoc = new Vec2f(0, 0); 
-		
-		//Initialize; calculated based on current _screenGameLoc 
-		_pxlGameLoc = this.gamePointToScreen(new Vec2f(0, 0));
-////////
-//		//Send initial pxlGameLoc value to GameWorld
-//		_gameWorld.setPixelGameLocation(_pxlGameLoc);
-		
-		//Viewport screen; visible section of game map, in pixels
+		_centerInGameUnits = new Vec2f(0, 0); 
 		_screen = new AARectShape(_screenLoc, _screenDim);
-		
-/////////		
-		_mathCoords = false;
-		//Generic game transform; scale and translate into Game Dimensions
-		//(Matrix: [[X scale, X shear, Y shear], [Y scale, X translate, Y translate]...])
-		_tx = new AffineTransform(_scale, 0, 0, _scale, _pxlGameLoc.x, _pxlGameLoc.y);
+		_theta = 0;
 	}
 	
 	public void setWorld(GameWorld world) {
 		_gameWorld = world;
 	}
 	
-	/*
-	 * Accessor/Mutator for scale. 
-	 * This method
-	 * can be used for zoom functionality.
-	 * Scale is in pixels per game coordinate unit.
-	 * 
-	 * @param scale; conversion scalar from game units to pixels
-	 */
-	public void setScale(float scale) {
-		_scale = scale;
-	}
+	
 	public float getScale() {
 		return _scale;
 	}
 	
-	/*
+	/**
 	 * This method takes in a point in the game world
 	 * and translates it into a point on the screen.
 	 * 
@@ -106,16 +69,13 @@ public class Viewport {
 	 * @return Vec2f; a point on the screen, in pixels
 	 */
 	public Vec2f gamePointToScreen(Vec2f gamePoint) {
-		float newX = gamePoint.x - _screenGameLoc.x;
-		float newY = gamePoint.y - _screenGameLoc.y;
-		newX = newX*_scale;
-		newY = newY*_scale;		
-		newX += _screenLoc.x;
-		newY += _screenLoc.y;		
-		return new Vec2f(newX, newY);
+		AffineTransform tx = getTransform();
+		Point2D gameP = new Point2D.Float(gamePoint.x, gamePoint.y);
+		Point2D screenP = tx.transform(gameP, null);
+		return new Vec2f((float)screenP.getX(), (float)screenP.getY());
 	}
 	
-	/*
+	/**
 	 * This method takes in a point on the screen
 	 * and translates it into a point in the game.
 	 * 
@@ -123,17 +83,19 @@ public class Viewport {
 	 * @return Vec2f; a point in the game, in game units
 	 */
 	public Vec2f screenPointToGame(Vec2f screenPoint) {		
-		float dx = screenPoint.x - _screenLoc.x;
-		float dy = screenPoint.y - _screenLoc.y;
-		dx = dx/_scale;
-		dy = dy/_scale;		
-		float newX = _screenGameLoc.x + dx;
-		float newY = _screenGameLoc.y + dy;		
-		//In game units
-		return new Vec2f(newX, newY);
+		AffineTransform tx = null;
+		try {
+			tx = getTransform().createInverse();
+		} catch (NoninvertibleTransformException e) {
+			System.err.println("ERROR: transform not invertible");
+		}
+		Point2D gameP = new Point2D.Float(screenPoint.x, screenPoint.y);
+		Point2D screenP = tx.transform(gameP, null);
+		return new Vec2f((float)screenP.getX(), (float)screenP.getY());
+		
 	}
 	
-	/*
+	/**
 	 * This is a mutator for the size of the Viewport
 	 * screen, which will be set depending on the 
 	 * application. This value is passed into the
@@ -153,7 +115,9 @@ public class Viewport {
 		return _screenDim;
 	}
 	
-	/*
+	
+	
+	/**
 	 * This is a mutator for the location of the Viewport
 	 * screen. It is initialized t0 (200,200) by default,
 	 * but should be set depending on the application from
@@ -182,44 +146,31 @@ public class Viewport {
 		return _screen;
 	}
 	
-	/*
+	/**
 	 * Mutator to set upper left location of Viewport
 	 * screen in game units. Defaults in Viewport constructor
 	 * to 0,0. But should be able to be set for specific games
 	 * outside of Viewport.
 	 * @param screenInGameUnits
 	 */
-	public void setScreenInGameLoc(Vec2f screenInGameUnits) {
-		_screenGameLoc = screenInGameUnits;
-		updatePixelGameLocation();
+	public void setPortCenterInGameUnits(Vec2f screenInGameUnits) {
+		_centerInGameUnits = screenInGameUnits;
 	}	
-	public Vec2f getScreenInGameLoc() {
-		return _screenGameLoc;
+	
+	public Vec2f getCenterOfScreen() {
+		return _screenLoc.plus(_screenDim.sdiv(2f));
+				
 	}
 	
-	/*
-	 * Updates the reference to world origin location in pixels.
-	 * Returns the new value when updated. No accessors or 
-	 * mutators really necessary for pixel game location 
-	 * because this method is called to update the var
-	 * and the GameWorld's var whenever it is modified (pan, zoom).
-	 * 
-	 * Must be called whenever _screenGameLoc is updated.
-	 * @param pxl
-	 */
-	public void updatePixelGameLocation() {
-		Vec2f pxl = gamePointToScreen(new Vec2f(0, 0));
-		_pxlGameLoc = pxl;
-	}	
-	/* Accessor for pixelGameLocation for classes
-	 * not passed it explicitly through updatePixel...() ^.
-	 * @return
-	 */
+	public Vec2f getCenterOfPortInGameUnits() {
+		return _centerInGameUnits;
+	}
+
 	public Vec2f getPixelGameLocation() {
-		return _pxlGameLoc;
+		return gamePointToScreen(new Vec2f(0f, 0f));
 	}
 	
-	/*
+	/**
 	 * This method takes in the change in x and y
 	 * between prev and curr (prev-curr) from mouseDragged 
 	 * in GameScreen. It converts the values to their
@@ -230,100 +181,94 @@ public class Viewport {
 	 * @param float dx, change in x between prev and curr mouse position, pxls
 	 * @param float dy, change in y between prev and curr mouse position, pxls
 	 */
-	public void pan(float dx, float dy) {	
-		float gamedx = dx/_scale;
-		float gamedy = dy/_scale;
-		Vec2f currLoc = _screenGameLoc;
-		_screenGameLoc = new Vec2f(currLoc.x+gamedx,currLoc.y+gamedy);
-		this.updatePixelGameLocation();
+	public void panInPixels(Vec2f pixelDiff) {
+		//Vec2f gameDiff = diff.sdiv(_scale);
+		//panInGameUnits(new Vec2f(gameDiff.x, -gameDiff.y));
+		System.out.println("pixelDiff" + pixelDiff);
+		System.out.println("getCenterOfScreen" + getCenterOfScreen());
+		Vec2f goalLocInPixels = getCenterOfScreen().plus(pixelDiff);
+		System.out.println("goalLocInPixels" + goalLocInPixels);
+		System.out.println("getCenterOfPort" + getCenterOfPortInGameUnits());
+		Vec2f goalLocInUnits = screenPointToGame(goalLocInPixels);
+		System.out.println("screenPointToGame" + goalLocInUnits);
+		Vec2f unitDiff = goalLocInUnits.minus(getCenterOfPortInGameUnits());
+		System.out.println("unitDiff" + unitDiff);
+		panInGameUnits(unitDiff);
 	}
 	
-	/*
+	public void panInGameUnits(Vec2f gameUnitDiff) {
+		_centerInGameUnits = _centerInGameUnits.plus(gameUnitDiff);
+	}
+	
+	/**
 	 * This is called to zoom in and out on the game world from the 
 	 * Viewport's center. Uses the conversion of scale (pxls/game unit) to
-	 * change location of _screenGameLoc, which is the upper corner
+	 * change location of _topLeftInGameUnits, which is the upper corner
 	 * of Viewport in game world. This zooms from the center of
 	 * the screen.
 	 * @param newScale
 	 */
-	public void zoom(float newScale) {					
-		float oldWindowWidth = _screenDim.x/_scale;
-		float oldWindowHeight = _screenDim.y/_scale;		
-		float windowWidth = _screenDim.x/newScale;
-		float windowHeight = _screenDim.y/newScale;
-		float dwidth = Math.abs(oldWindowWidth - windowWidth);
-		float dheight = Math.abs(oldWindowHeight - windowHeight);			
-		if (_scale <= newScale) {
-			//Zoom in
-			_screenGameLoc = new Vec2f(_screenGameLoc.x+dwidth/2, _screenGameLoc.y+dheight/2);
-		}
-		else {
-			//Zoom out
-			_screenGameLoc = new Vec2f(_screenGameLoc.x-dwidth/2, _screenGameLoc.y-dheight/2);
-		}			
-		this.updatePixelGameLocation();
-		this.setScale(newScale);	
+	public void zoom(float newScale) {
+		//Vec2f _viewPortSizeInGameUnits = _screenDim.smult(1f/_scale);
+		 //Vec2f newSize = _screenDim.smult(1f/newScale);
+         //Vec2f offset = newSize.minus(_viewPortSizeInGameUnits).sdiv(2);
+         //_centerInGameUnits = new Vec2f(_centerInGameUnits.x - offset.x, _centerInGameUnits.y + offset.y);
+        _scale = newScale;
+	}
+	
+	/**
+	 * set the rotation orientation of the viewport
+	 * @param theta
+	 */
+	public void setTheta(float theta) {
+		_theta = theta % ((float)Math.PI*2f);
+	}
+	
+	/**
+	 * change the rotation orientation by thetaDiff
+	 * @param thetaDiff
+	 */
+	public void rotate(float thetaDiff) {
+		setTheta(_theta + thetaDiff);
 	}
 
 	
-	public boolean isMathCoordinateSystem() {
-		return _mathCoords;
-	}
-	public void setMathCoordinateSystem(boolean math) {
-		_mathCoords = math;
-		this.updateTransform();
-	}
 	
-	/*Gets/Sets the AffineTransform matrix that will be applied
-	 * to the Graphics2D in draw() when drawing _gameWorld.*/
-	public AffineTransform getTransform() {
-		return _tx;
-	}
-	public void setTransform(AffineTransform tx) {
-		_tx = tx;
-	}	
-	/*Flips the sign of the y-scaling value if _mathCoords,
-	 * updating Transform with most updated game location and scale.*/
-	public void updateTransform() {
-		float m = 1;
-		float y = 0;
-		if (_mathCoords) {
-			m *= -1;
-			y = _screenDim.y;
-		}
-		_tx = new AffineTransform(_scale, 0, 0, _scale*m, _pxlGameLoc.x, _pxlGameLoc.y+y);		
+	private AffineTransform getTransform() {
+		AffineTransform tx = new AffineTransform();
+		tx.translate(_screenLoc.x, _screenLoc.y);
+		tx.scale(_scale, _scale * (-1f));
+		Vec2f topLeftOffset = _screenDim.sdiv(_scale).sdiv(2f);
+		Vec2f topLeft = new Vec2f(_centerInGameUnits.x - topLeftOffset.x, 
+				_centerInGameUnits.y + topLeftOffset.y);
+		tx.translate((-1f)*topLeft.x, (-1f)*topLeft.y);
+		tx.rotate(_theta, _centerInGameUnits.x, _centerInGameUnits.y);
+		return tx;	
 	}
 		
-	/* Clips the Graphics2D to only the Viewport window, based on vars
+	/** Clips the Graphics2D to only the Viewport window, based on vars
 	 * location _screenLoc with size _screenDim. Applies an AffineTransform
 	 * to scale according to _scale and translate according to the screen's 
 	 * location of game origin (in pxls).*/
 	public void draw(Graphics2D g) {
 		//Updates transform in case scale or pxlGameLoc has changed with pan() or zoom()
-		this.updateTransform();
 		if (_gameWorld != null) {		
 			_screen.setDimensions(_screenDim);
 			_screen.draw(g);	
 					
-			//Store reference to curr clip
 			java.awt.Shape clip = g.getClip();	
-			//Clip graphics to the viewport screen rectangle, outside AffineTransform
-			Vec2i screenLoc = new Vec2i((int) _screenLoc.x, (int) _screenLoc.y);
-			Vec2i screenDim = new Vec2i((int) _screenDim.x, (int) _screenDim.y);
-			g.clipRect(screenLoc.x, screenLoc.y, screenDim.x, screenDim.y);
-			
-			//Store reference to curr transform
+			g.clipRect((int) _screenLoc.x, (int) _screenLoc.y, (int) _screenDim.x, (int) _screenDim.y);
 			AffineTransform tsave = g.getTransform();
-			//Apply AffineTransform
-			g.transform(_tx);
-
-			//Draw game with clip on, in pixels
-			_gameWorld.draw(g);
+						
+			g.transform(getTransform());
 			
-			//Restor the transform
+			
+			_gameWorld.draw(g);
+
 			g.setTransform(tsave);
-			//Restore the clip
 			g.setClip(clip);	
 		}
 	}
+
+	
 }
