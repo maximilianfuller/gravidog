@@ -28,6 +28,7 @@ public class GameWorld {
 	//Dimensions of Viewport
 	private Vec2f _windowDim;
 	private int _timestep;
+	private float _accumulatedTime;
 	private int _iters;		
 	private ArrayList<PhysicsEntity> _entities;		
 	protected Viewport viewport;
@@ -41,19 +42,18 @@ public class GameWorld {
 		_entities = new ArrayList<PhysicsEntity>();
 		
 		//Initialize timestep to 5 ms
-		_timestep = 5000000;
+		_timestep = 2000000;
+		_accumulatedTime = 0;
 		_iters = 1;
 	}
 	
-	/*For all Entities in world, do collision detection and 
+	/* For all Entities in world, do collision detection and 
 	 * onTick methods; iterations calculated by fixed timestep.*/
 	public void onTick(long nanosSincePreviousTick) {
-		//accumulatedTime += nanosSincePreviousTick (or % timestep);
-			//nanosSincePreviousTick+accumulatedTime (if %)
-		_iters = (int) (nanosSincePreviousTick/_timestep);		
+		_accumulatedTime += nanosSincePreviousTick; 
+		_iters = (int) (_accumulatedTime/_timestep);		
 		//Iterations of fixed timestep
-		for (int iter=1; iter <= _iters; iter++) {
-			
+		for (int iter=1; iter <= _iters; iter++) {		
 			//Collision detection
 			for (int i=0; i<_entities.size(); i++) {
 				for (int j=i; j < _entities.size(); j++) {	
@@ -67,7 +67,7 @@ public class GameWorld {
 					_entities.get(i).onTick(nanosSincePreviousTick/_iters);
 			}
 		}
-		// accumulatedTime -= _iters * _timestep; 
+		_accumulatedTime -= _iters * _timestep; 
 	}
 	
 	public int getIterations() {
@@ -229,7 +229,8 @@ public class GameWorld {
 			viewport.setScreenColor(stringToColor(props.get("bgcolor")));
 		}
 		if (props.containsKey("gravity")) {
-			PhysicsEntity.setGravity(Float.parseFloat(props.get("gravity")));
+			//Sets Y-component of initial gravity
+			PhysicsEntity.setGravity(new Vec2f(0, Float.parseFloat(props.get("gravity"))));
 		}	
 		if (props.containsKey("scale")) {
 			this.setScale(Float.parseFloat(props.get("scale")));

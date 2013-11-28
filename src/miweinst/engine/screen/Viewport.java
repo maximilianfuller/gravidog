@@ -252,6 +252,11 @@ public class Viewport {
 	 * location of game origin (in pxls).*/
 	public void draw(Graphics2D g) {
 		//Updates transform in case scale or pxlGameLoc has changed with pan() or zoom()
+<<<<<<< HEAD
+=======
+		this.updateTransform();
+
+>>>>>>> e2b9375cc93e0c48ef1e873b0fc2c4593057308c
 		if (_gameWorld != null) {		
 			_screen.setDimensions(_screenDim);
 			_screen.draw(g);	

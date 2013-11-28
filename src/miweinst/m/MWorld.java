@@ -32,6 +32,7 @@ import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.RelayEntity;
 import miweinst.engine.world.WhileSensorEntity;
+import miweinst.gravidog.ClosedCurveBoundary;
 import cs195n.CS195NLevelReader;
 import cs195n.CS195NLevelReader.InvalidLevelException;
 import cs195n.LevelData;
@@ -42,6 +43,7 @@ import cs195n.LevelData.ShapeData.Type;
 import cs195n.Vec2f;
 
 public class MWorld extends GameWorld {        
+<<<<<<< HEAD
 	public final String string = "MWorld";
 	//        private ArrayList<PhysicsEntity> _shapes;
 	//        private StaticBoundary[] _boundaries;
@@ -77,6 +79,48 @@ public class MWorld extends GameWorld {
 		_app = app;
 		//Initialize Player to avoid NullPointer, in case not instantiated in level editor
 		_player = new Player(this);
+=======
+        public final String string = "MWorld";
+        
+        private App _app;
+        private Player _player;
+        //Player movement using boolean state array
+        private boolean[] _arrowKeyStates;
+        //Lazor visualization for raycasting
+        private Path2D.Float _lazor;
+        private Vec2f _currMouseLoc;
+        private boolean _lazorBool;
+        private Vec2f _deltaPlayerPos;
+        
+        //Class.string mapped to instance of Class<?>
+        private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
+        //Variable name mapped to PhysicsEntity instance
+        private HashDecorator<String, PhysicsEntity> _entities;
+
+        public MWorld(App app, Viewport viewport) {
+                super(app, viewport);
+                _app = app;
+                //Initialize Player to avoid NullPointer, in case not instantiated in level editor
+                _player = new Player(this);             
+                //Key code order: Left(37), Up(38), Right(39), Down(40)
+                _arrowKeyStates = new boolean[4];
+                for (int i=0; i<_arrowKeyStates.length; i++) _arrowKeyStates[i]=false;
+                _currMouseLoc = null;
+                _lazorBool = false;
+
+////////////// START LEVEL READER /////////////////////
+                
+                //Map of Strings to Class<?>, for interpreting level data
+                _classes = new HashDecorator<String, Class<? extends PhysicsEntity>>();                
+                _classes.setDecoration("PhysicsEntity", PhysicsEntity.class);
+                _classes.setDecoration("StaticBoundary", StaticBoundary.class);
+                _classes.setDecoration("Player", Player.class);
+                _classes.setDecoration("Grenade", Grenade.class);
+                _classes.setDecoration("WhileSensorEntity", WhileSensorEntity.class);
+                _classes.setDecoration("RelayEntity", RelayEntity.class);
+                _classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
+                _classes.setDecoration("ClosedCurveBoundary", ClosedCurveBoundary.class);
+>>>>>>> e2b9375cc93e0c48ef1e873b0fc2c4593057308c
 
 		//Key code order: Left(37), Up(38), Right(39), Down(40)
 		_arrowKeyStates = new boolean[4];
@@ -84,7 +128,26 @@ public class MWorld extends GameWorld {
 		_currMouseLoc = null;
 		_lazorBool = false;
 
+<<<<<<< HEAD
 		////////////// START LEVEL READER /////////////////////
+=======
+                File f = new File("src/miweinst/resources/m_level.nlf");
+                LevelData level = null;
+                try {
+                	level = CS195NLevelReader.readLevel(f);
+                }
+                catch (InvalidLevelException le) {
+                	System.err.println("The level you loaded is invalid!! MWorld()");
+                	le.printStackTrace();
+                }
+                catch (FileNotFoundException fe) {
+                	System.err.println("File not found!! MWorld()");
+                	fe.printStackTrace();
+                }                        
+                if (level != null) {
+                	//Properties of entire level
+                	this.setProperties(level.getProperties());
+>>>>>>> e2b9375cc93e0c48ef1e873b0fc2c4593057308c
 
 		//Map of Strings to Class<?>, for interpreting level data
 		_classes = new HashDecorator<String, Class<? extends PhysicsEntity>>();                
@@ -116,6 +179,7 @@ public class MWorld extends GameWorld {
 			//Properties of entire level
 			this.setProperties(level.getProperties());
 
+<<<<<<< HEAD
 			//Each Entity in Level
 			for (EntityData ent: level.getEntities()) {
 				//Make instance of PhysicsEntity
@@ -161,6 +225,91 @@ public class MWorld extends GameWorld {
 					}
 					//Set PhysicsEntity properties                                                
 					entity.setProperties(ent.getProperties());
+=======
+                		if (source != null && target != null) {                
+                			Connection toAdd = null;
+                			Output onOut = source.getOutput(srcOut);
+                			Input doIn = target.getInput(dstIn);
+                			if (doIn != null) {
+                				//Pass in Input target to constructor
+                				toAdd = new Connection(doIn);        
+                				//Connect Output source here
+                				if (onOut !=  null) 
+                					onOut.connect(toAdd);
+                				else System.err.println("Source " + src + " has no output " + srcOut);
+                			}
+                			else System.err.println("Target " + dst + " has no input " + dstIn);
+                			//If valid Connection, parse Connection properties
+                			if (toAdd != null) {
+                				//Properties of connection
+                				toAdd.setProperties(c.getProperties());
+                			}
+                		}
+                	}
+                }
+                else
+                	System.err.println("Level is null! MWorld()");
+/////////////////^^^^^^^^^^                
+                        
+/*                Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
+                PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
+                pin.setMass(1f);
+                this.addEntity(pin);
+                
+                Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+                SpringEntity spring = new SpringEntity(this, springEntityShape);
+                spring.setMass(1f);
+                spring.setSpringConstant(100f);
+                spring.setFrictionConstant(1f);
+                this.addEntity(spring);*/
+                
+                //Get initial distance of Player from screen origin (game units) to maintain panning onTick
+                _deltaPlayerPos = new Vec2f(_player.getX() - super.viewport.getScreenInGameLoc().x, _player.getY() - super.viewport.getScreenInGameLoc().y);
+        
+                //Restore save_data
+                _player.doRead.run(FileIO.read());
+        }
+        
+        
+        /*Called on win or lose conditions by Player's corresponding Inputs.*/
+        public void playerWin() {
+                _app.setScreen(new WinScreen(_app));
+        }
+        public void playerLose() {
+                _app.setScreen(new LoseScreen(_app));
+        }
+        /*Called when game is quit.*/
+        public void quitReset() {
+                _player.doResetData.run(new HashMap<String, String>());
+        }
+        
+        /* Calls tick based on fixed timestep. Passes in an
+         * adjusted nanosSincePreviousTick so speed of entity
+         * movement remains relatively constant regardless of timestep.
+         * Collision response of Entities handled. And movement 
+         * based on boolean state array mutated in onKeyPressed.*/
+        @Override
+        public void onTick(long nanosSincePreviousTick) {
+        	super.onTick(nanosSincePreviousTick);
+//        	long nanos = nanosSincePreviousTick/super.getIterations();
+        	for (int i=1; i<=super.getIterations(); i++) {
+        		//Conditions by array of boolean key states
+        		//Left key down
+        		if (_arrowKeyStates[0]) {
+        			_player.goalVelocityX(-100);
+        		}
+        		//Up key down
+        		if (_arrowKeyStates[1]) {
+        			_player.jump();
+        		}
+        		//Right key down
+        		if (_arrowKeyStates[2]) {
+        			_player.goalVelocityX(100);        
+        		}
+        		//Down key down
+        		if (_arrowKeyStates[3]) 
+        			_player.goalVelocityY(-140);           
+>>>>>>> e2b9375cc93e0c48ef1e873b0fc2c4593057308c
 
 					//Add Entity to World Map
 					_entities.setDecoration(entityName, entity);

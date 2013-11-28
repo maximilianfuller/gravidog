@@ -12,7 +12,7 @@ public class PhysicsEntity extends MovingEntity {
 	public final String string = "PhysicsEntity";
 
 	//Gravity acts on all objects of GameWorld equally
-	public static float GRAVITY = -75f;
+	public static Vec2f GRAVITY = new Vec2f(0, -75f);
 
 	//Self-explanatory attributes of physical object
 	private float _mass;
@@ -65,7 +65,7 @@ public class PhysicsEntity extends MovingEntity {
 	/*Sets gravitational force applied to Entity
 	 * on every tick. Modifies static var! Gravity force
 	 * should act on every PhysicsEntity the same.*/
-	public static void setGravity(float g) {
+	public static void setGravity(Vec2f g) {
 		GRAVITY = g;
 	}
 
@@ -119,8 +119,7 @@ public class PhysicsEntity extends MovingEntity {
 		//Update reference to current location
 		//		_pos = this.getLocation();
 		//Applies gravitational force down as Y-component
-		Vec2f g = new Vec2f(0, GRAVITY);		
-		this.applyForce(g.smult(_mass), getShape().getCentroid());						
+		this.applyForce(GRAVITY.smult(_mass), getShape().getCentroid());						
 		//Update vel, pos; reset force, impulse
 		this.symplecticUpdate(nanosSincePreviousTick);
 		//		this.setLocation(_pos);
@@ -191,6 +190,12 @@ public class PhysicsEntity extends MovingEntity {
 		float dV = vy - _vel.y;
 		Vec2f F = new Vec2f(0, dV*2.5f);
 		this.applyForce(F, getCentroid());
+	}
+	
+	public void goalVelocity(Vec2f gv) {
+		Vec2f dV = gv.minus(_vel);
+		Vec2f force = dV.smult(2.5f);
+		this.applyForce(force, getCentroid());
 	}
 
 	/*Bypass force and impulse to mutate velocity directly.*/

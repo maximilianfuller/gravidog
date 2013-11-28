@@ -1,4 +1,4 @@
-package miweinst.m;
+package miweinst.gravidog;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import miweinst.engine.FileIO;
+import miweinst.engine.beziercurve.CubicBezierCurve;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.gfx.shape.CircleShape;
+import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import cs195n.Vec2f;
@@ -29,25 +31,6 @@ public class Player extends PhysicsEntity {
 	{
 		public void run(Map<String, String> args) {
 			setBorder(args.get("border_width"), args.get("border_color"));
-		}
-	};
-	//Input classes: public anonymous
-	//doWin calls playerWin if argument is true (as safety, if false won't trigger)
-	public Input doWin = new Input() 
-	{
-		public void run(Map<String, String> args) {
-			if (args.containsKey("condition")) 
-				if (Boolean.parseBoolean(args.get("condition")))
-					((MWorld) _world).playerWin();
-		}
-	};
-	//doLose calls playerLose if argument is true (as safety, if false won't trigger)
-	public Input doLose = new Input()
-	{
-		public void run(Map<String, String> args) {
-			if (args.containsKey("condition")) 
-				if (Boolean.parseBoolean(args.get("condition")))
-					((MWorld) _world).playerLose();
 		}
 	};
 	//switch Gravity
@@ -110,21 +93,20 @@ public class Player extends PhysicsEntity {
 		public void run(Map<String, String> args) {
 			//i.e. if save_data loaded successfully
 			if (args != null) {
-				if (args.containsKey("checkpoint")) {
+/*				if (args.containsKey("checkpoint")) {
 					boolean reached = Boolean.parseBoolean(args.get("checkpoint"));
 					if (reached) 
 						setLocation(new Vec2f(-21.45f, 188.16f));
 				}
 				if (args.containsKey("color")) {
 					setShapeColor(MWorld.stringToColor(args.get("color")));
-				}
+				}*/
 			}
 		}
 	};
 	
-	private GameWorld _world;
-	private CircleShape _shape;
-	private Grenade _grenade;
+//	private GameWorld _world;
+	private Shape _shape;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
@@ -137,10 +119,26 @@ public class Player extends PhysicsEntity {
 
 	public Player(GameWorld world) {
 		super(world);
-		_world = world;
-		_grenade = null;
+//		_world = world;
 		Vec2f location = new Vec2f(50, 50);
-		CircleShape shape = new CircleShape(location, 5f);		
+		float radius = 5f;
+		CircleShape shape = new CircleShape(location, radius);	
+
+/*///////TEST PLAYER AS POLYGON SHAPE
+		Vec2f[] verts = new Vec2f[6];
+		//Upper right
+		verts[0] = new Vec2f(location.x + radius*2, location.y);
+		//Upper left
+		verts[1] = new Vec2f(location.x, location.y);
+		//Middle left
+		verts[2] = new Vec2f(location.x - radius*2, location.y + radius*2);
+		//Bottom left
+		verts[3] = new Vec2f(location.x, location.y + 4*radius);
+		//Bottom right
+		verts[4] = new Vec2f(location.x + radius*2, location.y + 4*radius);
+		//Middle right
+		verts[5] = new Vec2f(location.x + 4*radius, location.y + 2*radius);
+		PolygonShape shape = new PolygonShape(verts);*/
 		
 		//Pretty yellow
 		Color col = new Color(235, 235, 110);	//Yellow pastel
@@ -160,7 +158,7 @@ public class Player extends PhysicsEntity {
 		this.setRestitution(100f);
 		_jumpDelay = 5;
 		_collisionTimer = 0;
-		_jumping = false;
+		_jumping = false;		
 	}
 	
 	/*Allows method to override the built in check
@@ -173,21 +171,27 @@ public class Player extends PhysicsEntity {
 	@Override
 	public void onTick(long nanosSincePreviousTick) {		
 		super.onTick(nanosSincePreviousTick);
-		if (_grenade != null) {
-			_grenade.onTick(nanosSincePreviousTick);
-			if (_grenade.isDead()) {
-				_world.removeEntity(_grenade);
-				_grenade = null;
-			}
-		}		
 		_collisionTimer += nanosSincePreviousTick/1000000;
 		_jumpDelay += nanosSincePreviousTick/1000000;
+		Vec2f mtv = getLastMTV();
+		//Gravity follows Player only on curved surfaces. Otherwise touching an enemy/object switches it.
+		if (getShape().getCollisionInfo() != null) {
+			Shape other = getShape().getCollisionInfo().getOther();
+			if (other instanceof CubicBezierCurve) {
+				System.out.println(other);
+				if (mtv != null) {
+					float mag = GRAVITY.mag();
+					Vec2f mtv_norm = mtv.normalized();
+					//Reverse direction of MTV by putting negative sign in front of mag
+					GRAVITY = mtv_norm.smult(-mag);		
+				}
+			}
+		}
+//		System.out.println(mtv);
+//		System.out.println(PhysicsEntity.GRAVITY);
+//		System.out.println("velocity: " + this.getVelocity());
 	}	
 	
-	/* This method has to be called, so make sure Player is
-	 * first in GameWorld's list _entities so _entities(i).collides
-	 * will call this method! Otherwise the other entity's collides
-	 * will be called against only Player's shape's collides method.*/
 	@Override
 	public boolean collides(PhysicsEntity other) {
 		boolean collision = super.collides(other);	
@@ -195,7 +199,7 @@ public class Player extends PhysicsEntity {
 			collision = false;
 		if (collision) {
 			//if collisions are < 6 ms apart, Player is touching an object
-			if (_collisionTimer <= 9) 
+			if (_collisionTimer <= 14) 
 				_jumping = false;
 			//starts timer on collision
 			_collisionTimer = 0;
@@ -203,45 +207,30 @@ public class Player extends PhysicsEntity {
 		return collision;
 	}
 	
-	/*Applies impulse in direction of MTV (normal to curve) if
-	 * certain conditions are met.*/
 	public void jump() {
 		Vec2f mtv = this.getLastMTV();
-		if (Math.abs(mtv.y) > Math.abs(mtv.x)/2) {
-			if (!_jumping && _jumpDelay > 50) {
-				this.applyImpulse(mtv.normalized().smult(20), getCentroid());
-				_jumping = true;
-				_jumpDelay = 0;
-			}
+		if (mtv != null) {
+			//This condition was here to not jump off vertical walls, but now has to be described relative to current Gravity...
+//			if (Math.abs(mtv.y) > Math.abs(mtv.x)/2) {
+				if (!_jumping && _jumpDelay > 50) {
+					this.applyImpulse(mtv.normalized().smult(5000), getCentroid());
+					_jumping = true;
+					_jumpDelay = 0;
+				}
+//			}
 		}
 	}
 	
-	/*Center of Player's body when circular.*/
+	/*Center of Player's body.*/
 	public Vec2f getCenter() {
-		return new Vec2f(this.getLocation().x + _shape.getRadius(), this.getLocation().y + _shape.getRadius());
+		return _shape.getCentroid();
+		//When circular
+//		return new Vec2f(this.getLocation().x + _shape.getRadius(), this.getLocation().y + _shape.getRadius());
 	}
-	
-	/*Creates a new grenade and gives it an impulse in the direction of mouse cursor.*/
-	public Grenade tossGrenade(Vec2f mouseLoc) {
-		if (_grenade == null) {
-			_grenade = new Grenade(_world, this);
-			Vec2f dir = mouseLoc.minus(this.getCenter()).normalized();
-			_grenade.setLocation(_grenade.getLocation().plus(dir.smult(_shape.getRadius())));
-			_grenade.applyImpulse(dir.smult(22), _grenade.getCentroid());
-		}
-		return _grenade;
-	}
-	
-	/*If there is a grenade in mid-flight that the player has thrown.*/
-	public boolean hasActiveGrenade() {
-		return _grenade != null;
-	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
 		super.draw(g);
-		if (_grenade != null) 
-			_grenade.draw(g);
 	}
 
 	@Override
@@ -257,12 +246,6 @@ public class Player extends PhysicsEntity {
 		}
 		if (new String("doSetBorder").equals(s)) {
 			return doSetBorder;
-		}
-		if (new String("doWin").equals(s)) {
-			return doWin;
-		}
-		if (new String("doLose").equals(s)) {
-			return doLose;
 		}
 		if (new String("doStore").equals(s)) {
 			return doStore;
@@ -280,10 +263,10 @@ public class Player extends PhysicsEntity {
 	/* Takes in a String of RGB components of a color, and changes
 	 * color of the Player's shape according to corresponding integer.*/
 	public void setColor(String rgb) {	
-		this.setShapeColor(MWorld.stringToColor(rgb));
+		this.setShapeColor(GameWorld.stringToColor(rgb));
 	}
 	public void setBorder(String width, String color) {
 		getShape().setBorderWidth(Float.parseFloat(width));
-		this.getShape().setBorderColor(MWorld.stringToColor(color));
+		this.getShape().setBorderColor(GameWorld.stringToColor(color));
 	}
 }

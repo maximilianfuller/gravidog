@@ -45,6 +45,7 @@ public class TestCollisionVisualizer {
 	public TestCollisionVisualizer(GameWorld world) {
 		
 /////
+		PhysicsEntity.GRAVITY = PhysicsEntity.GRAVITY.smult(10);
 		_pois = new ArrayList<CircleShape>();
 		_showPoi = false;
 
@@ -101,7 +102,7 @@ public class TestCollisionVisualizer {
 				}
 			}
 //////		GRAVITY
-//			_testArr[i].onTick(nanos);
+			_testArr[i].onTick(nanos);
 		}
 
 //////	TESTER FOR ONLY CHECKING ONE SHAPE AGAINST THE OTHER
@@ -125,6 +126,10 @@ public class TestCollisionVisualizer {
 				_currIndex = i;
 /////		If you want to find cool colors, prints randomized color
 				System.out.println("Shape Color: " + arr[i].getShapeColor() + " (TestCollisionVisualizer.onMousePressed)");
+			}
+////Get location for debugging or reorganizing objects on screen
+			if (arr[i].getShape() instanceof CircleShape) {
+				System.out.println(arr[i].getLocation());
 			}
 		}
 		//If pressing outside of Shape, no selected shape
@@ -164,7 +169,8 @@ private class TestEntity extends PhysicsEntity {
 		super(world);
 		
 		if (shape == "circle") {
-			Vec2f circloc = new Vec2f(10, 60);
+//			Vec2f circloc = new Vec2f(10, 60);
+			Vec2f circloc = new Vec2f(118, 53);
 			float radius = 2;
 			CircleShape circle = new CircleShape(circloc, radius);
 			circle.setColor(Color.PINK);
