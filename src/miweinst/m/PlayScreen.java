@@ -136,7 +136,7 @@ public class PlayScreen extends MScreen {
 
 	@Override
 	public void onMouseWheelMoved(MouseWheelEvent e) {
-		double rot = e.getPreciseWheelRotation();
+		double rot = e.getWheelRotation();
 		float zoom = rot < 0 ? 1.0f/1.1f : 1.1f;
 		_viewport.zoom(zoom*_viewport.getScale());
 	}

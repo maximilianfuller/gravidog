@@ -57,8 +57,6 @@ public class GravidogWorld extends GameWorld {
         public GravidogWorld(App app, Viewport viewport) {
         	super(app, viewport);
         	//Initialize Player to avoid NullPointer, in case not instantiated in level editor
-//        	_player = new Player(this);
-
         	//Key code order: Left(37), Up(38), Right(39), Down(40)
         	_arrowKeyStates = new boolean[4];
         	for (int i=0; i<_arrowKeyStates.length; i++) _arrowKeyStates[i]=false;

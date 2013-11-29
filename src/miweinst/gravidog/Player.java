@@ -178,7 +178,6 @@ public class Player extends PhysicsEntity {
 		if (getShape().getCollisionInfo() != null) {
 			Shape other = getShape().getCollisionInfo().getOther();
 			if (other instanceof CubicBezierCurve) {
-				System.out.println(other);
 				if (mtv != null) {
 					float mag = GRAVITY.mag();
 					Vec2f mtv_norm = mtv.normalized();
@@ -187,9 +186,6 @@ public class Player extends PhysicsEntity {
 				}
 			}
 		}
-//		System.out.println(mtv);
-//		System.out.println(PhysicsEntity.GRAVITY);
-//		System.out.println("velocity: " + this.getVelocity());
 	}	
 	
 	@Override
