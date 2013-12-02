@@ -19,6 +19,7 @@ public class PlayScreen extends GravidogScreen {
 	private Viewport _viewport;
 	private GravidogWorld _gameWorld;
 	private Vec2f _lastMouse;
+	private float _cameraRadius;
 	public PlayScreen(App a) {
 		super(a);
 		app = a;
@@ -42,6 +43,28 @@ public class PlayScreen extends GravidogScreen {
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		_gameWorld.onTick(nanosSincePreviousTick);
+		
+		//player panning
+		Vec2f playerLocOnScreen = _viewport.gamePointToScreen(_gameWorld.getPlayer().getLocation());
+		Vec2f playerOffsetFromCenter = playerLocOnScreen.minus(_viewport.getCenterOfScreen());
+		Vec2f offsetNorm = playerOffsetFromCenter.normalized();
+		Vec2f screenCameraOffset = offsetNorm.smult(_cameraRadius);
+		if(playerOffsetFromCenter.mag() > screenCameraOffset.mag()) {	
+			Vec2f panOffset = playerOffsetFromCenter.minus(screenCameraOffset);
+			_viewport.panInPixels(panOffset);
+		}
+		
+		
+		//player rotation
+		Vec2f dir = _gameWorld.getPlayer().GRAVITY.normalized();
+		float theta = (float) Math.atan(dir.y/dir.x); //offset from positive x axis
+		if(dir.x < 0) {
+			theta += Math.PI; //since the range of atan is -pi/2 to pi/2, here we get the full range
+		}
+		
+		theta += Math.PI/2; //convert to offset from negative y axis
+
+		_viewport.setTheta(theta);
 	}
 	
 	@Override
@@ -64,6 +87,26 @@ public class PlayScreen extends GravidogScreen {
 		if (e.getKeyChar() == 'r') 
 			app.setScreen(new PlayScreen(app));
 		_gameWorld.onKeyPressed(e);
+		
+		/* testing for viewport */
+		if(e.getKeyChar() == 'a') {
+			_viewport.panInPixels(new Vec2f(-5f, 0f));
+		}
+		if(e.getKeyChar() == 'd') {
+			_viewport.panInPixels(new Vec2f(5f, 0f));
+		}
+		if(e.getKeyChar() == 'w') {
+			_viewport.panInPixels(new Vec2f(0f, 5f));
+		}
+		if(e.getKeyChar() == 's') {
+			_viewport.panInPixels(new Vec2f(0f, -5f));
+		}
+		if(e.getKeyChar() == 'z') {
+			_viewport.rotate(.05f);
+		}
+		if(e.getKeyChar() == 'x') {
+			_viewport.rotate(-.05f);
+		}
 	}
 
 	@Override
@@ -81,6 +124,8 @@ public class PlayScreen extends GravidogScreen {
 		if (!e.isAltDown())
 			_gameWorld.onMousePressed(e);		
 		_lastMouse = new Vec2f(e.getX(), e.getY());
+		
+		
 	}
 
 	@Override
@@ -108,10 +153,9 @@ public class PlayScreen extends GravidogScreen {
 
 	@Override
 	public void onMouseWheelMoved(MouseWheelEvent e) {
-		float newScale = _viewport.getScale() + e.getPreciseWheelRotation();
-		if (newScale > 0) {
-			_viewport.zoom(newScale);
-		}
+		double rot = e.getPreciseWheelRotation();
+        float zoom = rot < 0 ? 1.0f/1.1f : 1.1f;
+        _viewport.zoom(zoom*_viewport.getScale());
 	}
 
 	@Override

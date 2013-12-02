@@ -16,7 +16,6 @@ import miweinst.engine.world.PhysicsEntity;
 import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
-	public static final String string = "Player";
 
 	//Inputs: defined as anonymous classes, only one method to override
 	//doSetColor sets Player color; args "color"

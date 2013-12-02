@@ -305,4 +305,8 @@ public class GravidogWorld extends GameWorld {
         }
         public void onMouseMoved(MouseEvent e) {
         }
+        
+        public Player getPlayer() {
+        	return _player;
+        }
 }

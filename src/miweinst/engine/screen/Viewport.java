@@ -35,7 +35,7 @@ public class Viewport {
 	private Vec2f _centerInGameUnits;
 	//Scale in px/unit 
 	private float _scale;
-	//viewport angle (CCW)
+	//viewport angle (CCW) with 0 as the normal downward direction
 	private float _theta;
 	
 	
@@ -236,7 +236,7 @@ public class Viewport {
 		Vec2f topLeft = new Vec2f(_centerInGameUnits.x - topLeftOffset.x, 
 				_centerInGameUnits.y + topLeftOffset.y);
 		tx.translate((-1f)*topLeft.x, (-1f)*topLeft.y);
-		tx.rotate(_theta, _centerInGameUnits.x, _centerInGameUnits.y);
+		tx.rotate(-_theta, _centerInGameUnits.x, _centerInGameUnits.y);
 		return tx;	
 	}
 		
