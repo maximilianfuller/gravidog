@@ -1,7 +1,7 @@
 package miweinst.engine.contraints;
 
 import cs195n.Vec2f;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 

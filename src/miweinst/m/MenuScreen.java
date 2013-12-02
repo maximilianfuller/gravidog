@@ -11,7 +11,7 @@ import cs195n.Vec2f;
 import cs195n.Vec2i;
 import miweinst.engine.App;
 import miweinst.engine.gfx.Text;
-import miweinst.engine.gfx.shape.AARectShape;
+import miweinst.engine.shape.AARectShape;
 
 public class MenuScreen extends MScreen {
 	private App _app;

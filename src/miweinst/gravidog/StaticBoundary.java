@@ -3,7 +3,7 @@ package miweinst.gravidog;
 import java.awt.Color;
 
 import cs195n.Vec2f;
-import miweinst.engine.gfx.shape.AARectShape;
+import miweinst.engine.shape.AARectShape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 

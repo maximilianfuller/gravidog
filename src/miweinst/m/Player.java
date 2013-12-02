@@ -8,7 +8,7 @@ import java.util.Map;
 
 import miweinst.engine.FileIO;
 import miweinst.engine.entityIO.Input;
-import miweinst.engine.gfx.shape.CircleShape;
+import miweinst.engine.shape.CircleShape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import cs195n.Vec2f;

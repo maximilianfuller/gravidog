@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 
 import miweinst.engine.App;
 import miweinst.engine.gfx.Text;
-import miweinst.engine.gfx.shape.PolygonShape;
+import miweinst.engine.shape.PolygonShape;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 

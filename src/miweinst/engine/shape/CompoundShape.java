@@ -1,4 +1,4 @@
-package miweinst.engine.gfx.shape;
+package miweinst.engine.shape;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -118,7 +118,7 @@ public class CompoundShape extends Shape {
 	@Override
 	public void draw(Graphics2D g) {
 		super.draw(g);
-		for (miweinst.engine.gfx.shape.Shape s: _shapes) {
+		for (miweinst.engine.shape.Shape s: _shapes) {
 			s.draw(g);
 		}
 	}

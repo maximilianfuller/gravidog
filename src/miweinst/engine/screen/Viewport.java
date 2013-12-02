@@ -6,12 +6,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import cs195n.Vec2f;
-import cs195n.Vec2i;
 
 //graphics uses math coordinates
 public class Viewport {	
@@ -253,13 +251,10 @@ public class Viewport {
 			_screen.setDimensions(_screenDim);
 			_screen.draw(g);	
 	
-///////MAX: I adjusted the clipRect location since _upperLeftScreenLoc is now defined as center of Screen, not upper left
 			java.awt.Shape clip = g.getClip();	
 			g.clipRect((int) _upperLeftScreenLoc.x, (int) _upperLeftScreenLoc.y, (int) _screenDim.x, (int) _screenDim.y);
-			AffineTransform tsave = g.getTransform();
-						
-			g.transform(getTransform());
-			
+			AffineTransform tsave = g.getTransform();					
+			g.transform(getTransform());			
 			
 			_gameWorld.draw(g);
 

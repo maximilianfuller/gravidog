@@ -1,4 +1,4 @@
-package miweinst.engine.gfx.shape;
+package miweinst.engine.shape;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;

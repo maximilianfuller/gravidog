@@ -3,10 +3,10 @@ package miweinst.engine.collisiondetection;
 import java.awt.geom.PathIterator;
 
 import cs195n.Vec2f;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.CompoundShape;
-import miweinst.engine.gfx.shape.PolygonShape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.CompoundShape;
+import miweinst.engine.shape.PolygonShape;
 
 public class SeparatingAxis {
 

@@ -3,7 +3,7 @@ package miweinst.engine.world;
 import java.util.ArrayList;
 
 import miweinst.engine.entityIO.Output;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.Shape;
  
 /* This generic WhileSensorEntity superclass detects specified PhysicsEntities
  * that touch the area specified by a Shape, and checks for detection on

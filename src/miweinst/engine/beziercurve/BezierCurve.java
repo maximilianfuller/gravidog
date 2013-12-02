@@ -1,12 +1,12 @@
 package miweinst.engine.beziercurve;
 
 import miweinst.engine.collisiondetection.SeparatingAxis;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.CompoundShape;
-import miweinst.engine.gfx.shape.PolygonShape;
 import cs195n.Vec2f;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.CompoundShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 
 public abstract class BezierCurve extends Shape {
 
@@ -15,7 +15,7 @@ public abstract class BezierCurve extends Shape {
 	}
 
 	@Override
-	public boolean collides(miweinst.engine.gfx.shape.Shape s) {
+	public boolean collides(miweinst.engine.shape.Shape s) {
 		return s.collidesCurve(this);
 	}
 

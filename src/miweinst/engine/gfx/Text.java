@@ -7,7 +7,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.Shape;
 import cs195n.Vec2f;
 
 

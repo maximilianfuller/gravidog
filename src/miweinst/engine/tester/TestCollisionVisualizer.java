@@ -7,10 +7,10 @@ import java.util.Random;
 
 import miweinst.engine.beziercurve.BezierPath;
 import miweinst.engine.beziercurve.CubicBezierCurve;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.PolygonShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import cs195n.Vec2f;
@@ -243,7 +243,7 @@ private class TestEntity extends PhysicsEntity {
 			knots[3] = new Vec2f(50, 50);
 			ArrayList<Vec2f> firstControls = new ArrayList<Vec2f>(knots.length);
 			ArrayList<Vec2f> secondControls = new ArrayList<Vec2f>(knots.length);
-			BezierPath closedCurve = BezierPath.generateClosedCurve(knots, firstControls, secondControls);
+			BezierPath closedCurve = BezierPath.generateClosedCurve(knots, firstControls, secondControls, true);
 			
 			test_shape = closedCurve;
 			this.setStatic(true);

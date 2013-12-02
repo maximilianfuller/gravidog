@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.gfx.sprite.Sprite;
+import miweinst.engine.shape.AARectShape;
 import cs195n.Vec2f;
 
 /* Just threw this together, we could probably use it for

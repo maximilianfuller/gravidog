@@ -5,7 +5,7 @@ import java.util.Map;
 import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.Shape;
 import cs195n.Vec2f;
 
 public class PhysicsEntity extends MovingEntity {

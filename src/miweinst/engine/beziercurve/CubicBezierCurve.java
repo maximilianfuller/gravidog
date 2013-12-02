@@ -6,10 +6,10 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import miweinst.engine.collisiondetection.CollisionInfo;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.PolygonShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 import cs195n.Vec2f;
 
 public class CubicBezierCurve extends BezierCurve {

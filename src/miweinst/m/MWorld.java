@@ -17,22 +17,22 @@ import miweinst.engine.App;
 import miweinst.engine.FileIO;
 import miweinst.engine.Tuple;
 import miweinst.engine.beziercurve.BezierCurveEntity;
+import miweinst.engine.beziercurve.CurvedPathEntity;
 import miweinst.engine.contraints.PinEntity;
 import miweinst.engine.contraints.SpringEntity;
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.PolygonShape;
-import miweinst.engine.gfx.shape.Shape;
 import miweinst.engine.graph.HashDecorator;
 import miweinst.engine.screen.Viewport;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.RelayEntity;
 import miweinst.engine.world.WhileSensorEntity;
-import miweinst.gravidog.ClosedCurveBoundary;
 import cs195n.CS195NLevelReader;
 import cs195n.CS195NLevelReader.InvalidLevelException;
 import cs195n.LevelData;
@@ -82,7 +82,7 @@ public class MWorld extends GameWorld {
                 _classes.setDecoration("WhileSensorEntity", WhileSensorEntity.class);
                 _classes.setDecoration("RelayEntity", RelayEntity.class);
                 _classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
-                _classes.setDecoration("ClosedCurveBoundary", ClosedCurveBoundary.class);
+                _classes.setDecoration("ClosedCurveBoundary", CurvedPathEntity.class);
 
                 ///Decoration set to each Entity read from LevelEditor!
                 _entities = new HashDecorator<String, PhysicsEntity>();                                        

@@ -3,7 +3,7 @@ package miweinst.engine.collisiondetection;
 import java.util.ArrayList;
 import java.util.List;
 
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.Shape;
 import cs195n.Vec2f;
 
 public class CollisionInfo {

@@ -2,10 +2,10 @@ package miweinst.engine.collisiondetection;
 
 import cs195n.Vec2f;
 import miweinst.engine.Tuple;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.PolygonShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 
 public class Ray {
 	private Vec2f _src;

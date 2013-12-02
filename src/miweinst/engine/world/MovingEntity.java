@@ -3,8 +3,8 @@ package miweinst.engine.world;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.Shape;
 import cs195n.Vec2f;
 
 /**

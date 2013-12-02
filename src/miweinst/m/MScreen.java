@@ -12,8 +12,8 @@ import cs195n.Vec2f;
 import cs195n.Vec2i;
 import miweinst.engine.App;
 import miweinst.engine.gfx.Text;
-import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.screen.Screen;
+import miweinst.engine.shape.AARectShape;
 
 public class MScreen extends Screen {
 	private App _app;

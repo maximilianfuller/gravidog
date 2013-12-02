@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import cs195n.Vec2f;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.Shape;
 
 public class UIElement {
 	public static final String string = "UIElement";

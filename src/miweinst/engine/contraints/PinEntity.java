@@ -5,9 +5,9 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 
 import cs195n.Vec2f;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.PolygonShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 import miweinst.engine.world.*;
 
 public class PinEntity extends PhysicsEntity {

@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import miweinst.engine.Tuple;
 import miweinst.engine.collisiondetection.SeparatingAxis;
-import miweinst.engine.gfx.shape.CircleShape;
+import miweinst.engine.shape.CircleShape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import cs195n.Vec2f;

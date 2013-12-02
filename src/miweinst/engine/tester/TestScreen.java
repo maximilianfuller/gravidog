@@ -9,8 +9,8 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 
 import miweinst.engine.App;
-import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.screen.Viewport;
+import miweinst.engine.shape.AARectShape;
 import miweinst.m.MScreen;
 import cs195n.Vec2f;
 import cs195n.Vec2i;

@@ -7,9 +7,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 import miweinst.engine.App;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.PolygonShape;
 import miweinst.engine.screen.Screen;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.PolygonShape;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 

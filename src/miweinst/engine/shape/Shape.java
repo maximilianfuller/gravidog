@@ -1,4 +1,4 @@
-package miweinst.engine.gfx.shape;
+package miweinst.engine.shape;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

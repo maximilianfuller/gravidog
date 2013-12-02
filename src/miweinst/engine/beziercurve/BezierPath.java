@@ -6,11 +6,11 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import miweinst.engine.collisiondetection.SeparatingAxis;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.CompoundShape;
-import miweinst.engine.gfx.shape.PolygonShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.CompoundShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 import support.pj2.lib.edu.rit.util.Tridiagonal;
 import cs195n.Vec2f;
 
@@ -65,7 +65,7 @@ public class BezierPath extends Shape {
 	 * BezierPath with n curves, and ~n*3 points. 
 	 * Populates a_ctrls and b_ctrls arrays. */
 	public static BezierPath generateClosedCurve(Vec2f[] knots, 
-				ArrayList<Vec2f> a_ctrls, ArrayList<Vec2f> b_ctrls) 
+				ArrayList<Vec2f> a_ctrls, ArrayList<Vec2f> b_ctrls, boolean closed) 
 	{
 		int n = knots.length;
 		if (n <= 2) 
@@ -108,28 +108,7 @@ public class BezierPath extends Shape {
 			//Second controls. Calculated with equation from first derivative continuity:
 				//P1i + P2i = 2Pi for (i=0, ..., n-1) 
 			b_ctrls.add(i, new Vec2f((float)(2*knots[i].x-x[i]), (float)(2*knots[i].y - y[i])));
-		}		
-//////TESTING USING EQUIVALENT LIBRARY METHOD TO SEE IF BUGS GO AWAY
-/*
-		double[] knots_x = new double[knots.length];
-		double[] knots_y = new double[knots.length];
-		for (int i=0; i<knots.length; i++) {
-			Vec2f k = knots[i];
-			knots_x[i] = k.x;
-			knots_y[i] = k.y;
-		}
-		double[] a_ctrls_x = new double[n];
-		double[] a_ctrls_y = new double[n];
-		double[] b_ctrls_x = new double[n];
-		double[] b_ctrls_y = new double[n];		
-		CurveSmoothing.computeBezierClosed(knots_x, a_ctrls_x, b_ctrls_x, 0, n);
-		CurveSmoothing.computeBezierClosed(knots_y, a_ctrls_y, b_ctrls_y, 0, n);
-		for (int i=0; i<knots.length; i++) {
-			a_ctrls.add(new Vec2f((float)a_ctrls_x[i], (float)a_ctrls_y[i]));
-			b_ctrls.add(new Vec2f((float)b_ctrls_x[i], (float)b_ctrls_y[i]));
-		}
-*/
-//////^^^^^^^		
+		}			
 		ArrayList<Vec2f> orderedPoints = new ArrayList<Vec2f>();
 		for (int i=0; i < n; i++) {
 			if (i < n-1) {
@@ -142,8 +121,9 @@ public class BezierPath extends Shape {
 				orderedPoints.add(knots[i]);
 				orderedPoints.add(a_ctrls.get(i));
 				orderedPoints.add(b_ctrls.get(0));
-				//closing n-1 curve
-				orderedPoints.add(knots[0]);
+				if (closed)
+					//closing n-1 curve
+					orderedPoints.add(knots[0]);
 			}
 		}
 		BezierPath path = new BezierPath(orderedPoints);
@@ -213,9 +193,9 @@ public class BezierPath extends Shape {
 			seg.draw(g);
 		}
 /////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL
-/*		for (CircleShape dot: _drawDots) {
+		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
-		}*/
+		}
 	}
 	@Override
 	public boolean collides(Shape s) {	

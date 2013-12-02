@@ -10,9 +10,9 @@ import java.io.File;
 import javax.swing.SwingUtilities;
 
 import miweinst.engine.App;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
 import miweinst.engine.screen.Viewport;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 
@@ -155,9 +155,9 @@ public class PlayScreen extends GravidogScreen {
 
 	@Override
 	public void onMouseWheelMoved(MouseWheelEvent e) {
-		double rot = e.getPreciseWheelRotation();
+		double rot = e.getWheelRotation();
         float zoom = rot < 0 ? 1.0f/1.1f : 1.1f;
-        _viewport.zoom(zoom*_viewport.getScale());
+        _viewport.zoom(zoom*_viewport.getScale()); 
 	}
 
 	@Override

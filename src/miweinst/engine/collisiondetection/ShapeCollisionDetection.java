@@ -1,11 +1,11 @@
 package miweinst.engine.collisiondetection;
 
 import miweinst.engine.beziercurve.BezierCurve;
-import miweinst.engine.gfx.shape.AARectShape;
-import miweinst.engine.gfx.shape.CircleShape;
-import miweinst.engine.gfx.shape.CompoundShape;
-import miweinst.engine.gfx.shape.PolygonShape;
-import miweinst.engine.gfx.shape.Shape;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.CompoundShape;
+import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.shape.Shape;
 
 public interface ShapeCollisionDetection {	
 	boolean collides(Shape s);
