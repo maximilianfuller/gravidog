@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-import miweinst.engine.collisiondetection.CollisionInfo;
 import miweinst.engine.collisiondetection.SeparatingAxis;
 import miweinst.engine.gfx.shape.AARectShape;
 import miweinst.engine.gfx.shape.CircleShape;
@@ -44,6 +43,9 @@ public class BezierPath extends Shape {
 			_drawDots.add(circle);
 		}
 		updateSegs();
+		
+		this.setColor(Color.RED);
+		this.setBorderWidth(.8f);
 	}
 	
 	public ArrayList<CubicBezierCurve> getCurves() {
@@ -53,11 +55,8 @@ public class BezierPath extends Shape {
 	public void addPoint(Vec2f pt) {
 		_pts.add(pt);
 		updateSegs();
-/////// VISUALIZER	
-/*		CircleShape circle = new CircleShape(pt, 1f);
-		circle.setColor(Color.BLACK);
-		_drawDots.add(circle);*/
 	}
+	/*Must be called every time the Path points have been changed.*/
 	public void updateSegs() {
 		_segs = getDrawingSegments();
 	}
@@ -208,18 +207,15 @@ public class BezierPath extends Shape {
 	}
 	
 	public void draw(Graphics2D g) {
-		g.setColor(Color.RED);
-		g.setStroke(new BasicStroke(.6f));
+		g.setColor(this.getColor());
+		g.setStroke(new BasicStroke(this.getBorderWidth()));
 		for (LineSegment seg: _segs) {
 			seg.draw(g);
 		}
-/*		for (CubicBezierCurve curve: _curves) {
-			curve.draw(g);
-		}*/
-/////
-		for (CircleShape dot: _drawDots) {
+/////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL
+/*		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
-		}
+		}*/
 	}
 	@Override
 	public boolean collides(Shape s) {	

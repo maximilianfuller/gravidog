@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.io.File;
 
 import javax.swing.SwingUtilities;
 
@@ -19,7 +20,7 @@ public class PlayScreen extends GravidogScreen {
 	private Viewport _viewport;
 	private GravidogWorld _gameWorld;
 	private Vec2f _lastMouse;
-	public PlayScreen(App a) {
+	public PlayScreen(App a, File file) {
 		super(a);
 		app = a;
 		//Bounds of Viewport window on screen, in pixels
@@ -31,9 +32,9 @@ public class PlayScreen extends GravidogScreen {
 		//Semi-transparent background; overrides any properties from level editor 
 		_viewport.getScreen().setOutline(new Color(15, 15, 15, 15), 4);	
 
-		_viewport.setScreenLoc(new Vec2f(0, 0));
+		_viewport.setScreenLoc(new Vec2f(-windowDim.x/2, windowDim.y/2));
 				
-		_gameWorld = new GravidogWorld(a,_viewport);
+		_gameWorld = new GravidogWorld(a,_viewport, file);
 		_viewport.setWorld(_gameWorld);
 
 		this.setBackgroundColor(Color.BLACK);
@@ -62,7 +63,7 @@ public class PlayScreen extends GravidogScreen {
 			System.exit(0);
 		}
 		if (e.getKeyChar() == 'r') 
-			app.setScreen(new PlayScreen(app));
+			app.setScreen(new LevelMenuScreen(app));
 		_gameWorld.onKeyPressed(e);
 	}
 
@@ -108,7 +109,7 @@ public class PlayScreen extends GravidogScreen {
 
 	@Override
 	public void onMouseWheelMoved(MouseWheelEvent e) {
-		float newScale = _viewport.getScale() + e.getPreciseWheelRotation();
+		float newScale = _viewport.getScale() + e.getWheelRotation();
 		if (newScale > 0) {
 			_viewport.zoom(newScale);
 		}

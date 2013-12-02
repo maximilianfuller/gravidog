@@ -77,7 +77,8 @@ public class MainMenuScreen extends GravidogScreen {
 
 	@Override
 	public void onMousePressed(MouseEvent e) {
-		app.setScreen(new PlayScreen(app));
+//		app.setScreen(new PlayScreen(app));
+		app.setScreen(new LevelMenuScreen(app));
 	}
 	@Override
 	public void onResize(Vec2i newSize) {

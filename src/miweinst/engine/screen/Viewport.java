@@ -249,9 +249,10 @@ public class Viewport {
 		if (_gameWorld != null) {		
 			_screen.setDimensions(_screenDim);
 			_screen.draw(g);	
-					
+	
+///////MAX: I adjusted the clipRect location since _screenLoc is now defined as center of Screen, not upper left
 			java.awt.Shape clip = g.getClip();	
-			g.clipRect((int) _screenLoc.x, (int) _screenLoc.y, (int) _screenDim.x, (int) _screenDim.y);
+			g.clipRect((int) (_screenLoc.x + _screenDim.x/2), (int) (_screenLoc.y - _screenLoc.y), (int) _screenDim.x, (int) _screenDim.y);
 			AffineTransform tsave = g.getTransform();
 						
 			g.transform(getTransform());
