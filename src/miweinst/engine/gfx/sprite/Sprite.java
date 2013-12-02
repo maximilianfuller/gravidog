@@ -49,14 +49,25 @@ public class Sprite {
 	public Sprite(Vec2f dstSize, BufferedImage... frames) {
 		_frames = new ArrayList<BufferedImage>();
 		for (int i=0; i<frames.length; i++) {
-			_frames.add(frames[i]);
-		}
-		_originalArray = new BufferedImage[_frames.size()];
-		_originalArray = _frames.toArray(_originalArray);	
-		_currFrame = _frames.get(0);	
-		_coverFrame = _currFrame;		
+			_frames.add(i, frames[i]);
+		}	
 		//Takes in the Dimension Sprite will have in GameWorld, when drawn
 		_dstSize = dstSize;
+		init();
+	}
+/*	public Sprite (Vec2f dstSize, BufferedImage single_frame) {
+		_frames.add(0, single_frame);
+		_dstSize = dstSize;
+		init();
+	}*/
+	
+	private void init() {
+		_originalArray = new BufferedImage[_frames.size()];
+		_originalArray = _frames.toArray(_originalArray);	
+		_currFrame = _frames.get(0);
+				
+		_coverFrame = _currFrame;		
+
 		//Dimensions of each frame in Sprite is identical, otherwise animation doesn't work
 		_srcSize = new Vec2i(_currFrame.getWidth(), _currFrame.getHeight());
 	}
@@ -188,7 +199,7 @@ public class Sprite {
 	 * @param pxlLoc
 	 * @param scale
 	 */
-	public void draw(Graphics2D g, Vec2f pxlLoc, int scale) {
+	public void draw(Graphics2D g, Vec2f pxlLoc, float scale) {
 		//Upper left in destination
 		Vec2i dstLoc = new Vec2i((int)pxlLoc.x, (int)pxlLoc.y);
 		

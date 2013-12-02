@@ -29,7 +29,7 @@ public class Viewport {
 	private Vec2f _screenDim;	
 	
 	//Upper left of screen in pixels
-	private Vec2f _screenLoc;
+	private Vec2f _upperLeftScreenLoc;
 	
 	//Center of screen in game units
 	private Vec2f _centerInGameUnits;
@@ -43,12 +43,12 @@ public class Viewport {
 	//gameDim is the size of the game world, in game units
 	public Viewport(Shape container) {	
 		_screenDim = container.getDimensions();
-		_screenLoc = new Vec2f(container.getX(), container.getY());
+		_upperLeftScreenLoc = new Vec2f(container.getX(), container.getY());
 		_scale = 5f;
 		
 		//Default starting game view; upper left flush with world's
 		_centerInGameUnits = new Vec2f(0, 0); 
-		_screen = new AARectShape(_screenLoc, _screenDim);
+		_screen = new AARectShape(_upperLeftScreenLoc, _screenDim);
 		_theta = 0;
 	}
 	
@@ -126,10 +126,12 @@ public class Viewport {
 	 * @param Vec2f newLoc; upper left of viewport screen in pixels
 	 */
 	public void setScreenLoc(Vec2f newLoc) {
-		_screenLoc = newLoc;
+		System.out.println(newLoc);
+		new Exception().printStackTrace();
+		_upperLeftScreenLoc = newLoc;
 	}
 	public Vec2f getScreenLoc() {
-		return _screenLoc;
+		return _upperLeftScreenLoc;
 	}
 	
 	/*Background color of Viewport screen*/
@@ -158,7 +160,8 @@ public class Viewport {
 	}	
 	
 	public Vec2f getCenterOfScreen() {
-		return _screenLoc.plus(_screenDim.sdiv(2f));
+		System.out.println(_upperLeftScreenLoc);
+		return _upperLeftScreenLoc.plus(_screenDim.sdiv(2f));
 				
 	}
 	
@@ -230,7 +233,7 @@ public class Viewport {
 	
 	private AffineTransform getTransform() {
 		AffineTransform tx = new AffineTransform();
-		tx.translate(_screenLoc.x, _screenLoc.y);
+		tx.translate(_upperLeftScreenLoc.x, _upperLeftScreenLoc.y);
 		tx.scale(_scale, _scale * (-1f));
 		Vec2f topLeftOffset = _screenDim.sdiv(_scale).sdiv(2f);
 		Vec2f topLeft = new Vec2f(_centerInGameUnits.x - topLeftOffset.x, 
@@ -241,7 +244,7 @@ public class Viewport {
 	}
 		
 	/** Clips the Graphics2D to only the Viewport window, based on vars
-	 * location _screenLoc with size _screenDim. Applies an AffineTransform
+	 * location _upperLeftScreenLoc with size _screenDim. Applies an AffineTransform
 	 * to scale according to _scale and translate according to the screen's 
 	 * location of game origin (in pxls).*/
 	public void draw(Graphics2D g) {
@@ -249,9 +252,10 @@ public class Viewport {
 		if (_gameWorld != null) {		
 			_screen.setDimensions(_screenDim);
 			_screen.draw(g);	
-					
+	
+///////MAX: I adjusted the clipRect location since _upperLeftScreenLoc is now defined as center of Screen, not upper left
 			java.awt.Shape clip = g.getClip();	
-			g.clipRect((int) _screenLoc.x, (int) _screenLoc.y, (int) _screenDim.x, (int) _screenDim.y);
+			g.clipRect((int) _upperLeftScreenLoc.x, (int) _upperLeftScreenLoc.y, (int) _screenDim.x, (int) _screenDim.y);
 			AffineTransform tsave = g.getTransform();
 						
 			g.transform(getTransform());

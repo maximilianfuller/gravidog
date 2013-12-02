@@ -23,11 +23,8 @@ import java.util.HashMap;
  */
 
 public abstract class Resources {
-	public static final String string = "Resources";
-
 	private static Resources store;
-	
-	private HashMap<String, BufferedImage[]> _cache;
+	protected HashMap<String, BufferedImage[]> _cache;
 		
 	public Resources () {
 		_cache = new HashMap<String, BufferedImage[]>();
@@ -49,7 +46,7 @@ public abstract class Resources {
 	 * class will still have access to the game data.
 	 * @param cache
 	 */
-	public void setCache(HashMap<String, BufferedImage[]> cache) {
+	protected void setCache(HashMap<String, BufferedImage[]> cache) {
 		_cache = cache;
 	}
 	

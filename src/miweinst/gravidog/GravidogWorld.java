@@ -54,14 +54,14 @@ public class GravidogWorld extends GameWorld {
         //Variable name mapped to PhysicsEntity instance
         private HashDecorator<String, PhysicsEntity> _entities;
 
-        public GravidogWorld(App app, Viewport viewport) {
+        public GravidogWorld(App app, Viewport viewport, File f) {
         	super(app, viewport);
         	//Initialize Player to avoid NullPointer, in case not instantiated in level editor
         	//Key code order: Left(37), Up(38), Right(39), Down(40)
         	_arrowKeyStates = new boolean[4];
         	for (int i=0; i<_arrowKeyStates.length; i++) _arrowKeyStates[i]=false;
         	_lazorBool = false;
-
+        	
 ////////////// START LEVEL READER /////////////////////
 
         	//Map of Strings to Class<?>, for interpreting level data
@@ -79,7 +79,7 @@ public class GravidogWorld extends GameWorld {
         	///Decoration set to each Entity read from LevelEditor!
         	_entities = new HashDecorator<String, PhysicsEntity>();                                        
 
-        	File f = new File("src/miweinst/resources/level_one.nlf");
+//        	File f = new File("src/miweinst/resources/level_one.nlf");
         	LevelData level = null;
         	try {
         		level = CS195NLevelReader.readLevel(f);
@@ -211,7 +211,7 @@ public class GravidogWorld extends GameWorld {
 
         	//Get initial distance of Player from screen origin (game units) to maintain panning onTick
 //        	_deltaPlayerPos = new Vec2f(_player.getX() - super.viewport.getScreenInGameLoc().x, _player.getY() - super.viewport.getScreenInGameLoc().y);
-
+            
         	//Restore save_data
         	_player.doRead.run(FileIO.read());
         }
