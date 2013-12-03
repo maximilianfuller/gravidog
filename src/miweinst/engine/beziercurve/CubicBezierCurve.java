@@ -3,6 +3,7 @@ package miweinst.engine.beziercurve;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 
 import miweinst.engine.collisiondetection.CollisionInfo;
@@ -579,7 +580,7 @@ public class CubicBezierCurve extends BezierCurve {
 		c.add(end);
 		return Vec2f.average(c);
 	}
-	
+
 	/* Draws a Cubic Bezier Curve (with two control _points) by first
 	 * recursively getting a List of _points which should be drawn, 
 	 * depending on resolution/smoothness set by THRESHOLD (findDrawingPoints),
@@ -588,9 +589,6 @@ public class CubicBezierCurve extends BezierCurve {
 	public void draw(Graphics2D g) {		
 		g.setStroke(new BasicStroke(super.getBorderWidth()));
 		g.setColor(super.getBorderColor());
-		//Draw each LineSegment calculated by deCasteljau's algorithm in init
-		for (LineSegment seg: _segs) 
-			seg.draw(g);
 				
 /////VISUALIZATION FOR DEBUGGING
 /*		for (CircleShape circle: _drawDots) {

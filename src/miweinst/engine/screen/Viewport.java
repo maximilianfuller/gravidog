@@ -124,8 +124,6 @@ public class Viewport {
 	 * @param Vec2f newLoc; upper left of viewport screen in pixels
 	 */
 	public void setScreenLoc(Vec2f newLoc) {
-		System.out.println(newLoc);
-		new Exception().printStackTrace();
 		_upperLeftScreenLoc = newLoc;
 	}
 	public Vec2f getScreenLoc() {
@@ -158,7 +156,6 @@ public class Viewport {
 	}	
 	
 	public Vec2f getCenterOfScreen() {
-		System.out.println(_upperLeftScreenLoc);
 		return _upperLeftScreenLoc.plus(_screenDim.sdiv(2f));
 				
 	}

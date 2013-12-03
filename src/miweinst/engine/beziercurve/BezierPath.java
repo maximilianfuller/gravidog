@@ -3,7 +3,9 @@ package miweinst.engine.beziercurve;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import miweinst.engine.collisiondetection.SeparatingAxis;
 import miweinst.engine.shape.AARectShape;
@@ -186,16 +188,44 @@ public class BezierPath extends Shape {
 		return curve;
 	}
 	
+	public static Path2D toPath(List<LineSegment> segs) {
+		Path2D path = new Path2D.Float();
+		//Draw each LineSegment calculated by deCasteljau's algorithm in init
+		for (int i=0; i<segs.size(); i++) {
+			LineSegment seg = segs.get(i);
+			if (i==0) {
+				path.moveTo(seg.start.x, seg.start.y);
+			}
+			else if (i == segs.size() -1) {
+				path.lineTo(seg.end.x, seg.end.y);
+			}
+			else {
+				path.lineTo(seg.start.x, seg.start.y);
+			}
+		}
+		return path;
+	}
+	
 	public void draw(Graphics2D g) {
 		g.setColor(this.getColor());
 		g.setStroke(new BasicStroke(this.getBorderWidth()));
-		for (LineSegment seg: _segs) {
+/*		for (LineSegment seg: _segs) {
 			seg.draw(g);
-		}
+		}*/
+/*		for (BezierCurve curve: _curves) {
+			curve.draw(g);
+		}*/
 /////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL
 		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
 		}
+/// 	FILL IN CLOSED CURVE
+/*		Path2D path = toPath(_segs);
+		Color col = g.getColor();
+		g.setColor(Color.WHITE);
+		g.fill(path);
+		g.draw(path);
+		g.setColor(col);*/
 	}
 	@Override
 	public boolean collides(Shape s) {	

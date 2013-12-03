@@ -60,6 +60,9 @@ public class LevelBox {
 			case 3:
 				file_path = new String("level_three.nlf");
 				break;
+			case 4:
+				file_path = new String("level_four.nlf");
+				break;
 			default:	//Just default to Level One
 				file_path = new String("level_one.nlf");
 				break;

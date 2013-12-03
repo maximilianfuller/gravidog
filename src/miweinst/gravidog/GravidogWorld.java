@@ -73,7 +73,7 @@ public class GravidogWorld extends GameWorld {
         	_classes.setDecoration("WhileSensorEntity", WhileSensorEntity.class);
         	_classes.setDecoration("RelayEntity", RelayEntity.class);
         	_classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
-        	_classes.setDecoration("ClosedCurveBoundary", CurvedPathEntity.class);
+        	_classes.setDecoration("CurvedPathEntity", CurvedPathEntity.class);
         	_classes.setDecoration("PinEntity", PinEntity.class);
         	_classes.setDecoration("SpringEntity", SpringEntity.class);
 
