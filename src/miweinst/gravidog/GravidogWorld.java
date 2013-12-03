@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.Map;
 
 import miweinst.engine.App;
 import miweinst.engine.FileIO;
@@ -39,17 +40,22 @@ import cs195n.LevelData.ShapeData;
 import cs195n.LevelData.ShapeData.Type;
 import cs195n.Vec2f;
 
-public class GravidogWorld extends GameWorld {        
+public class GravidogWorld extends GameWorld {    
+	
+		public Input doDoorReached = new Input() 
+		{
+			public void run(Map<String, String> args) {
+				_app.setScreen(new LevelMenuScreen(_app));
+			}
+		};
 
+		private App _app;
         private Player _player;
         //Player movement using boolean state array
         private boolean[] _arrowKeyStates;
         //Lazor visualization for raycasting
         private Path2D.Float _lazor;
-        private boolean _lazorBool;
-        //For camera panning
-//        private Vec2f _deltaPlayerPos;
-        
+        private boolean _lazorBool;        
         //Class.string mapped to instance of Class<?>
         private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
         //Variable name mapped to PhysicsEntity instance
@@ -57,10 +63,10 @@ public class GravidogWorld extends GameWorld {
 
         public GravidogWorld(App app, Viewport viewport, File f) {
         	super(app, viewport);
-        	//Initialize Player to avoid NullPointer, in case not instantiated in level editor
-        	//Key code order: Left(37), Up(38), Right(39), Down(40)
+        	_app = app;
         	_arrowKeyStates = new boolean[4];
-        	for (int i=0; i<_arrowKeyStates.length; i++) _arrowKeyStates[i]=false;
+        	for (int i=0; i<_arrowKeyStates.length; i++) 
+        		_arrowKeyStates[i]=false;
         	_lazorBool = false;
         	
 ////////////// START LEVEL READER /////////////////////
@@ -76,6 +82,7 @@ public class GravidogWorld extends GameWorld {
         	_classes.setDecoration("CurvedPathEntity", CurvedPathEntity.class);
         	_classes.setDecoration("PinEntity", PinEntity.class);
         	_classes.setDecoration("SpringEntity", SpringEntity.class);
+        	_classes.setDecoration("GoalDoor", GoalDoor.class);        
 
         	///Decoration set to each Entity read from LevelEditor!
         	_entities = new HashDecorator<String, PhysicsEntity>();                                        

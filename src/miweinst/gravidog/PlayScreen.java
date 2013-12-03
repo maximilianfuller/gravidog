@@ -12,7 +12,6 @@ import javax.swing.SwingUtilities;
 import miweinst.engine.App;
 import miweinst.engine.screen.Viewport;
 import miweinst.engine.shape.AARectShape;
-import miweinst.engine.shape.CircleShape;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 

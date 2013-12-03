@@ -28,6 +28,7 @@ public class PolygonShape extends Shape {
 	private Vec2f[] _vertices;
 	private Vec2f[] _relativeVertices;
 	private Vec2f _centroid;
+	
 //	private float _area;
 	
 /////  Stores other Shape in collision (K) and MTV (V)

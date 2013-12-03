@@ -46,7 +46,7 @@ public class BezierPath extends Shape {
 		}
 		updateSegs();
 		
-		this.setColor(Color.RED);
+		this.setColor(Color.WHITE);
 		this.setBorderWidth(.8f);
 	}
 	
@@ -209,9 +209,9 @@ public class BezierPath extends Shape {
 	public void draw(Graphics2D g) {
 		g.setColor(this.getColor());
 		g.setStroke(new BasicStroke(this.getBorderWidth()));
-/*		for (LineSegment seg: _segs) {
+		for (LineSegment seg: _segs) {
 			seg.draw(g);
-		}*/
+		}
 /*		for (BezierCurve curve: _curves) {
 			curve.draw(g);
 		}*/
@@ -220,12 +220,11 @@ public class BezierPath extends Shape {
 			dot.draw(g);
 		}
 /// 	FILL IN CLOSED CURVE
-/*		Path2D path = toPath(_segs);
-		Color col = g.getColor();
-		g.setColor(Color.WHITE);
-		g.fill(path);
-		g.draw(path);
-		g.setColor(col);*/
+//		Path2D path = toPath(_segs);
+//		Color col = g.getColor();
+//		g.setColor(Color.WHITE);
+//		g.fill(path);
+//		g.setColor(col);
 	}
 	@Override
 	public boolean collides(Shape s) {	
