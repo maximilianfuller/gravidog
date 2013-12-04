@@ -29,6 +29,9 @@ public class PhysicsEntity extends MovingEntity {
 	private boolean _isVisited;
 	private boolean _isInteractive;
 	private boolean _isRotatable;
+	
+////
+	
 
 	//Input to change whether interactive/visible; for traps, dynamic mechanics, etc...
 	public Input doDisappear = new Input() 
@@ -41,7 +44,6 @@ public class PhysicsEntity extends MovingEntity {
 				setVisible(Boolean.parseBoolean(args.get("visible")));
 			}
 		}
-
 	};
 
 	public PhysicsEntity(GameWorld world) {
@@ -238,9 +240,9 @@ public class PhysicsEntity extends MovingEntity {
 	public boolean collides(PhysicsEntity other) {
 		boolean collision = super.collides(other);  
 		if (_isInteractive && other.isInteractive()) {
-			if (collision && other.getShape().poi(getShape()) != null) {
-				this.collisionResponse(other);	
-			}
+			this.collisionResponse(other);
+//			if (collision && other.getShape().poi(getShape()) != null) 
+//				this.collisionResponse(other);	
 		}
 		return collision;
 	}
@@ -254,7 +256,8 @@ public class PhysicsEntity extends MovingEntity {
 		//containing obj is 'other' b/c double dispatch
 		CollisionInfo thisData = this.getShape().getCollisionInfo();
 
-		if (otherData != null && thisData != null) {
+		//Avoid null pointer by checking POI exists (there is that weird penetration case)
+		if (otherData != null && thisData != null && other.getShape().poi(getShape()) != null) {
 			//Get MTVs and locations for each Entity
 			Vec2f otherMTV = otherData.getMTV();	
 			Vec2f thisMTV = thisData.getMTV();			

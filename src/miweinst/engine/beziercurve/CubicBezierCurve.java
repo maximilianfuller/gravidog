@@ -3,7 +3,6 @@ package miweinst.engine.beziercurve;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Path2D;
 import java.util.ArrayList;
 
 import miweinst.engine.collisiondetection.CollisionInfo;
@@ -454,6 +453,9 @@ public class CubicBezierCurve extends BezierCurve {
 		if (!getWideBounds().collides(c)) {
 			return false;
 		}
+		this.setCollisionInfo(null);
+		c.setCollisionInfo(null);
+		
 		Vec2f p = this.nearestPointOnCurve(c.getCentroid());
 		float dist = p.dist(c.getCentroid());
 		Vec2f mtv = p.minus(c.getCentroid()).normalized().smult(c.getRadius()-dist);
@@ -480,11 +482,14 @@ public class CubicBezierCurve extends BezierCurve {
 	/*Collision and point of intersection for Polygons.*/
 	@Override
 	public boolean collidesPolygon(PolygonShape p) {
-		boolean collision = false;
 		//Only check for collision if polygon in convex hull
 		if (!getWideBounds().collides(p)) {
 			return false;
-		}
+		}		
+		this.setCollisionInfo(null);
+		p.setCollisionInfo(null);
+		
+		boolean collision = false;
 		Vec2f[] verts = p.getVertices();		
 		ArrayList<LineSegment> sides = new ArrayList<LineSegment>();
 		ArrayList<LineSegment> mtv_segs = new ArrayList<LineSegment>();

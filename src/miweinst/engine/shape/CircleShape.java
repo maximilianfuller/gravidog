@@ -122,6 +122,9 @@ public class CircleShape extends Shape {
 	/*Mtv is parallel to line between circles' centers*/
 	@Override
 	public boolean collidesCircle(CircleShape c) {
+		this.setCollisionInfo(null);
+		c.setCollisionInfo(null);
+		
 		//Distance between centers
 		float dist = this.getCentroid().dist(c.getCentroid());
 		float sumRad = this.getRadius() + c.getRadius();
@@ -129,21 +132,11 @@ public class CircleShape extends Shape {
 		Vec2f mtv = dir.normalized().smult(dist - sumRad);
 		//If distance b/w centers is less than sum rads
 		if (dist < sumRad) {
-			/*Vec2f axis = this.getCenter().minus(c.getCenter());
-			SeparatingAxis sepAxis = new SeparatingAxis(axis);
-			Float mtv1d = sepAxis.intervalMTV(sepAxis.project(this), sepAxis.project(c));
-			if (mtv1d==null) {
-				return false;
-			}
-			Vec2f mtv = axis.smult(mtv1d);*/
 			this.setCollisionInfo(new CollisionInfo(this, c, mtv));
 			c.setCollisionInfo(new CollisionInfo(c, this, mtv.smult(-1)));
 			return true;
 		}
 		else {
-///////
-//			this.setCollisionInfo(null);
-//			c.setCollisionInfo(null);	
 			return false;
 		}
 	}
