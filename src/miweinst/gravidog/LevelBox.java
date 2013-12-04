@@ -83,7 +83,7 @@ public class LevelBox {
 			_frame = ImageIO.read(f);
 		} catch(IOException e) {
 			//Prints the level frame which is invalide
-			System.out.println("Must load new file for image frame for : " + level_path);
+			System.err.println("Must load new file for image frame for : " + level_path);
 			e.printStackTrace();
 		}	
 		
