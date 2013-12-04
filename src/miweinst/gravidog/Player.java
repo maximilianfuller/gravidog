@@ -125,7 +125,7 @@ public class Player extends PhysicsEntity {
 		shape.setBorderWidth(.5f);
 		shape.setBorderColor(Color.BLACK);
 		
-		_jumpImpulse = 5000;
+		_jumpImpulse = 4500;
 		
 		this.setShape(shape);
 		this.setLocation(location);
@@ -164,13 +164,9 @@ public class Player extends PhysicsEntity {
 				float mag = GRAVITY.mag();
 				Vec2f mtv_norm = mtv.normalized();
 				GRAVITY = mtv_norm.smult(-mag);		
-////VARIABLE MTVS are what's affecting the changing jump heights. 
-//				System.out.println(mtv);
 			}
 		}
 	}	
-	
-
 	
 	/* Applies upward impulse if colliding with something by set _jumpImpulse
 	 * value.*/

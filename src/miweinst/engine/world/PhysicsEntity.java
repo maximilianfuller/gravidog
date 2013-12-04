@@ -50,8 +50,8 @@ public class PhysicsEntity extends MovingEntity {
 		super(world);		
 		_vel = new Vec2f(0, 0);
 		super.setDx(_vel.x);
-		super.setDy(_vel.y);
-		//		_pos = this.getLocation();
+		super.setDy(_vel.y);		
+		GRAVITY = new Vec2f(0, -75f);
 		_mass = 1;
 		_restitution = 0f;		
 		_force = new Vec2f(0, 0);
@@ -327,11 +327,11 @@ public class PhysicsEntity extends MovingEntity {
 		float denominator = 1f/m_a + 1f/m_b;
 		//Only non-static entities have non-null getCentroid() and getMomentOfInertia() [i.e. BezierCurveEntity does not]
 		if (!this.isStatic()) {
-			Vec2f r1Perp = getCentroid().minus(poi).getNormal();
+			Vec2f r1Perp = getCentroid().minus(poi).getNormal().normalized();
 			denominator += (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);;
 		}
 		if (!other.isStatic()) {
-			Vec2f r2Perp = other.getCentroid().minus(poi).getNormal();
+			Vec2f r2Perp = other.getCentroid().minus(poi).getNormal().normalized();
 			denominator += (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass());;
 		}
 		imps[1] = (numerator.sdiv(denominator));

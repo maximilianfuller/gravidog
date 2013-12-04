@@ -1,14 +1,10 @@
 package miweinst.gravidog;
 
-import java.awt.Color;
 import java.util.Map;
 
-import cs195n.Vec2f;
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.entityIO.Input;
-import miweinst.engine.shape.AARectShape;
 import miweinst.engine.world.GameWorld;
-import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.WhileSensorEntity;
 
 public class Star extends WhileSensorEntity {

@@ -12,7 +12,6 @@ import miweinst.engine.Tuple;
 import miweinst.engine.collisiondetection.Ray;
 import miweinst.engine.screen.Viewport;
 import cs195n.Vec2f;
-import miweinst.gravidog.Player;
 
 /**
  * This class should be subclassed for any
@@ -54,7 +53,7 @@ public class GameWorld {
 		_iters = (int) (_accumulatedTime/_timestep);		
 		//Iterations of fixed timestep
 		for (int iter=1; iter <= _iters; iter++) {		
-			
+			//Clear CollisionInfo objects for PhysicsEntity
 			for (PhysicsEntity entity: _entities) {
 				entity.getCollisionInfo().clear();
 			}
