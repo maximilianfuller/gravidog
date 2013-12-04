@@ -198,9 +198,6 @@ public class PlayScreen extends GravidogScreen {
 		}
 		
 		float rotationThisTick = rotationDir*ROTATION_SPEED*nanosSincePreviousTick/1000000000f;
-		System.out.println("rotationThisTick " + rotationThisTick);
-		System.out.println("minthetaOffset " + (Math.PI - Math.abs(thetaOffset - Math.PI)));
-		System.out.println("goalTheta " + goalTheta);
 		if(Math.abs(rotationThisTick) > Math.PI - Math.abs(thetaOffset - Math.PI)) {
 			_viewport.setTheta(goalTheta);
 		} else {
