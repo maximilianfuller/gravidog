@@ -9,6 +9,7 @@ ASK TA:
 BUG: Jiggly Viewport rotation
 BUG: Weird speed up/slow down when holding dir
 
+TODO: Boulder and other objects affected by world.
 TODO: Relay entity that lets you open door after one star
 	Door gray until star picked up, then turns yellow/green or whatever color
 TODO: Show stars and open/closed levels on LevelMenu
