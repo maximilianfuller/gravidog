@@ -36,6 +36,8 @@ public class Viewport {
 	//viewport angle (CCW) with 0 as the normal downward direction
 	private float _theta;
 	
+	private final float ROTATIONAL_RESOLUTION = (float)Math.PI/1000f;
+	
 	
 	//Container is the rectangle Viewport screen; (Not drawn, so can be generic superclass)
 	//gameDim is the size of the game world, in game units
@@ -242,7 +244,7 @@ public class Viewport {
 		Vec2f topLeft = new Vec2f(_centerInGameUnits.x - topLeftOffset.x, 
 				_centerInGameUnits.y + topLeftOffset.y);
 		tx.translate((-1f)*topLeft.x, (-1f)*topLeft.y);
-		tx.rotate(-_theta, _centerInGameUnits.x, _centerInGameUnits.y);
+		tx.rotate(-(_theta-_theta%ROTATIONAL_RESOLUTION), _centerInGameUnits.x, _centerInGameUnits.y);
 		return tx;	
 	}
 		
