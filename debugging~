@@ -4,9 +4,7 @@ ASK TA:
 	Tridiagonal class? ask TA
 	Player disappears from curve after a bit (possibly has to do with time step?)
 
-BUG: Jumping is sticky on curves
-	No Double Jumps
-	FIX by setting lastMTV to null if every MTV is null, else set to non-null one
+BUG: YOU FALL THROUGH LOWER CURVE.
 BUG: Weird speed up/slow down when holding dir
 
 TODO: Save/Load levels
