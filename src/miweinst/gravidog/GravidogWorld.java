@@ -48,6 +48,12 @@ public class GravidogWorld extends GameWorld {
 			_app.setScreen(new LevelMenuScreen(_app));
 		}
 	};
+	
+	public Input starCollected = new Input() {
+		public void run(Map<String, String> args) {
+			//TODO
+		}
+	};
 
 	private App _app;
 	private Player _player;
@@ -60,6 +66,8 @@ public class GravidogWorld extends GameWorld {
 	private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
 	//Variable name mapped to PhysicsEntity instance
 	private HashDecorator<String, PhysicsEntity> _entities;
+
+	
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
 		super(app, viewport);
@@ -82,7 +90,8 @@ public class GravidogWorld extends GameWorld {
 		_classes.setDecoration("CurvedPathEntity", CurvedPathEntity.class);
 		_classes.setDecoration("PinEntity", PinEntity.class);
 		_classes.setDecoration("SpringEntity", SpringEntity.class);
-		_classes.setDecoration("GoalDoor", GoalDoor.class);        
+		_classes.setDecoration("GoalDoor", GoalDoor.class);
+		_classes.setDecoration("Star", Star.class);
 
 		///Decoration set to each Entity read from LevelEditor!
 		_entities = new HashDecorator<String, PhysicsEntity>();                                        
