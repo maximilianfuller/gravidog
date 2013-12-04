@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-import miweinst.engine.collisiondetection.CollisionInfo;
+import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.shape.AARectShape;
 import miweinst.engine.shape.CircleShape;
 import miweinst.engine.shape.PolygonShape;
@@ -460,8 +460,8 @@ public class CubicBezierCurve extends BezierCurve {
 		float dist = p.dist(c.getCentroid());
 		Vec2f mtv = p.minus(c.getCentroid()).normalized().smult(c.getRadius()-dist);
 		if (dist <= c.getRadius()) {
-			this.setCollisionInfo(new CollisionInfo(this, c, mtv));
-			c.setCollisionInfo(new CollisionInfo(c, this, mtv.smult(-1)));			
+			this.setCollisionInfo(new ShapeCollisionInfo(this, c, mtv));
+			c.setCollisionInfo(new ShapeCollisionInfo(c, this, mtv.smult(-1)));			
 			return true;
 		}
 		return false;
@@ -564,8 +564,8 @@ public class CubicBezierCurve extends BezierCurve {
 				circle.setColor(Color.black);
 				_drawDots.add(circle);
 				_drawLines.add(mtvSeg);
-				this.setCollisionInfo(new CollisionInfo(this, p, mtv));
-				p.setCollisionInfo(new CollisionInfo(p, this, mtv.smult(1)));
+				this.setCollisionInfo(new ShapeCollisionInfo(this, p, mtv));
+				p.setCollisionInfo(new ShapeCollisionInfo(p, this, mtv.smult(1)));
 			}
 		}	
 		return collision;

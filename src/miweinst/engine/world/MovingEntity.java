@@ -182,7 +182,7 @@ public abstract class MovingEntity extends Entity {
 	 * Note: this is only collision detection, because any response
 	 * is not generic to MovingEntity. After collision detection
 	 * is forwarded to the Shape, an MTV is stored in that
-	 * Shape's CollisionInfo object, available by accessor.*/
+	 * Shape's ShapeCollisionInfo object, available by accessor.*/
 	public boolean collides(MovingEntity s) {
 		if (_shape != null && s.getShape() != null) 
 			return _shape.collides(s.getShape());

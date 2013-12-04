@@ -206,7 +206,7 @@ public class Player extends PhysicsEntity {
 	/*Applies impulse in direction of MTV (normal to curve) if
 	 * certain conditions are met.*/
 	public void jump() {
-		Vec2f mtv = this.getLastMTV();
+		Vec2f mtv = this.getCollisionInfo().get(0).mtv;
 		if (Math.abs(mtv.y) > Math.abs(mtv.x)/2) {
 			if (!_jumping && _jumpDelay > 50) {
 				this.applyImpulse(mtv.normalized().smult(20), getCentroid());

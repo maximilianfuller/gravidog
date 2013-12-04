@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import miweinst.engine.beziercurve.BezierCurve;
-import miweinst.engine.collisiondetection.CollisionInfo;
+import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.collisiondetection.SeparatingAxis;
 import miweinst.engine.collisiondetection.ShapeCollisionDetection;
 import miweinst.engine.world.GameWorld;
@@ -22,7 +22,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	private Color _color;	
 	private Color _borderColor;
 	private float _borderWidth;
-	private CollisionInfo _collisionInfo;
+	private ShapeCollisionInfo _collisionInfo;
 	private float _angle;
 	
 	public Shape(Vec2f loc, Vec2f dim) {
@@ -195,10 +195,10 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public abstract Vec2f projectOnto(SeparatingAxis sep);
 	
 /////
-	public CollisionInfo getCollisionInfo() {
+	public ShapeCollisionInfo getCollisionInfo() {
 		return _collisionInfo;
 	}
-	public void setCollisionInfo(CollisionInfo info) {
+	public void setCollisionInfo(ShapeCollisionInfo info) {
 		_collisionInfo = info;
 	}
 /////^^^

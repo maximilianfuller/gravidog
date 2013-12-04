@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import miweinst.engine.FileIO;
+import miweinst.engine.collisiondetection.PhysicsCollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.shape.CircleShape;
 import miweinst.engine.shape.Shape;
@@ -147,26 +148,43 @@ public class Player extends PhysicsEntity {
 	@Override
 	public void onTick(long nanosSincePreviousTick) {		
 		super.onTick(nanosSincePreviousTick);
-		Vec2f mtv = getLastMTV();
-		
-/////	if getCollisionInfo().other.isGravitySwitchable
-		if (mtv != null) {
-			float mag = GRAVITY.mag();
-			Vec2f mtv_norm = mtv.normalized();
-			//Reverse direction of MTV by putting negative sign in front of mag
-			GRAVITY = mtv_norm.smult(-mag);		
+
+		//If there was a valid collision
+		List<PhysicsCollisionInfo> infos = getCollisionInfo();
+		PhysicsCollisionInfo info = null;
+		for (PhysicsCollisionInfo i: infos) {
+			if (i != null) {
+				info = i;
+			}
+		}
+		if (info != null) {
+			//If entity is gravitational
+			if (info.other.isGravitational()) {
+				Vec2f mtv = info.mtv;
+				float mag = GRAVITY.mag();
+				Vec2f mtv_norm = mtv.normalized();
+				GRAVITY = mtv_norm.smult(-mag);		
 ////VARIABLE MTVS are what's affecting the changing jump heights. 
-//			System.out.println(mtv);
+//				System.out.println(mtv);
+			}
 		}
 	}	
+	
+
 	
 	/* Applies upward impulse if colliding with something by set _jumpImpulse
 	 * value.*/
 	public void jump() {
-		Vec2f mtv = this.getLastMTV();
-		if (mtv != null) {
-			//Relative to curr mtv, projected on normal to MTV (the horizontal)
-///			if (Math.abs(mtv.y) > Math.abs(mtv.x)/2)
+		//If there was a valid collision
+		List<PhysicsCollisionInfo> infos = getCollisionInfo();
+		PhysicsCollisionInfo info = null;
+		for (PhysicsCollisionInfo i: infos) {
+			if (i != null) {
+				info = i;
+			}
+		}
+		if (info != null) {
+			Vec2f mtv = info.mtv;
 			this.applyImpulse(mtv.normalized().smult(_jumpImpulse), getCentroid());
 		}
 	}

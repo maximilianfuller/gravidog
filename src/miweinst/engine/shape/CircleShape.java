@@ -5,7 +5,7 @@ import java.awt.geom.Ellipse2D;
 
 import cs195n.Vec2f;
 import miweinst.engine.beziercurve.BezierCurve;
-import miweinst.engine.collisiondetection.CollisionInfo;
+import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.collisiondetection.SeparatingAxis;
 
 	/**
@@ -23,7 +23,7 @@ public class CircleShape extends Shape {
 
 	private Ellipse2D.Float _circle;
 	private float _radius;
-	private CollisionInfo _collisionInfo;
+	private ShapeCollisionInfo _collisionInfo;
 	//Takes radius (float) in constructor, not Dimensions
 	public CircleShape(Vec2f loc, float radius) {
 		super(loc, new Vec2f(2*radius, 2*radius));
@@ -104,11 +104,11 @@ public class CircleShape extends Shape {
 	}
 	
 	@Override
-	public CollisionInfo getCollisionInfo() {
+	public ShapeCollisionInfo getCollisionInfo() {
 		return _collisionInfo;
 	}
 	@Override
-	public void setCollisionInfo(CollisionInfo info) {
+	public void setCollisionInfo(ShapeCollisionInfo info) {
 		_collisionInfo = info;
 	}
 	
@@ -132,8 +132,8 @@ public class CircleShape extends Shape {
 		Vec2f mtv = dir.normalized().smult(dist - sumRad);
 		//If distance b/w centers is less than sum rads
 		if (dist < sumRad) {
-			this.setCollisionInfo(new CollisionInfo(this, c, mtv));
-			c.setCollisionInfo(new CollisionInfo(c, this, mtv.smult(-1)));
+			this.setCollisionInfo(new ShapeCollisionInfo(this, c, mtv));
+			c.setCollisionInfo(new ShapeCollisionInfo(c, this, mtv.smult(-1)));
 			return true;
 		}
 		else {
@@ -146,7 +146,7 @@ public class CircleShape extends Shape {
 		//Convert aab to PolygonShape for collision algorithm
 		PolygonShape poly = aab.rectToPoly();	
 		boolean collision = poly.collidesCircle(this);
-		//Pass CollisionInfo from equivalent Polygon to original AARect
+		//Pass ShapeCollisionInfo from equivalent Polygon to original AARect
 		aab.setCollisionInfo(poly.getCollisionInfo());
 		return collision;			
 	}

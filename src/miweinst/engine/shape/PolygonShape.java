@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import miweinst.engine.beziercurve.BezierCurve;
-import miweinst.engine.collisiondetection.CollisionInfo;
+import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.collisiondetection.SeparatingAxis;
 import cs195n.Vec2f;
 
@@ -33,7 +33,7 @@ public class PolygonShape extends Shape {
 	
 /////  Stores other Shape in collision (K) and MTV (V)
 //	private HashDecorator<Shape, Vec2f> _collisionDecorator;
-	private CollisionInfo _collisionInfo;
+	private ShapeCollisionInfo _collisionInfo;
 	
 	//Takes in a location for superclass' reference
 	//Vals array should already be in counter-clockwise order
@@ -351,7 +351,7 @@ public class PolygonShape extends Shape {
 		//Finish allAxes with circle-poly separating axis
 		Vec2f closestVert = this.closestVertex(c.getCentroid());				
 		allAxes[allAxes.length-1] = closestVert.minus(c.getCentroid()).normalized();	
-		//Get minimum MTV and populate CollisionInfo attributes
+		//Get minimum MTV and populate ShapeCollisionInfo attributes
 		for (int i=0; i<allAxes.length; i++) {
 			Vec2f axis = allAxes[i];
 			SeparatingAxis sepAxis = new SeparatingAxis(axis);
@@ -364,8 +364,8 @@ public class PolygonShape extends Shape {
 				mtv = axis.smult(mtv1d);
 			}
 		}
-		this.setCollisionInfo(new CollisionInfo(this, c, mtv.sdiv(-1)));
-		c.setCollisionInfo(new CollisionInfo(c, this, mtv));	
+		this.setCollisionInfo(new ShapeCollisionInfo(this, c, mtv.sdiv(-1)));
+		c.setCollisionInfo(new ShapeCollisionInfo(c, this, mtv));	
 		return true;
 	}
 	
@@ -476,18 +476,18 @@ public class PolygonShape extends Shape {
 			}
 		}	
 		
-		//Store this Shape, other Shape and mtv in CollisionInfo cache
-		this.setCollisionInfo(new CollisionInfo(this, p, mtv.sdiv(-1)));
-		p.setCollisionInfo(new CollisionInfo(p, this, mtv));	
+		//Store this Shape, other Shape and mtv in ShapeCollisionInfo cache
+		this.setCollisionInfo(new ShapeCollisionInfo(this, p, mtv.sdiv(-1)));
+		p.setCollisionInfo(new ShapeCollisionInfo(p, this, mtv));	
 		return true;
 	}
 
 	@Override
-	public CollisionInfo getCollisionInfo() {
+	public ShapeCollisionInfo getCollisionInfo() {
 		return _collisionInfo;
 	}
 	@Override
-	public void setCollisionInfo(CollisionInfo info) {
+	public void setCollisionInfo(ShapeCollisionInfo info) {
 		_collisionInfo = info;
 	}
 
@@ -543,7 +543,7 @@ public class PolygonShape extends Shape {
 	@Override
 	public Vec2f poiCircle(CircleShape c) {
 		this.collidesCircle(c);
-		CollisionInfo info = this.getCollisionInfo();
+		ShapeCollisionInfo info = this.getCollisionInfo();
 		if(info == null) {
 			return null;
 		} else {
@@ -560,7 +560,7 @@ public class PolygonShape extends Shape {
 	public Vec2f collidePoint(Vec2f point) {
 		List<Vec2f> pointList = new ArrayList<Vec2f>();
 		pointList.add(point);
-		Vec2f mtv = CollisionInfo.getMTV(Arrays.asList(this.getVertices()), pointList, this.getEdges());
+		Vec2f mtv = ShapeCollisionInfo.getMTV(Arrays.asList(this.getVertices()), pointList, this.getEdges());
 		if(mtv == null) {
 			return null;
 		}

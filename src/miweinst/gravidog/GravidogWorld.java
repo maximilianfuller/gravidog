@@ -213,11 +213,13 @@ public class GravidogWorld extends GameWorld {
 */
         	
         	//Square to test stuff with
-/*            PolygonShape entityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+            PolygonShape entityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
             PhysicsEntity test = new PhysicsEntity(this);
             test.setShape(entityShape);
             test.setMass(1f);
-            this.addEntity(test);*/
+            test.setGravitational(false);
+            this.addEntity(test);
+      
 
         	//Get initial distance of Player from screen origin (game units) to maintain panning onTick
 //        	_deltaPlayerPos = new Vec2f(_player.getX() - super.viewport.getScreenInGameLoc().x, _player.getY() - super.viewport.getScreenInGameLoc().y);

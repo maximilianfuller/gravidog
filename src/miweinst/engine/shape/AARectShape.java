@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import cs195n.Vec2f;
 import miweinst.engine.beziercurve.BezierCurve;
-import miweinst.engine.collisiondetection.CollisionInfo;
+import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.collisiondetection.SeparatingAxis;
 
 /**
@@ -22,7 +22,7 @@ public class AARectShape extends Shape {
 	public static final String string = "AARectShape";
 
 	private Rectangle2D _rect;
-	private CollisionInfo _collisionInfo;
+	private ShapeCollisionInfo _collisionInfo;
 
 	public AARectShape(Vec2f loc, Vec2f dim) {
 		super(loc, dim);
@@ -95,16 +95,16 @@ public class AARectShape extends Shape {
 		super.draw(g);
 	}
 	
-	/* Accessor/Mutator for CollisionInfo object which holds 
+	/* Accessor/Mutator for ShapeCollisionInfo object which holds 
 	 * this shape, the shape collided with, and 
 	 * the minimum translation vector. Accessed by
 	 * containing PhysicsEntity for collision response.*/
 	@Override
-	public CollisionInfo getCollisionInfo() {
+	public ShapeCollisionInfo getCollisionInfo() {
 		return _collisionInfo;
 	}
 	@Override
-	public void setCollisionInfo(CollisionInfo info) {
+	public void setCollisionInfo(ShapeCollisionInfo info) {
 		_collisionInfo = info;
 	}
 

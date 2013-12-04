@@ -1,8 +1,10 @@
 package miweinst.engine.world;
 
+import java.util.ArrayList;
 import java.util.Map;
 
-import miweinst.engine.collisiondetection.CollisionInfo;
+import miweinst.engine.collisiondetection.PhysicsCollisionInfo;
+import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
@@ -22,16 +24,14 @@ public class PhysicsEntity extends MovingEntity {
 	private float _angularImpulse, _angularForce;	//radians
 	private float _angularVel;
 
-	//Most recent MTV
-	private Vec2f _lastMTV;
+	//Most recent Collision, MTV and other PhysicsEntity
+	private ArrayList<PhysicsCollisionInfo> _collisionInfo;
 
 	private boolean _isStatic;
 	private boolean _isVisited;
 	private boolean _isInteractive;
 	private boolean _isRotatable;
-	
-////
-	
+	private boolean _isGravitational;
 
 	//Input to change whether interactive/visible; for traps, dynamic mechanics, etc...
 	public Input doDisappear = new Input() 
@@ -60,8 +60,11 @@ public class PhysicsEntity extends MovingEntity {
 		_isVisited = false;		
 		_isInteractive = true;
 		_isRotatable = true;
+		_isGravitational = true;
 		//Moves on set dx/dy without having to call move() manually
 		this.setFreeMoving(true);
+		
+		_collisionInfo = new ArrayList<PhysicsCollisionInfo>();
 	}
 
 	/*Sets gravitational force applied to Entity
@@ -124,7 +127,7 @@ public class PhysicsEntity extends MovingEntity {
 		this.applyForce(GRAVITY.smult(_mass), getShape().getCentroid());						
 		//Update vel, pos; reset force, impulse
 		this.symplecticUpdate(nanosSincePreviousTick);
-		//		this.setLocation(_pos);
+//		this.setLocation(_pos);		
 	}
 
 	/* Update Position and Velocity in symplectic order. Use
@@ -224,11 +227,11 @@ public class PhysicsEntity extends MovingEntity {
 
 	/*Stores MTV of last collision with this Entity. 
 	 * Null if no collision, updated on every tick..*/
-	public Vec2f getLastMTV() {
-		return _lastMTV;
+	public ArrayList<PhysicsCollisionInfo> getCollisionInfo() {
+		return _collisionInfo;
 	}
-	public void setLastMTV(Vec2f mtv) {
-		_lastMTV = mtv;
+	public void setCollisionInfo(PhysicsCollisionInfo info) {
+		_collisionInfo.add(info);
 	}
 
 	/* Adds collision response to the collision detection of
@@ -241,20 +244,18 @@ public class PhysicsEntity extends MovingEntity {
 		boolean collision = super.collides(other);  
 		if (_isInteractive && other.isInteractive()) {
 			this.collisionResponse(other);
-//			if (collision && other.getShape().poi(getShape()) != null) 
-//				this.collisionResponse(other);	
 		}
 		return collision;
 	}
 
 	/* Handles response if collision between entities is 
 	 * detected. Moves each Entity away from each other
-	 * by mtv/2, according to their CollisionInfo object.*/
+	 * by mtv/2, according to their ShapeCollisionInfo object.*/
 	public void collisionResponse(PhysicsEntity other) {
-		//Get CollisionInfo information cache, s
-		CollisionInfo otherData = other.getShape().getCollisionInfo();
+		//Get ShapeCollisionInfo information cache, s
+		ShapeCollisionInfo otherData = other.getShape().getCollisionInfo();
 		//containing obj is 'other' b/c double dispatch
-		CollisionInfo thisData = this.getShape().getCollisionInfo();
+		ShapeCollisionInfo thisData = this.getShape().getCollisionInfo();
 
 		//Avoid null pointer by checking POI exists (there is that weird penetration case)
 		if (otherData != null && thisData != null && other.getShape().poi(getShape()) != null) {
@@ -290,18 +291,18 @@ public class PhysicsEntity extends MovingEntity {
 			//3 Then set the impulse
 			other.applyImpulse(imps[0], poi);
 			this.applyImpulse(imps[1], poi);
-
+			
 			//Updates reference to most recent MTV
-			other.setLastMTV(otherMTV);
-			this.setLastMTV(thisMTV);
+			other.setCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
+			this.setCollisionInfo(new PhysicsCollisionInfo(thisMTV, other));
 		}
 		//Void condition because collisionResponse only called if collision detected
 		else {
 			if (otherData == null) {
-				other.setLastMTV(null);
+				other.setCollisionInfo(null);
 			}
 			if (thisData == null) {
-				this.setLastMTV(null);
+				this.setCollisionInfo(null);
 			}
 		}
 	}
@@ -383,6 +384,12 @@ public class PhysicsEntity extends MovingEntity {
 	public void setRotatable(boolean r) {
 		_isRotatable = r;
 	}
+	public boolean isGravitational() {
+		return _isGravitational;
+	}
+	public void setGravitational(boolean g) {
+		_isGravitational = g;
+	}
 
 	/* Properties of PhysicsEntity, mapped from Strings to
 	 * values as Strings.*/
@@ -403,6 +410,9 @@ public class PhysicsEntity extends MovingEntity {
 		//visible
 		if (props.containsKey("visible")) 
 			this.setVisible(Boolean.parseBoolean(props.get("visible")));	
+		//changes gravity
+		if (props.containsKey("gravitational")) 
+			this.setGravitational(Boolean.parseBoolean(props.get("gravitational")));
 	}
 
 	/*Returns the IO class mapped to a particular String,

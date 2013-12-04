@@ -53,6 +53,11 @@ public class GameWorld {
 		_iters = (int) (_accumulatedTime/_timestep);		
 		//Iterations of fixed timestep
 		for (int iter=1; iter <= _iters; iter++) {		
+			
+			for (PhysicsEntity entity: _entities) {
+				entity.getCollisionInfo().clear();
+			}
+			
 			//Collision detection
 			for (int i=0; i<_entities.size(); i++) {
 				for (int j=i; j < _entities.size(); j++) {	
