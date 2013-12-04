@@ -37,6 +37,7 @@ public class LevelMenuScreen extends GravidogScreen {
 	
 	/* GO! */
 	private void startLevel(String lvlPath) {
+		System.out.println(lvlPath);
 		app.setScreen(new PlayScreen(app, new File(lvlPath)));
 	}
 	

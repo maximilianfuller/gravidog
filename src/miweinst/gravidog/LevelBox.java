@@ -90,7 +90,7 @@ public class LevelBox {
 		/* Level attributes */
 		
 		level_num = num;
-		_open = (level_num==1)? true: false;	
+		_open = true;	
 		_frameVisible = _open? true: false;
 		_score = 0;		//default val
 		

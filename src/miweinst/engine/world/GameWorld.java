@@ -13,6 +13,7 @@ import miweinst.engine.Tuple;
 import miweinst.engine.collisiondetection.Ray;
 import miweinst.engine.screen.Viewport;
 import cs195n.Vec2f;
+import miweinst.gravidog.Player;
 
 /**
  * This class should be subclassed for any

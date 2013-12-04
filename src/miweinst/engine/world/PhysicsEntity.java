@@ -51,7 +51,7 @@ public class PhysicsEntity extends MovingEntity {
 		super.setDy(_vel.y);
 		//		_pos = this.getLocation();
 		_mass = 1;
-		_restitution = .8f;		
+		_restitution = 0f;		
 		_force = new Vec2f(0, 0);
 		_impulse = new Vec2f(0, 0);		
 		_isStatic = false;		

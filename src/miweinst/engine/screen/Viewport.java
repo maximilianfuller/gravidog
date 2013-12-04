@@ -209,6 +209,14 @@ public class Viewport {
 	}
 	
 	/**
+	 * get the CCW offset of the viewport from initial 'down'position (negative y axis)
+	 * @return
+	 */
+	public float getTheta() {
+		return _theta;
+	}
+	
+	/**
 	 * set the rotation orientation of the viewport
 	 * @param theta
 	 */
