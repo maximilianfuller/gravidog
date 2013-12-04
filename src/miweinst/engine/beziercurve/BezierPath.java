@@ -216,9 +216,10 @@ public class BezierPath extends Shape {
 			curve.draw(g);
 		}*/
 /////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL
-		for (CircleShape dot: _drawDots) {
+/*		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
-		}
+		}*/
+		
 /// 	FILL IN CLOSED CURVE
 //		Path2D path = toPath(_segs);
 //		Color col = g.getColor();

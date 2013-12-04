@@ -75,6 +75,10 @@ public class LevelBox {
 		switch(num) {
 		case 1:
 			f = new File("src/miweinst/resources/frame_one.jpg");
+		case 2:
+			f = new File("src/miweinst/resources/frame_two.jpg");
+		case 3:
+			f = new File("src/miweinst/resources/frame_three.jpg");
 		default:
 			f = new File("src/miweinst/resources/frame_one.jpg");
 		}
