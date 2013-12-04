@@ -169,9 +169,14 @@ public class PlayScreen extends GravidogScreen {
 	private void rotateToPlayer(long nanosSincePreviousTick) {
 		//set the goal angle (the player's current orientation)
 		Vec2f dir = _gameWorld.getPlayer().GRAVITY.normalized();
-		float goalTheta = (float) Math.atan(dir.y/dir.x); //offset from positive x axis
+		float goalTheta = 0f;
+		if(dir.x != 0f) {
+			goalTheta = (float) Math.atan(dir.y/dir.x); //offset from positive x axis
+		} else {
+			goalTheta = (float) (dir.y < 0 ? -Math.PI/2 : Math.PI/2);
+		}
 		if(dir.x < 0) {
-			goalTheta += Math.PI; //since the range of atan is -pi/2 to pi/2, here we get the full range
+			goalTheta += Math.PI; //since the range of atan is -pi/2 to pi/2 exclusive, here we get the full range
 		}
 		goalTheta += Math.PI/2; //convert to offset from negative y axis
 		goalTheta = goalTheta%((float)Math.PI*2f); //confine to the 0 to 2pi range
@@ -193,7 +198,6 @@ public class PlayScreen extends GravidogScreen {
 		}
 		
 		float rotationThisTick = rotationDir*ROTATION_SPEED*nanosSincePreviousTick/1000000000f;
-		 
 		if(Math.abs(rotationThisTick) > Math.PI - Math.abs(thetaOffset - Math.PI)) {
 			_viewport.setTheta(goalTheta);
 		} else {
