@@ -16,6 +16,17 @@ public class GoalDoor extends WhileSensorEntity {
 	
 	private PolygonShape _doorRect;
 	
+/*	public GoalDoor(GameWorld world) {
+		super(world);
+		super.setShape(_doorRect);
+		
+		_doorRect = new AARectShape(new Vec2f(0, 0), new Vec2f(0, 0)).rectToPoly();
+		_doorRect.setOutline(Color.RED, 15f);
+		
+		//Connect Sensor.onDetect to World.doDoorReached
+//		super.onDetect.connect(new Connection(world.doDoorReached));
+	}*/
+	
 	public GoalDoor(GravidogWorld world, Player player) {
 		super(world);
 			
@@ -28,9 +39,7 @@ public class GoalDoor extends WhileSensorEntity {
 		//Connect Sensor.onDetect to World.doDoorReached
 		super.onDetect.connect(new Connection(world.doDoorReached));
 	}
-	
-	
-	
+			
 	@Override
 	public void draw(Graphics2D g) {
 		super.draw(g);

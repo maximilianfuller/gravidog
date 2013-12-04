@@ -324,7 +324,10 @@ public class PolygonShape extends Shape {
 	 * or if the circle contains the closest vertex on the Polygon,
 	 * to save computation if obviously true.*/
 	@Override
-	public boolean collidesCircle(CircleShape c) {			
+	public boolean collidesCircle(CircleShape c) {	
+		this.setCollisionInfo(null);
+		c.setCollisionInfo(null);	
+		
 		Vec2f[] allAxes = new Vec2f[this.getVertices().length+1];
 		Float minMag = Float.POSITIVE_INFINITY;
 		Vec2f mtv = null;
@@ -354,9 +357,6 @@ public class PolygonShape extends Shape {
 			SeparatingAxis sepAxis = new SeparatingAxis(axis);
 			Float mtv1d = sepAxis.intervalMTV(sepAxis.project(c), sepAxis.project(this));
 			if (mtv1d == null) {
-///////
-//				this.setCollisionInfo(null);
-//				c.setCollisionInfo(null);	
 				return false;
 			}
 			if (Math.abs(mtv1d) < minMag) {
@@ -426,6 +426,9 @@ public class PolygonShape extends Shape {
 	 * overlap between the projections, no collision is detected.*/
 	@Override
 	public boolean collidesPolygon(PolygonShape p) {	
+		this.setCollisionInfo(null);
+		p.setCollisionInfo(null);	
+		
 		//Concatenate both lists of vertices
 		Vec2f[][] both = new Vec2f[2][Math.max(p.getVertices().length, this.getVertices().length)];	
 		both[0] = p.getVertices();
@@ -459,9 +462,6 @@ public class PolygonShape extends Shape {
 
 				//If ranges don't overlap on every axis, collision NOT detected
 				if (sepAxis.isOverlapping(arange, brange)==false) {
-///////
-//					this.setCollisionInfo(null);
-//					p.setCollisionInfo(null);	
 					return false;
 				}
 				
@@ -477,7 +477,7 @@ public class PolygonShape extends Shape {
 		}	
 		
 		//Store this Shape, other Shape and mtv in CollisionInfo cache
-		_collisionInfo = new CollisionInfo(this, p, mtv.sdiv(-1));
+		this.setCollisionInfo(new CollisionInfo(this, p, mtv.sdiv(-1)));
 		p.setCollisionInfo(new CollisionInfo(p, this, mtv));	
 		return true;
 	}

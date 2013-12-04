@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import miweinst.engine.FileIO;
-import miweinst.engine.beziercurve.CubicBezierCurve;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.shape.CircleShape;
 import miweinst.engine.shape.Shape;
@@ -106,15 +105,10 @@ public class Player extends PhysicsEntity {
 	
 //	private GameWorld _world;
 	private Shape _shape;
+	private float _jumpImpulse;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
-	//collisionTimer measures ms between collisions
-	private float _collisionTimer;
-	//jumpDelay is delay before Player can jump again
-	private float _jumpDelay;
-	//boolean for whether jump is allowed
-	private boolean _jumping;
 
 	public Player(GameWorld world) {
 		super(world);
@@ -122,22 +116,6 @@ public class Player extends PhysicsEntity {
 		Vec2f location = new Vec2f(50, 50);
 		float radius = 5f;
 		CircleShape shape = new CircleShape(location, radius);	
-
-/*///////TEST PLAYER AS POLYGON SHAPE
-		Vec2f[] verts = new Vec2f[6];
-		//Upper right
-		verts[0] = new Vec2f(location.x + radius*2, location.y);
-		//Upper left
-		verts[1] = new Vec2f(location.x, location.y);
-		//Middle left
-		verts[2] = new Vec2f(location.x - radius*2, location.y + radius*2);
-		//Bottom left
-		verts[3] = new Vec2f(location.x, location.y + 4*radius);
-		//Bottom right
-		verts[4] = new Vec2f(location.x + radius*2, location.y + 4*radius);
-		//Middle right
-		verts[5] = new Vec2f(location.x + 4*radius, location.y + 2*radius);
-		PolygonShape shape = new PolygonShape(verts);*/
 		
 		//Pretty yellow
 		Color col = new Color(235, 235, 110);	//Yellow pastel
@@ -145,6 +123,8 @@ public class Player extends PhysicsEntity {
 		shape.setColor(col);
 		shape.setBorderWidth(.5f);
 		shape.setBorderColor(Color.BLACK);
+		
+		_jumpImpulse = 5000;
 		
 		this.setShape(shape);
 		this.setLocation(location);
@@ -155,9 +135,6 @@ public class Player extends PhysicsEntity {
 		_gravitySwitched = false;
 		_dataWritten = false;
 		this.setRestitution(100f);
-		_jumpDelay = 5;
-		_collisionTimer = 0;
-		_jumping = false;		
 	}
 	
 	/*Allows method to override the built in check
@@ -170,57 +147,33 @@ public class Player extends PhysicsEntity {
 	@Override
 	public void onTick(long nanosSincePreviousTick) {		
 		super.onTick(nanosSincePreviousTick);
-		_collisionTimer += nanosSincePreviousTick/1000000;
-		_jumpDelay += nanosSincePreviousTick/1000000;
 		Vec2f mtv = getLastMTV();
-		//Gravity follows Player only on curved surfaces. Otherwise touching an enemy/object switches it.
-		if (getShape().getCollisionInfo() != null) {
-			Shape other = getShape().getCollisionInfo().getOther();
-			if (other instanceof CubicBezierCurve) {
-				if (mtv != null) {
-					float mag = GRAVITY.mag();
-					Vec2f mtv_norm = mtv.normalized();
-					//Reverse direction of MTV by putting negative sign in front of mag
-					GRAVITY = mtv_norm.smult(-mag);		
-				}
-			}
+		
+/////	if getCollisionInfo().other.isGravitySwitchable
+		if (mtv != null) {
+			float mag = GRAVITY.mag();
+			Vec2f mtv_norm = mtv.normalized();
+			//Reverse direction of MTV by putting negative sign in front of mag
+			GRAVITY = mtv_norm.smult(-mag);		
+////VARIABLE MTVS are what's affecting the changing jump heights. 
+//			System.out.println(mtv);
 		}
 	}	
 	
-	@Override
-	public boolean collides(PhysicsEntity other) {
-		boolean collision = super.collides(other);	
-		if (!other.isInteractive()) 
-			collision = false;
-		if (collision) {
-			//if collisions are < 6 ms apart, Player is touching an object
-			if (_collisionTimer <= 14) 
-				_jumping = false;
-			//starts timer on collision
-			_collisionTimer = 0;
-		}
-		return collision;
-	}
-	
+	/* Applies upward impulse if colliding with something by set _jumpImpulse
+	 * value.*/
 	public void jump() {
 		Vec2f mtv = this.getLastMTV();
 		if (mtv != null) {
-			//This condition was here to not jump off vertical walls, but now has to be described relative to current Gravity...
-//			if (Math.abs(mtv.y) > Math.abs(mtv.x)/2) {
-				if (!_jumping && _jumpDelay > 50) {
-					this.applyImpulse(mtv.normalized().smult(5000), getCentroid());
-					_jumping = true;
-					_jumpDelay = 0;
-				}
-//			}
+			//Relative to curr mtv, projected on normal to MTV (the horizontal)
+///			if (Math.abs(mtv.y) > Math.abs(mtv.x)/2)
+			this.applyImpulse(mtv.normalized().smult(_jumpImpulse), getCentroid());
 		}
 	}
 	
 	/*Center of Player's body.*/
 	public Vec2f getCenter() {
 		return _shape.getCentroid();
-		//When circular
-//		return new Vec2f(this.getLocation().x + _shape.getRadius(), this.getLocation().y + _shape.getRadius());
 	}
 
 	@Override
