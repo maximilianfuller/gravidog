@@ -31,7 +31,7 @@ public class LevelMenuScreen extends GravidogScreen {
 		third.box.setColor(Color.LIGHT_GRAY);
 		
 		_boxes.add(first);
-		_boxes.add(second);
+//		_boxes.add(second);
 		_boxes.add(third);
 	}
 	

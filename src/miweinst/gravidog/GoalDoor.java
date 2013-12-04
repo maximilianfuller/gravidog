@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.shape.AARectShape;
 import miweinst.engine.shape.PolygonShape;
+import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.WhileSensorEntity;
 import cs195n.Vec2f;
 
@@ -27,17 +28,21 @@ public class GoalDoor extends WhileSensorEntity {
 //		super.onDetect.connect(new Connection(world.doDoorReached));
 	}*/
 	
-	public GoalDoor(GravidogWorld world, Player player) {
+	public GoalDoor(GameWorld world) {
 		super(world);
+		
+		GravidogWorld gworld = (GravidogWorld)world;
 			
-		super.setEntities(player);
+		super.setEntities(gworld.getPlayer());
 		super.setShape(_doorRect);
 		
 		_doorRect = new AARectShape(new Vec2f(0, 0), new Vec2f(0, 0)).rectToPoly();
 		_doorRect.setOutline(Color.RED, 15f);
 		
+		this.setVisible(true);
+		
 		//Connect Sensor.onDetect to World.doDoorReached
-		super.onDetect.connect(new Connection(world.doDoorReached));
+		super.onDetect.connect(new Connection(gworld.doDoorReached));
 	}
 			
 	@Override
