@@ -130,7 +130,6 @@ public class GravidogWorld extends GameWorld {
 				}                                                                                
 				//Cast PhysicsEntity to specific subclass
 				if (entity instanceof Player) {
-					//        				entity = _player;
 					_player = (Player) entity;
 				}       
 				else if (entity instanceof WhileSensorEntity) {
