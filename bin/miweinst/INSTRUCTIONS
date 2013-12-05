@@ -1,8 +1,8 @@
 
-M4 INSTRUCTIONS
+GRAVI-DOG INSTRUCTIONS
 
-Use arrow keys to move around. That's pretty much it for m4. (some other controls may do other things, but they don't apply to m4). If you fall off the map you die. When gravity is reversed, you can float around by "jumping" with the down arrow as much as you want. 
+Use arrow keys to move around. The World's gravity accordingly.
 
-You have to go up the polygon platforms (with varying restitutions) to land on the switch at the top, which will switch the player to Black. Once the player black, it has to find it's way down the curves and jump to the yellow win platform. It can only win if the switch/checkpoint has already been reached.
+Pick up the stars (yellow circles) and reach the end of the level by reaching the door (green rectangle). You want to finish the level with all three stars.
 
-The red screen means you lost. The purple screen means Yay you win. 
+Levels 1 and 3 are currently available; level 2 may become available for playtesting.

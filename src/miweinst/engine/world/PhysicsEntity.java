@@ -241,6 +241,7 @@ public class PhysicsEntity extends MovingEntity {
 	 * PhysicsEntity. Super's method called if MovingEntity
 	 * of different subclass is passed in, w/o collision response.*/
 	public boolean collides(PhysicsEntity other) {
+///This Player.collides, other is CurvedPathEntity
 		boolean collision = super.collides(other);  
 		if (_isInteractive && other.isInteractive()) {
 			this.collisionResponse(other);

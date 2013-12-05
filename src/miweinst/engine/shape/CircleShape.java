@@ -170,7 +170,6 @@ public class CircleShape extends Shape {
 	
 	@Override
 	public boolean collidesCurve(BezierCurve c) {
-		// TODO Auto-generated method stub
 		return c.collidesCircle(this);
 	}
 	

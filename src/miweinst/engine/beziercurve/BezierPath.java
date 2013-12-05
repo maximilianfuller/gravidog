@@ -229,14 +229,24 @@ public class BezierPath extends Shape {
 	}
 	@Override
 	public boolean collides(Shape s) {	
-		//If any curve collides, collision detected
+/*		boolean close = false;
+		for (CubicBezierCurve c: _curves) {
+			if (s.collides(c.getWideBounds())) {
+				close = true;
+			}
+		}
+		if (close) {*/
+//		CubicBezierCurve curve = this.findClosestCurve(s);
+//		if (curve != null) {
 		for (CubicBezierCurve curve: _curves) {
-			boolean collision = s.collides(curve);
+			boolean collision = s.collidesCurve(curve);
 			if (collision) {
 				this.setCollisionInfo(curve.getCollisionInfo());
 				return true;
 			}
 		}
+//		}
+//		}
 		return false;
 	}	
 	/* Optimized by only colliding with the curve that
