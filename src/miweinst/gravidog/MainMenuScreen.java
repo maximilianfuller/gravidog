@@ -42,9 +42,9 @@ public class MainMenuScreen extends GravidogScreen {
 		_textTwo.setFont(new Font("Walshes", Font.ROMAN_BASELINE, 100), false);
 		_textThree.setFont(new Font("Walshes", Font.ROMAN_BASELINE, 100), false);
 		//FONTS SIZE!
-		_textOne.setFontSize(150);
-		_textTwo.setFontSize(150);
-		_textThree.setFontSize(150);
+		_textOne.setFontSize(100);
+		_textTwo.setFontSize(100);
+		_textThree.setFontSize(100);
 		//FONTS COLORS!
 		_textThree.setColor(new Color(47, 125, 147, 255));
 		_textOne.setColor(new Color(47, 125, 147, 130));
