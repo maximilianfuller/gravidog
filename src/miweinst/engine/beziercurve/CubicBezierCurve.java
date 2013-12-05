@@ -50,7 +50,6 @@ public class CubicBezierCurve extends BezierCurve {
 		this.setLocation(start);
 		this.updateSegs();
 		_pois = new ArrayList<Vec2f>();
-		this.setBorderColor(Color.RED);
 //////		
 		_drawDots = new ArrayList<CircleShape>();
 		_drawLines = new ArrayList<LineSegment>();
@@ -197,10 +196,10 @@ public class CubicBezierCurve extends BezierCurve {
 	 * Therefore M.minus(P).dot(derivative(getT(P))) == 0, then use root finding.*/
 	public float nearestTOnCurve(Vec2f m) {
 		//Minimum distance between M and P, i.e. M.minus(P).dot(derivative(getT(P))) == 0
-		float res = 1000;
+		float res = 500;
 		float t_val = 0;		
-		//Dot/Orthoganal check
-/*		float minDot = Float.POSITIVE_INFINITY;
+		//Dot/Orthogonal check; project orthogonal
+		float minDot = Float.POSITIVE_INFINITY;
 		for (float t=0; t<=1; t=t+1/res) {
 			Vec2f p = getCasteljauPoint(t);
 			 float dot = m.minus(p).dot(findDerivative(t));			 
@@ -209,9 +208,9 @@ public class CubicBezierCurve extends BezierCurve {
 				minDot = Math.abs(dot);
 				t_val = t;
 			 }
-		}*/
+		}
 		//Simple distance minimizing through sampling curve
-		float minDist = Float.POSITIVE_INFINITY;
+/*		float minDist = Float.POSITIVE_INFINITY;
 		for (float t=0; t<=1; t=t+1/res) {
 			Vec2f p = getCasteljauPoint(t);
 			float dist = m.dist2(p);
@@ -219,7 +218,7 @@ public class CubicBezierCurve extends BezierCurve {
 				minDist = dist;
 				t_val = t;
 			}
-		}		
+		}		*/
 		return t_val;
 	}
 	public Vec2f nearestPointOnCurve(Vec2f m) {
@@ -248,7 +247,7 @@ public class CubicBezierCurve extends BezierCurve {
 	 * the list order of the _points even while recursive calls are not made 
 	 * in point-order starting at 0-index, and pointList is the List<Vec2f> 
 	 * that is populated by the method.*/	
-	public int findDrawingPoints(float t0, float t1, int insertionIndex, ArrayList<Vec2f> pointList) {		
+	private int findDrawingPoints(float t0, float t1, int insertionIndex, ArrayList<Vec2f> pointList) {		
 		//Get midpoint parameter between t0 and tw
 		float tMid = (t0+t1)/2;
 		//Get endpoints of segment from t0 --> t1
@@ -595,6 +594,9 @@ public class CubicBezierCurve extends BezierCurve {
 		g.setStroke(new BasicStroke(super.getBorderWidth()));
 		g.setColor(super.getBorderColor());
 				
+		for (LineSegment seg: _segs) {
+			seg.draw(g);
+		}
 /////VISUALIZATION FOR DEBUGGING
 /*		for (CircleShape circle: _drawDots) {
 			circle.draw(g);

@@ -49,11 +49,24 @@ public class BezierPath extends Shape {
 		this.setColor(Color.WHITE);
 		this.setBorderWidth(.8f);
 	}
-	
-	public ArrayList<CubicBezierCurve> getCurves() {
-		return _curves;
+
+	/*Change properties of all curves in path by override
+	 * Shape's attribute mutator methods.*/
+/*	@Override
+	public void setColor(Color col) {
+		super.setColor(col);
+		for (BezierCurve curve: _curves) {
+			curve.setColor(col);
+		}
 	}
-	
+	@Override
+	public void setBorderWidth(float width) {
+		super.setBorderWidth(width);
+		for (BezierCurve curve: _curves) {
+			curve.setBorderWidth(.8f);
+		}
+	}*/
+		
 	public void addPoint(Vec2f pt) {
 		_pts.add(pt);
 		updateSegs();
@@ -174,9 +187,18 @@ public class BezierPath extends Shape {
 	public CubicBezierCurve findClosestCurve(Shape s) {
 		float minDist = Float.POSITIVE_INFINITY;
 		CubicBezierCurve curve = null;
+		//If only collides with one convex hull, return that curve
+		ArrayList<CubicBezierCurve> inBounds = new ArrayList<CubicBezierCurve>();
 		for (CubicBezierCurve seg: _curves) {
-			//Optimize by checking convex hull collision first
 			if (seg.getWideBounds().collides(s)) {
+				inBounds.add(seg);
+				curve = seg;
+			}
+		}
+		//If in multiple convex hulls
+		if (inBounds.size() > 1) {
+			//for each curve with containing convex hull
+			for (CubicBezierCurve seg: inBounds) {
 				Vec2f point = seg.nearestPointOnCurve(s.getCentroid());
 				float dist = point.dist2(s.getCentroid());
 				if (dist < minDist) {
@@ -209,12 +231,12 @@ public class BezierPath extends Shape {
 	public void draw(Graphics2D g) {
 		g.setColor(this.getColor());
 		g.setStroke(new BasicStroke(this.getBorderWidth()));
-		for (LineSegment seg: _segs) {
+/*		for (LineSegment seg: _segs) {
 			seg.draw(g);
-		}
-/*		for (BezierCurve curve: _curves) {
-			curve.draw(g);
 		}*/
+		for (BezierCurve curve: _curves) {
+			curve.draw(g);
+		}
 /////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL
 /*		for (CircleShape dot: _drawDots) {
 			dot.draw(g);
@@ -227,26 +249,20 @@ public class BezierPath extends Shape {
 //		g.fill(path);
 //		g.setColor(col);
 	}
+	
 	@Override
 	public boolean collides(Shape s) {	
-/*		boolean close = false;
-		for (CubicBezierCurve c: _curves) {
-			if (s.collides(c.getWideBounds())) {
-				close = true;
-			}
-		}
-		if (close) {*/
-//		CubicBezierCurve curve = this.findClosestCurve(s);
-//		if (curve != null) {
-		for (CubicBezierCurve curve: _curves) {
+
+		CubicBezierCurve curve = this.findClosestCurve(s);
+		if (curve != null) {
+//			for (CubicBezierCurve curve: _curves) {
 			boolean collision = s.collidesCurve(curve);
 			if (collision) {
 				this.setCollisionInfo(curve.getCollisionInfo());
 				return true;
 			}
+//			}
 		}
-//		}
-//		}
 		return false;
 	}	
 	/* Optimized by only colliding with the curve that
