@@ -52,7 +52,7 @@ public class BezierPath extends Shape {
 
 	/*Change properties of all curves in path by override
 	 * Shape's attribute mutator methods.*/
-/*	@Override
+	@Override
 	public void setColor(Color col) {
 		super.setColor(col);
 		for (BezierCurve curve: _curves) {
@@ -65,7 +65,7 @@ public class BezierPath extends Shape {
 		for (BezierCurve curve: _curves) {
 			curve.setBorderWidth(.8f);
 		}
-	}*/
+	}
 		
 	public void addPoint(Vec2f pt) {
 		_pts.add(pt);
@@ -231,7 +231,7 @@ public class BezierPath extends Shape {
 	public void draw(Graphics2D g) {
 		g.setColor(this.getColor());
 		g.setStroke(new BasicStroke(this.getBorderWidth()));
-/*		for (LineSegment seg: _segs) {
+		/*for (LineSegment seg: _segs) {
 			seg.draw(g);
 		}*/
 		for (BezierCurve curve: _curves) {

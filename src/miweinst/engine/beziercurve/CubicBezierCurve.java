@@ -3,6 +3,7 @@ package miweinst.engine.beziercurve;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.CubicCurve2D;
 import java.util.ArrayList;
 
 import miweinst.engine.collisiondetection.ShapeCollisionInfo;
@@ -24,7 +25,10 @@ public class CubicBezierCurve extends BezierCurve {
 	private ArrayList<CircleShape> _drawDots;
 	private ArrayList<LineSegment> _drawLines;
 	
-	/*Default constructor and constructor taking in four _points (2 endpoints, 2 ctrl _points)*/
+	private float approxLineLength;
+	private float inflectionPointTValue;
+	
+	/**Default constructor and constructor taking in four _points (2 endpoints, 2 ctrl _points)*/
 	public CubicBezierCurve() {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));	
 		_points = new Vec2f[4];
@@ -40,7 +44,7 @@ public class CubicBezierCurve extends BezierCurve {
 		this.init(point1, point2, point3, point4);		
 	}
 	
-	/*Initializes variables and arr to four _points: point1 and point4 are start
+	/**Initializes variables and arr to four _points: point1 and point4 are start
 	 * and end point, point2 and point3 are ctrl _points. Sets shape location to start.*/
 	private void init(Vec2f point1, Vec2f point2, Vec2f point3, Vec2f point4) {
 		start = _points[0] = point1;
@@ -55,7 +59,7 @@ public class CubicBezierCurve extends BezierCurve {
 		_drawLines = new ArrayList<LineSegment>();
 	}
 	
-	/*Updates the array of _points, called if any values of
+	/**Updates the array of _points, called if any values of
 	 * start, end, ctrl_one or ctrl_two are changed. Should
 	 * be called automatically from any methods within BezierCurve classes
 	 * that change any of the point values, for encapsulation's sake.*/
@@ -66,7 +70,7 @@ public class CubicBezierCurve extends BezierCurve {
 		_points[3] = end;
 		updateSegs();
 	}
-	/*Other direction: Updates vars for each point if pointsArr has been changed.*/
+	/**Other direction: Updates vars for each point if pointsArr has been changed.*/
 	public void updatePointVars() {
 		start = _points[0];
 		ctrl_one = _points[1];
@@ -74,7 +78,7 @@ public class CubicBezierCurve extends BezierCurve {
 		end = _points[3];
 		updateSegs();
 	}
-	/*Updates LineSegment references in _segs*/
+	/**Updates LineSegment references in _segs*/
 	private void updateSegs() {
 		//Populate list of LineSegments _segs
 		ArrayList<Vec2f> pointList = new ArrayList<Vec2f>();
@@ -84,7 +88,7 @@ public class CubicBezierCurve extends BezierCurve {
 		_segs = segList;
 	}
 		
-	/*Location of curve is defined as the starting endpoint. 
+	/**Location of curve is defined as the starting endpoint. 
 	 * When new location is set, points do not move relative to
 	 * each other; all points are translated by same amount so
 	 * that start point is at the new location.*/
@@ -99,7 +103,7 @@ public class CubicBezierCurve extends BezierCurve {
 		this.translate(d);
 	}
 	
-	/*Translate all ctrl _points and endpoints in curve by specified dx, dy. 
+	/**Translate all ctrl _points and endpoints in curve by specified dx, dy. 
 	 * Makes changes in array of _points and then udpates the endpoints and
 	 * control _points using updatePoints.*/
 	public void translate(Vec2f d) {
@@ -122,7 +126,7 @@ public class CubicBezierCurve extends BezierCurve {
 		this.updateSegs();
 	}
 	
-	/*Calculates a point at parameter t along this instance of CubicBezierCurve,
+	/**Calculates a point at parameter t along this instance of CubicBezierCurve,
 	 * using addition/assignment of each term of the following cubic equation: */
 	//Cubic Bezier curve: [x,y] = (1-t)^3*P0 + 3(1-t)^2*tP1 + 3(1-t)ttP2 + tttP3
 	public Vec2f calculateBezierPoint(float t) {
@@ -138,7 +142,7 @@ public class CubicBezierCurve extends BezierCurve {
 		return  p;
 	}	
 	
-	/* Implementation of de Casteljau's algorithm to return point
+	/** Implementation of de Casteljau's algorithm to return point
 	 * on curve at specified t=u value. Returns point on the curve
 	 * at t=u, more efficient than raw mathematical calculation used in
 	 * calculateBezierPoint, and more extensible.
@@ -156,7 +160,7 @@ public class CubicBezierCurve extends BezierCurve {
 		return arr[0];
 	}
 	
-	/* Find derivative of point on curve at specified t value. The 
+	/** Find derivative of point on curve at specified t value. The 
 	 * derivative of an n-order Bezier curve is an (n-1)-order Bezier curve. 
 	 * The ctrl _points of derivative curve are: q0 = p1-p0, q1 = p2-p1, q2 = p3-p2, so on...
 	 * Note: The derivative and tangent of C(t) are equivalent
@@ -183,14 +187,14 @@ public class CubicBezierCurve extends BezierCurve {
 		ddt = ddt.plus(end.smult(6*t));
 		return ddt;
 	}
-	/* Returns the vector perpendicular to the normalized tangent
+	/** Returns the vector perpendicular to the normalized tangent
 	 * at the point f(t) for any t value. */
 	public Vec2f findNormal(float t) {
 		Vec2f dt = findDerivative(t);
 		return new Vec2f(-dt.y, dt.x).normalized();
 	}
 
-	/*Find the point P (defined by P(t)) on the Bezier curve that is closest to 
+	/**Find the point P (defined by P(t)) on the Bezier curve that is closest to 
 	 * the point M, which can be anywhere. The line seg MP (i.e. M-P) is orthogonal
 	 * to the tangent/derivative of P (dP/dt), so MP.dot(dP/dt) == 0. 
 	 * Therefore M.minus(P).dot(derivative(getT(P))) == 0, then use root finding.*/
@@ -231,7 +235,7 @@ public class CubicBezierCurve extends BezierCurve {
 		return new PolygonShape(_points);
 	}
 
-/*NOTE: Tune MIN_SQR_DISTANCE and threshold to vary depth of
+/**NOTE: Tune MIN_SQR_DISTANCE and threshold to vary depth of
  * recursion resolution/smoothness of curve drawing.
  *  */
 	//Minimum length of segment, at which recursion on that segment stops
@@ -279,8 +283,8 @@ public class CubicBezierCurve extends BezierCurve {
 		return 0;
 	}
 
-	/**public static methods*/
-	/*Static calculation that takes in all four _points as arguments.*/
+	/*public static methods*/
+	/**Static calculation that takes in all four _points as arguments.*/
 	public static Vec2f calculateBezierPoint(float t, Vec2f p0, Vec2f p1, Vec2f p2, Vec2f p3) {
 		float u = 1-t;
 		float uu = u*u;
@@ -317,7 +321,7 @@ public class CubicBezierCurve extends BezierCurve {
 	}
 
 /////////////////////REWRITE THIS////////////////////////
-	/* Takes in four coefficients in c as [0, t, t^2, t^3] and 
+	/** Takes in four coefficients in c as [0, t, t^2, t^3] and 
 	 * an array s. Returns number of real roots and populates s.
 	 * c = double[4], s = double[3]*/
 	public static int solveCubic(double[] c, double[] s)  {
@@ -379,7 +383,7 @@ public class CubicBezierCurve extends BezierCurve {
 		return num;  
 	}  
 	
-	/*Calculates intersection between curve and line.
+	/**Calculates intersection between curve and line.
 	 * Useful for POI and collision detection. */
 	public ArrayList<Vec2f> collidesLine(LineSegment l) {
 		//Express line in form: Ax + By + C = 0
@@ -432,8 +436,8 @@ public class CubicBezierCurve extends BezierCurve {
 	}
 	
 	
-	/**collision detection and POI*/
-	/*Double dispatch for collision and poi*/
+	/*collision detection and POI*/
+	/**Double dispatch for collision and poi*/
 	@Override
 	public boolean collides(Shape s) {
 		return s.collidesCurve(this);
@@ -443,7 +447,7 @@ public class CubicBezierCurve extends BezierCurve {
 		return s.poiCurve(this);
 	}
 	
-	/*Collision and point of intersection for circles. POI returns 
+	/**Collision and point of intersection for circles. POI returns 
 	 * nearest point to circle's center on curve. Doesn't really matter,
 	 * since circles have arbitrary rotation and curves don't rotate.*/
 	@Override
@@ -478,7 +482,7 @@ public class CubicBezierCurve extends BezierCurve {
 		return collides;
 	}
 	
-	/*Collision and point of intersection for Polygons.*/
+	/**Collision and point of intersection for Polygons.*/
 	@Override
 	public boolean collidesPolygon(PolygonShape p) {
 		//Only check for collision if polygon in convex hull
@@ -593,10 +597,19 @@ public class CubicBezierCurve extends BezierCurve {
 	public void draw(Graphics2D g) {		
 		g.setStroke(new BasicStroke(super.getBorderWidth()));
 		g.setColor(super.getBorderColor());
-				
-		for (LineSegment seg: _segs) {
+		
+		/* line segment method */
+		/*for (LineSegment seg: _segs) {
 			seg.draw(g);
 		}
+		*/
+		
+		
+		/*CubicCurve2D method */
+		CubicCurve2D curve = new CubicCurve2D.Float(start.x, start.y, ctrl_one.x, ctrl_one.y, ctrl_two.x, ctrl_two.y, end.x, end.y);
+		g.draw(curve);
+		 
+		
 /////VISUALIZATION FOR DEBUGGING
 /*		for (CircleShape circle: _drawDots) {
 			circle.draw(g);

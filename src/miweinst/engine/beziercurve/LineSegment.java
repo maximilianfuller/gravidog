@@ -7,10 +7,15 @@ import java.util.List;
 
 import cs195n.Vec2f;
 
+/**
+ * Immutable data structure;
+ * @author maxfuller
+ */
 public class LineSegment {
 	
 	public Vec2f start;
 	public Vec2f end;
+        Path2D _path;
 
 	public LineSegment() {
 		this.start = new Vec2f(0, 0);
@@ -19,13 +24,21 @@ public class LineSegment {
 	public LineSegment(Vec2f a, Vec2f b) {
 		this.start = a;
 		this.end = b;
+                _path = new Path2D.Float();
+                _path.moveTo(start.x, start.y);
+		_path.lineTo(end.x, end.y);
 	}
 	
-	public void setStart(Vec2f s) {
+	private void setStart(Vec2f s) {
 		start = s;
 	}
-	public void setEnd(Vec2f e) {
+	private void setEnd(Vec2f e) {
 		end = e;
+	}
+        /*Translates line segment by delta values.*/
+	private void translate(Vec2f delta) {
+		this.start = start.plus(delta);
+		this.end = end.plus(delta);
 	}
 	
 	/* Takes in list of points as Vec2f, then returns a list of LineSegments
@@ -65,11 +78,7 @@ public class LineSegment {
 			return null;	
 	}*/
 	
-	/*Translates line segment by delta values.*/
-	public void translate(Vec2f delta) {
-		this.start = start.plus(delta);
-		this.end = end.plus(delta);
-	}
+	
 	/*Rotate point*/
 	public static Vec2f rotate(Vec2f rotateAround, Vec2f point, float theta) {
 		float newX = (float) (Math.cos(theta)*(point.x-rotateAround.x)- Math.sin(theta)*(point.y-rotateAround.y) + rotateAround.x); 
@@ -92,9 +101,7 @@ public class LineSegment {
 	/* Uses a Path2D in order to maintain floating point 
 	 * accuracy. Graphics' drawLine only takes ints.*/
 	public void draw(Graphics2D g) {
-		Path2D path = new Path2D.Float();
-		path.moveTo(start.x, start.y);
-		path.lineTo(end.x, end.y);
-		g.draw(path);
+		g.draw(_path);
+		System.out.println("line draw");
 	}
 }

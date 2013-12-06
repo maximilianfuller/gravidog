@@ -1,13 +1,13 @@
 
 
 BUG: Jiggly Viewport rotation
-BUG: YOU FALL THROUGH LOWER CURVE, only lower curve. DOTS IN UPPER CURVE, only upper curve
+//fix using binary search
 
 ASK TA:
 	Tridiagonal class? ask TA
 	Player disappears from curve after a bit (possibly has to do with time step?)
-
-TODO:
+TODO: optimize time step
+TODO:resolution proportional to length
 TODO: Boulder and other objects affected by world
 TODO: Relay entity that lets you open door after one star
 	Door gray until star picked up, then turns yellow/green or whatever color
@@ -18,6 +18,9 @@ TODO: Fill in closed curves
 	Commented out g.fill code in BezierPath
 
 BUG: Weird speed up/slow down when holding dir
+
+BUG: Color and Border of Bezier Paths are slow
+BUG: walls don't work both ways.
 
 TODO: Optimization!
 	Make closestPointOnCurve faster!!

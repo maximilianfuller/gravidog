@@ -58,12 +58,12 @@ public class Player extends PhysicsEntity {
 		public void run(Map<String, String> args) {
 			if (args.containsKey("checkpoint"))
 				_saveData.add(new String("checkpoint: " + args.get("checkpoint")));
-			
+
 			//Store Player's color for restoration at save.
 			Color curr = getShapeColor();
 			String col = new String(Integer.toString(curr.getRed()) + "," +  Integer.toString(curr.getGreen()) + "," + Integer.toString(curr.getBlue()));
 			_saveData.add(new String("color: " + col));
-			
+
 			doWrite.run(args);
 		}
 	};
@@ -92,7 +92,7 @@ public class Player extends PhysicsEntity {
 		public void run(Map<String, String> args) {
 			//i.e. if save_data loaded successfully
 			if (args != null) {
-/*				if (args.containsKey("checkpoint")) {
+				/*				if (args.containsKey("checkpoint")) {
 					boolean reached = Boolean.parseBoolean(args.get("checkpoint"));
 					if (reached) 
 						setLocation(new Vec2f(-21.45f, 188.16f));
@@ -103,30 +103,31 @@ public class Player extends PhysicsEntity {
 			}
 		}
 	};
-	
-//	private GameWorld _world;
+
+	//	private GameWorld _world;
 	private Shape _shape;
 	private float _jumpImpulse;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
+	private PhysicsEntity _lastEntity; //the last enitty the player collides with.
 
 	public Player(GameWorld world) {
 		super(world);
-//		_world = world;
+		//		_world = world;
 		Vec2f location = new Vec2f(50, 50);
 		float radius = 5f;
 		CircleShape shape = new CircleShape(location, radius);	
-		
+
 		//Pretty yellow
 		Color col = new Color(235, 235, 110);	//Yellow pastel
 		//Use bright yellow for now, so you can see player.
 		shape.setColor(col);
 		shape.setBorderWidth(.5f);
 		shape.setBorderColor(Color.BLACK);
-		
+
 		_jumpImpulse = 4500;
-		
+
 		this.setShape(shape);
 		this.setLocation(location);
 		this.setMass(40f);
@@ -137,37 +138,37 @@ public class Player extends PhysicsEntity {
 		_dataWritten = false;
 		this.setRestitution(100f);
 	}
-	
+
 	/*Allows method to override the built in check
 	 * on writing save data to file, specifically
 	 * used to reset data.*/
 	private void setDataWritten(boolean b) {
 		_dataWritten = b;
 	}
-	
+
 	@Override
 	public void onTick(long nanosSincePreviousTick) {		
 		super.onTick(nanosSincePreviousTick);
-
 		//If there was a valid collision
 		List<PhysicsCollisionInfo> infos = getCollisionInfo();
 		PhysicsCollisionInfo info = null;
 		for (PhysicsCollisionInfo i: infos) {
-			if (i != null) {
-				info = i;
+			if (i != null && i.other.isGravitational()) {
+				if(info == null || i.other != _lastEntity) {
+					info = i;
+				}
 			}
 		}
+
 		if (info != null) {
-			//If entity is gravitational
-			if (info.other.isGravitational()) {
-				Vec2f mtv = info.mtv;
-				float mag = GRAVITY.mag();
-				Vec2f mtv_norm = mtv.normalized();
-				GRAVITY = mtv_norm.smult(-mag);		
-			}
+			_lastEntity = info.other;
+			Vec2f mtv = info.mtv;
+			float mag = GRAVITY.mag();
+			Vec2f mtv_norm = mtv.normalized();
+			GRAVITY = mtv_norm.smult(-mag);		
 		}
 	}	
-	
+
 	/* Applies upward impulse if colliding with something by set _jumpImpulse
 	 * value.*/
 	public void jump() {
@@ -184,7 +185,7 @@ public class Player extends PhysicsEntity {
 			this.applyImpulse(mtv.normalized().smult(_jumpImpulse), getCentroid());
 		}
 	}
-	
+
 	/*Center of Player's body.*/
 	public Vec2f getCenter() {
 		return _shape.getCentroid();
