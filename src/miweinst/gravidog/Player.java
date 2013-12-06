@@ -17,6 +17,8 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
+	
+	
 	//Inputs: defined as anonymous classes, only one method to override
 	//doSetColor sets Player color; args "color"
 	public Input doSetColor = new Input()
@@ -110,7 +112,7 @@ public class Player extends PhysicsEntity {
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
-	private PhysicsEntity _lastEntity; //the last enitty the player collides with.
+	private final float FRICTION_COEFFICIENT = 10;
 
 	public Player(GameWorld world) {
 		super(world);
@@ -136,7 +138,6 @@ public class Player extends PhysicsEntity {
 		_saveData = new ArrayList<String>();
 		_gravitySwitched = false;
 		_dataWritten = false;
-		this.setRestitution(100f);
 	}
 
 	/*Allows method to override the built in check
@@ -147,27 +148,60 @@ public class Player extends PhysicsEntity {
 	}
 
 	@Override
-	public void onTick(long nanosSincePreviousTick) {		
+	public void onTick(long nanosSincePreviousTick) {
+		List<Vec2f> otherMTVs = new ArrayList<Vec2f>();
 		super.onTick(nanosSincePreviousTick);
-		//If there was a valid collision
 		List<PhysicsCollisionInfo> infos = getCollisionInfo();
 		PhysicsCollisionInfo info = null;
+		float max = 0;
+		//choose mtv with largest cross product with gravity
 		for (PhysicsCollisionInfo i: infos) {
+
 			if (i != null && i.other.isGravitational()) {
-				if(info == null || i.other != _lastEntity) {
+				float diffValue = Math.abs(i.mtv.normalized().cross(GRAVITY.normalized()));
+				if(diffValue >= max) {
 					info = i;
+					max = diffValue;
 				}
+				otherMTVs.add(i.mtv);
 			}
 		}
 
 		if (info != null) {
-			_lastEntity = info.other;
 			Vec2f mtv = info.mtv;
 			float mag = GRAVITY.mag();
 			Vec2f mtv_norm = mtv.normalized();
-			GRAVITY = mtv_norm.smult(-mag);		
+			GRAVITY = mtv_norm.smult(-mag);
+
+			// if gravity change between entities
+			if(otherMTVs.size() >= 2) {
+				System.out.println(otherMTVs);
+				//give player a small nudge perpindicular to mtv to avoid switching gravity on every tick
+				//when the player is wedged in a corner.
+				Vec2f newPlatformMTV = info.mtv;
+				Vec2f oldPlatformMTV = otherMTVs.get(0) == newPlatformMTV ? otherMTVs.get(1) : otherMTVs.get(0);
+				Vec2f dir = newPlatformMTV.getNormal();
+				if(dir.dot(oldPlatformMTV) < 0) {
+					dir = dir.invert();
+				}
+				this.applyImpulse(dir.smult(this.getMass()*100), getCentroid());
+
+			}
+			
+		}
+		if(info != null) {
+			applyfriction();
 		}
 	}	
+
+	private void applyfriction() {
+		//opposes movement perpindicular to gravity
+		Vec2f gravityNormal = GRAVITY.getNormal();
+		Vec2f force = getVelocity().projectOnto(gravityNormal).smult(-FRICTION_COEFFICIENT);
+		this.applyForce(force, getCentroid());
+		
+		
+	}
 
 	/* Applies upward impulse if colliding with something by set _jumpImpulse
 	 * value.*/
