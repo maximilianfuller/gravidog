@@ -8,8 +8,6 @@ import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
-import miweinst.gravidog.Player;
-import miweinst.gravidog.Star;
 import cs195n.Vec2f;
 
 public class PhysicsEntity extends MovingEntity {
@@ -242,15 +240,8 @@ public class PhysicsEntity extends MovingEntity {
 	 * This does not override super's method, b/c takes
 	 * PhysicsEntity. Super's method called if MovingEntity
 	 * of different subclass is passed in, w/o collision response.*/
-	public boolean collides(PhysicsEntity other) {
-		
+	public boolean collides(PhysicsEntity other) {		
 		boolean collision = super.collides(other);  
-
-/////This Star.collides, other is Player		
-		if (this instanceof Star && other instanceof Player) {
-//			System.out.println(collision);
-		}
-		
 		if (_isInteractive && other.isInteractive()) {
 			this.collisionResponse(other);
 		}

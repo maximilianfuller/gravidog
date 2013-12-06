@@ -12,6 +12,7 @@ import cs195n.Vec2f;
 
 public class LevelMenuScreen extends GravidogScreen {
 	
+	public static int CURRENT_LEVEL = 1;
 	private ArrayList<LevelBox> _boxes;
 		
 	public LevelMenuScreen(App a) {
@@ -59,6 +60,7 @@ public class LevelMenuScreen extends GravidogScreen {
 		for (LevelBox box: _boxes) { 
 			if (box.contains(new Vec2f(e.getX(), e.getY()))) {
 				if (box.isLevelOpen()) {
+					CURRENT_LEVEL = box.level_num;
 					this.startLevel(box.level_path);
 				}
 			}	

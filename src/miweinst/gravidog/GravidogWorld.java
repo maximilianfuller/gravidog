@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import miweinst.engine.App;
-import miweinst.engine.FileIO;
 import miweinst.engine.beziercurve.BezierCurveEntity;
 import miweinst.engine.beziercurve.CurvedPathEntity;
 import miweinst.engine.contraints.PinEntity;
@@ -41,22 +40,31 @@ import cs195n.LevelData.ShapeData.Type;
 import cs195n.Vec2f;
 
 public class GravidogWorld extends GameWorld {    
-
-	public Input doDoorReached = new Input() 
-	{
+	//Calls levelWin if Relay is enabled
+	public Input doDoorReached = new Input() {
 		public void run(Map<String, String> args) {
-			_app.setScreen(new LevelMenuScreen(_app));
+			//_doorRelay has Connection to doLevelWin
+			_doorRelay.doActivate();
 		}
 	};
-	
-	public Input starCollected = new Input() {
+	//Enables relay when any star is collected
+	public Input doStarCollected = new Input() {
 		public void run(Map<String, String> args) {
-			//TODO
+			_doorRelay.doEnable();
+			_player.addStar();
+			_door.setShapeColor(_door.getOpenColor());
+		}
+	};
+	//Level win
+	public Input doLevelWin = new Input() {
+		public void run(Map<String, String> args) {
+			_app.setScreen(new LevelMenuScreen(_app));
 		}
 	};
 
 	private App _app;
 	private Player _player;
+	private GoalDoor _door;
 	//Player movement using boolean state array
 	private boolean[] _arrowKeyStates;
 	//Lazor visualization for raycasting
@@ -66,8 +74,7 @@ public class GravidogWorld extends GameWorld {
 	private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
 	//Variable name mapped to PhysicsEntity instance
 	private HashDecorator<String, PhysicsEntity> _entities;
-
-	
+	private RelayEntity _doorRelay;
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
 		super(app, viewport);
@@ -76,6 +83,10 @@ public class GravidogWorld extends GameWorld {
 		for (int i=0; i<_arrowKeyStates.length; i++) 
 			_arrowKeyStates[i]=false;
 		_lazorBool = false;
+		
+		//Unlocks door when star collected
+		_doorRelay = new RelayEntity(this);
+		_doorRelay.onActivate.connect(new Connection(doLevelWin));
 
 		////////////// START LEVEL READER /////////////////////
 
@@ -132,6 +143,9 @@ public class GravidogWorld extends GameWorld {
 				if (entity instanceof Player) {
 					_player = (Player) entity;
 				}       
+				if (entity instanceof GoalDoor) {
+					_door = (GoalDoor) entity;
+				}
 				else if (entity instanceof WhileSensorEntity) {
 					WhileSensorEntity playerSensor = (WhileSensorEntity) entity;
 					playerSensor.setEntities(_player);
@@ -243,7 +257,7 @@ public class GravidogWorld extends GameWorld {
 	public void quitReset() {
 		_player.doResetData.run(new HashMap<String, String>());
 	}
-
+	
 	/* Calls tick based on fixed timestep. Passes in an
 	 * adjusted nanosSincePreviousTick so speed of entity
 	 * movement remains relatively constant regardless of timestep.

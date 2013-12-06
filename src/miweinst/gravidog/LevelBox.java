@@ -136,9 +136,6 @@ public class LevelBox {
 		if (isLevelOpen()) 	{
 			box.setBorderWidth(BORDER_WIDTH+CELL_SPACING/4);
 			box.setBorderColor(_color);
-			//This condition makes Sprite disappear when onMouseOver true
-			/*			if (_open)
-				_frameVisible = false;*/
 		}
 	}
 	/* Called when the cursor is NOT over level box.*/
@@ -146,7 +143,6 @@ public class LevelBox {
 		if(_open) {
 			box.setBorderWidth(BORDER_WIDTH);
 			box.setBorderColor(Color.BLACK);
-			//			_frameVisible = true;
 		}
 	}
 

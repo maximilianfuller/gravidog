@@ -596,20 +596,12 @@ public class CubicBezierCurve extends BezierCurve {
 	@Override
 	public void draw(Graphics2D g) {		
 		g.setStroke(new BasicStroke(super.getBorderWidth()));
-		g.setColor(super.getBorderColor());
-		
-		/* line segment method */
-		/*for (LineSegment seg: _segs) {
-			seg.draw(g);
-		}
-		*/
-		
-		
+		g.setColor(super.getColor());
+
 		/*CubicCurve2D method */
 		CubicCurve2D curve = new CubicCurve2D.Float(start.x, start.y, ctrl_one.x, ctrl_one.y, ctrl_two.x, ctrl_two.y, end.x, end.y);
 		g.draw(curve);
-		 
-		
+
 /////VISUALIZATION FOR DEBUGGING
 /*		for (CircleShape circle: _drawDots) {
 			circle.draw(g);
