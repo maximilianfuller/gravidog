@@ -1,9 +1,11 @@
 package miweinst.engine.contraints;
 
-import cs195n.Vec2f;
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
+import cs195n.Vec2f;
 
 public class SpringEntity extends PhysicsEntity {
 
@@ -11,22 +13,27 @@ public class SpringEntity extends PhysicsEntity {
 	private float _springConstant;
 	private float _frictionConstant;
 	
+	public SpringEntity(GameWorld world) {
+		super(world);		
+		//Default Shape for mandatory constructor
+		PolygonShape shape = new AARectShape(new Vec2f(50f,80f), new Vec2f(10f, 10f)).rectToPoly();
+		setShape(shape);
+		setMass(1f);
+		setSpringConstant(100f);
+		setFrictionConstant(1f);		
+		init();
+	}
 	public SpringEntity(GameWorld world, Shape shape) {
 		super(world);
 		setShape(shape);
 		init();
-		
 	}
-	
-	
-	
+
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		super.onTick(nanosSincePreviousTick);
 		applyRestorativeForce();
-		applyFriction();
-		
-		
+		applyFriction();		
 	}
 	
 	private void applyRestorativeForce() {
@@ -40,6 +47,13 @@ public class SpringEntity extends PhysicsEntity {
 		float force = getVelocity().mag() * _frictionConstant;
 		Vec2f dir = getVelocity().invert().normalized();
 		applyForce(dir.smult(force), this.getCentroid());
+	}
+	
+	@Override
+	public void setShape(Shape s) {
+		super.setShape(s);
+		setLocation(s.getLocation());
+		_pivot = s.getCentroid();
 	}
 	
 	

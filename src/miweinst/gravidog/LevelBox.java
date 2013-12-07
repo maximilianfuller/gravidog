@@ -38,10 +38,9 @@ public class LevelBox {
 	private boolean _open;
 	private int _score;
 
+	private boolean _imgExists = true;
 	//"Frame" image for each level on Menu
 	private BufferedImage _frame;
-	//Booleans for interaction
-	private boolean _frameVisible;
 	//UI elts
 	private Color _color;
 
@@ -49,7 +48,7 @@ public class LevelBox {
 
 		/* Loads level data */
 
-		String file_path;	
+		String file_path = null;	
 		switch (num) {
 		case 1:
 			file_path = new String("level_one.nlf");	
@@ -67,20 +66,26 @@ public class LevelBox {
 			file_path = new String("level_one.nlf");
 			break;
 		}		
-		level_path = new String("src/miweinst/resources/" + file_path);
+		if (file_path != null) 
+			level_path = new String("src/miweinst/resources/" + file_path);
 
 		/* Loads frame image */
 
-		File f;
+		File f = null;
 		switch(num) {
 		case 1:
 			f = new File("src/miweinst/resources/frame_one.jpg");
 			break;
 		case 2:
-			f = new File("src/miweinst/resources/frame_two.jpg");
+//			f = new File("src/miweinst/resources/frame_one.jpg");
+			_imgExists = false;
 			break;
 		case 3:
 			f = new File("src/miweinst/resources/frame_three.jpg");
+			break;
+		case 4:
+//			f = new File("src/miweinst/resources/frame_four.jpg");
+			_imgExists = false;
 			break;
 		default:
 			//System.out.println("Default " + num);
@@ -89,7 +94,8 @@ public class LevelBox {
 		}
 
 		try {
-			_frame = ImageIO.read(f);
+			if (f != null)
+				_frame = ImageIO.read(f);
 		} catch(IOException e) {
 			//Prints the level frame which is invalide
 			System.err.println("Must load new file for image frame for : " + level_path);
@@ -99,8 +105,7 @@ public class LevelBox {
 		/* Level attributes */
 
 		level_num = num;
-		_open = true;	
-		_frameVisible = _open? true: false;
+		_open = false;	
 		_score = 0;		//default val
 
 		/* Menu UI */
@@ -113,18 +118,11 @@ public class LevelBox {
 		box.setBorderWidth(BORDER_WIDTH);		
 		box.setBorderColor(Color.BLACK);	
 
-		if (_open) 
-			_color = new Color(70, 168, 242);
-
-		else
-			_color = Color.LIGHT_GRAY;
+		_color = Color.LIGHT_GRAY;
 	}	
 
 	public boolean contains(Vec2f pt) {
 		return box.contains(pt);
-	}
-	public void setFrameVisible(boolean v) {
-		_frameVisible = v;
 	}
 	public void setColor(Color col) {
 		_color = col;
@@ -135,7 +133,7 @@ public class LevelBox {
 	public void onMouseOver() {
 		if (isLevelOpen()) 	{
 			box.setBorderWidth(BORDER_WIDTH+CELL_SPACING/4);
-			box.setBorderColor(_color);
+			box.setBorderColor(new Color(70, 168, 242));
 		}
 	}
 	/* Called when the cursor is NOT over level box.*/
@@ -152,7 +150,8 @@ public class LevelBox {
 		return _open;
 	}
 	public void setLevelOpen(boolean playable) {
-		_open = playable;
+		if (level_path != null)
+			_open = playable;
 	}
 
 	public int getLevelScore() {
@@ -165,9 +164,14 @@ public class LevelBox {
 	public void draw(Graphics2D g) {	
 		box.setColor(_color);
 		box.draw(g);		
-		if (_frameVisible) {
-			Sprite frame = new Sprite(box.getDimensions(),_frame);
-			frame.draw(g, box.getLocation(), 1);
+		if (_open) {
+			if (_imgExists) {
+				Sprite frame = new Sprite(box.getDimensions(),_frame);
+				frame.draw(g, box.getLocation(), 1);
+			}
+			else {
+				_color = Color.YELLOW;
+			}
 		}
 	}
 }

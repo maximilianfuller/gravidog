@@ -200,7 +200,7 @@ public class CubicBezierCurve extends BezierCurve {
 	 * Therefore M.minus(P).dot(derivative(getT(P))) == 0, then use root finding.*/
 	public float nearestTOnCurve(Vec2f m) {
 		//Minimum distance between M and P, i.e. M.minus(P).dot(derivative(getT(P))) == 0
-		float res = 500;
+		float res = 1100;
 		float t_val = 0;		
 		//Dot/Orthogonal check; project orthogonal
 		float minDot = Float.POSITIVE_INFINITY;

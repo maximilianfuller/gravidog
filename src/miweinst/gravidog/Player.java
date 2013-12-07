@@ -99,7 +99,7 @@ public class Player extends PhysicsEntity {
 
 	//	private GameWorld _world;
 	private final float FRICTION_COEFFICIENT = 10;
-	private final float _jumpImpulse = 4500;
+	private final float _jumpImpulse = 1200;
 	private Shape _shape;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
@@ -124,7 +124,7 @@ public class Player extends PhysicsEntity {
 
 		this.setShape(shape);
 		this.setLocation(location);
-		this.setMass(40f);
+		this.setMass(10f);
 		this.setStatic(false);		
 		_shape = shape;		
 		_saveData = new ArrayList<String>();
@@ -163,7 +163,7 @@ public class Player extends PhysicsEntity {
 		List<PhysicsCollisionInfo> infos = getCollisionInfo();
 		PhysicsCollisionInfo info = null;
 		float max = 0;
-		//choose mtv with largest cross product with gravity
+		//Choose mtv with largest cross product with gravity
 		for (PhysicsCollisionInfo i: infos) {
 			if (i != null && i.other.isGravitational()) {
 				float diffValue = Math.abs(i.mtv.normalized().cross(GRAVITY.normalized()));
@@ -177,14 +177,16 @@ public class Player extends PhysicsEntity {
 		if (info != null) {
 			Vec2f mtv = info.mtv;
 			float mag = GRAVITY.mag();
+						
 			Vec2f mtv_norm = mtv.normalized();
 			GRAVITY = mtv_norm.smult(-mag);
 
-			// if gravity change between entities
+			//If gravity change between entities
 			if(otherMTVs.size() >= 2) {
 				System.out.println(otherMTVs);
-				//give player a small nudge perpindicular to mtv to avoid switching gravity on every tick
-				//when the player is wedged in a corner.
+				/*Give player a small nudge perpindicular to mtv 
+				* to avoid switching gravity on every tick
+				* when the player is wedged in a corner. */
 				Vec2f newPlatformMTV = info.mtv;
 				Vec2f oldPlatformMTV = otherMTVs.get(0) == newPlatformMTV ? otherMTVs.get(1) : otherMTVs.get(0);
 				Vec2f dir = newPlatformMTV.getNormal();
@@ -201,7 +203,7 @@ public class Player extends PhysicsEntity {
 	}	
 
 	private void applyfriction() {
-		//opposes movement perpindicular to gravity
+		//Opposes movement perpindicular to gravity
 		Vec2f gravityNormal = GRAVITY.getNormal();
 		Vec2f force = getVelocity().projectOnto(gravityNormal).smult(-FRICTION_COEFFICIENT);
 		this.applyForce(force, getCentroid());
