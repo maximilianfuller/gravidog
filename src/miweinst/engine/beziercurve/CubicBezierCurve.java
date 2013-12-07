@@ -5,29 +5,41 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.CubicCurve2D;
 import java.util.ArrayList;
+import java.util.List;
+import org.ddogleg.solver.Polynomial;
+import org.ddogleg.solver.PolynomialOps;
+import org.ddogleg.solver.PolynomialRoots;
+import org.ddogleg.solver.RootFinderType;
+import org.ddogleg.solver.PolynomialSolver;
 
 import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.shape.AARectShape;
 import miweinst.engine.shape.CircleShape;
 import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
+import miweinst.gravidog.GravidogWorld;
+import miweinst.gravidog.PlayScreen;
 import cs195n.Vec2f;
+import org.ejml.data.Complex64F;
 
 public class CubicBezierCurve extends BezierCurve {
-	
+
 	public Vec2f start, ctrl_one, ctrl_two, end;
 	private Vec2f[] _points;
-	
+
 	private ArrayList<LineSegment> _segs;
 	private ArrayList<Vec2f> _pois;
-	
-////Visualization
+
+	////Visualization
 	private ArrayList<CircleShape> _drawDots;
 	private ArrayList<LineSegment> _drawLines;
-	
+
 	private float approxLineLength;
-	private float inflectionPointTValue;
-	
+	private Float inflectionPointTValue;
+	private final static float SAMPLE_RESOLUTION = 500; //samples per game unit of length
+	private final static int NUM_ITERATIONS = 25;
+
+
 	/**Default constructor and constructor taking in four _points (2 endpoints, 2 ctrl _points)*/
 	public CubicBezierCurve() {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));	
@@ -43,7 +55,7 @@ public class CubicBezierCurve extends BezierCurve {
 		_segs = new ArrayList<LineSegment>();
 		this.init(point1, point2, point3, point4);		
 	}
-	
+
 	/**Initializes variables and arr to four _points: point1 and point4 are start
 	 * and end point, point2 and point3 are ctrl _points. Sets shape location to start.*/
 	private void init(Vec2f point1, Vec2f point2, Vec2f point3, Vec2f point4) {
@@ -54,11 +66,12 @@ public class CubicBezierCurve extends BezierCurve {
 		this.setLocation(start);
 		this.updateSegs();
 		_pois = new ArrayList<Vec2f>();
-//////		
+		//////		
 		_drawDots = new ArrayList<CircleShape>();
 		_drawLines = new ArrayList<LineSegment>();
+		approxLineLength = point1.dist(point2) + point2.dist(point3) + point3.dist(point4);
 	}
-	
+
 	/**Updates the array of _points, called if any values of
 	 * start, end, ctrl_one or ctrl_two are changed. Should
 	 * be called automatically from any methods within BezierCurve classes
@@ -87,7 +100,7 @@ public class CubicBezierCurve extends BezierCurve {
 		ArrayList<LineSegment> segList = LineSegment.pointsToSegs(pointList);
 		_segs = segList;
 	}
-		
+
 	/**Location of curve is defined as the starting endpoint. 
 	 * When new location is set, points do not move relative to
 	 * each other; all points are translated by same amount so
@@ -102,7 +115,7 @@ public class CubicBezierCurve extends BezierCurve {
 		Vec2f d = new Vec2f(loc.x - loc.x, loc.y - start.y);
 		this.translate(d);
 	}
-	
+
 	/**Translate all ctrl _points and endpoints in curve by specified dx, dy. 
 	 * Makes changes in array of _points and then udpates the endpoints and
 	 * control _points using updatePoints.*/
@@ -125,7 +138,7 @@ public class CubicBezierCurve extends BezierCurve {
 		this.updatePointVars();
 		this.updateSegs();
 	}
-	
+
 	/**Calculates a point at parameter t along this instance of CubicBezierCurve,
 	 * using addition/assignment of each term of the following cubic equation: */
 	//Cubic Bezier curve: [x,y] = (1-t)^3*P0 + 3(1-t)^2*tP1 + 3(1-t)ttP2 + tttP3
@@ -141,7 +154,7 @@ public class CubicBezierCurve extends BezierCurve {
 		p = p.plus(end.smult(ttt));
 		return  p;
 	}	
-	
+
 	/** Implementation of de Casteljau's algorithm to return point
 	 * on curve at specified t=u value. Returns point on the curve
 	 * at t=u, more efficient than raw mathematical calculation used in
@@ -159,7 +172,7 @@ public class CubicBezierCurve extends BezierCurve {
 		}
 		return arr[0];
 	}
-	
+
 	/** Find derivative of point on curve at specified t value. The 
 	 * derivative of an n-order Bezier curve is an (n-1)-order Bezier curve. 
 	 * The ctrl _points of derivative curve are: q0 = p1-p0, q1 = p2-p1, q2 = p3-p2, so on...
@@ -198,52 +211,91 @@ public class CubicBezierCurve extends BezierCurve {
 	 * the point M, which can be anywhere. The line seg MP (i.e. M-P) is orthogonal
 	 * to the tangent/derivative of P (dP/dt), so MP.dot(dP/dt) == 0. 
 	 * Therefore M.minus(P).dot(derivative(getT(P))) == 0, then use root finding.*/
-	public float nearestTOnCurve(Vec2f m) {
-		//Minimum distance between M and P, i.e. M.minus(P).dot(derivative(getT(P))) == 0
-		float res = 500;
-		float t_val = 0;		
-		//Dot/Orthogonal check; project orthogonal
-		float minDot = Float.POSITIVE_INFINITY;
-		for (float t=0; t<=1; t=t+1/res) {
-			Vec2f p = getCasteljauPoint(t);
-			 float dot = m.minus(p).dot(findDerivative(t));			 
-			 //minDot should be trivially close to 0
-			 if (Math.abs(dot) < minDot) {
-				minDot = Math.abs(dot);
-				t_val = t;
-			 }
-		}
-		//Simple distance minimizing through sampling curve
-/*		float minDist = Float.POSITIVE_INFINITY;
-		for (float t=0; t<=1; t=t+1/res) {
-			Vec2f p = getCasteljauPoint(t);
-			float dist = m.dist2(p);
-			if (dist < minDist) {
-				minDist = dist;
-				t_val = t;
+	public float nearestTOnCurve(final Vec2f m) {
+
+		//USING DDOGLEG LIBRARY ROOTFINDING
+		Polynomial poly = getPCurveDotProduct(m);
+
+		PolynomialRoots finder = PolynomialOps.createRootFinder(6, RootFinderType.EVD);
+
+		if( !finder.process(poly) )
+			throw new RuntimeException("Failed to find solution!");
+
+		List<Complex64F> roots = finder.getRoots();
+
+		float closest = -1f;
+		float closestDist = Float.POSITIVE_INFINITY;
+		
+		roots.add(new Complex64F(0d, 0d));
+		roots.add(new Complex64F(1d, 0d));
+		
+		for(Complex64F z : roots) {
+			if(z.isReal() && z.getReal() >= 0d && z.getReal() <= 1d) {
+				float dist = this.getCasteljauPoint((float)z.getReal()).dist(m);
+				if(dist < closestDist) {
+					closest = (float) z.getReal();
+					closestDist = dist;
+				}
+				
+				
 			}
-		}		*/
-		return t_val;
+		}
+		assert(closest != Float.POSITIVE_INFINITY);
+
+		return closest;
+
+
+
+		
+//		//Minimum distance between M and P, i.e. M.minus(P).dot(derivative(getT(P))) == 0
+//		float t_val = 0;		
+//		//Dot/Orthogonal check; project orthogonal
+//		float minDot = Float.POSITIVE_INFINITY;
+//		for (float t=0; t<=1; t=t+1/SAMPLE_RESOLUTION) {
+//			Vec2f p = getCasteljauPoint(t);
+//			 float dot = m.minus(p).dot(findDerivative(t));			 
+//			 //minDot should be trivially close to 0
+//			 if (Math.abs(dot) < minDot) {
+//				minDot = Math.abs(dot);
+//				t_val = t;
+//			 }
+//		}
+//		return t_val;
+		 
+
+//		//Simple distance minimizing through sampling curve
+//		float t_val = 0;
+//				float minDist = Float.POSITIVE_INFINITY;
+//		for (float t=0; t<=1; t=t+1/SAMPLE_RESOLUTION) {
+//			Vec2f p = getCasteljauPoint(t);
+//			float dist = m.dist2(p);
+//			if (dist < minDist) {
+//				minDist = dist;
+//				t_val = t;
+//			}
+//		}
+//		return t_val;
+
 	}
 	public Vec2f nearestPointOnCurve(Vec2f m) {
 		return getCasteljauPoint(nearestTOnCurve(m));
 	}
-	
+
 	/* Returns the convex hull Polygon whose vertices
 	 * are four curve points (2 endpoints, 2 ctrl points)*/
 	public PolygonShape getWideBounds() {
 		return new PolygonShape(_points);
 	}
 
-/**NOTE: Tune MIN_SQR_DISTANCE and threshold to vary depth of
- * recursion resolution/smoothness of curve drawing.
- *  */
+	/**NOTE: Tune MIN_SQR_DISTANCE and threshold to vary depth of
+	 * recursion resolution/smoothness of curve drawing.
+	 *  */
 	//Minimum length of segment, at which recursion on that segment stops
 	private final float MIN_SQR_DISTANCE = .0001f;
 	//Normalized dot (equivalent to angle) under 
 	//which a new point does not need to be added at mid
 	private final float THRESHOLD = -1f;
-	
+
 	/* Recursively finds _points along curve to draw; resolution/closeness of
 	 * _points depends on THRESHOLD value.
 	 * t0 and t1 are first passed 0 and 1, which are the
@@ -299,9 +351,9 @@ public class CubicBezierCurve extends BezierCurve {
 	}
 	/*Returns sign of specified float as 1 or -1*/
 	public static int sgn(double d) {
-	    if (d < 0.0) 
-	    	return -1;
-	    return 1;
+		if (d < 0.0) 
+			return -1;
+		return 1;
 	}
 	public static float[] bezierCoeffsX(Vec2f p0, Vec2f p1, Vec2f p2, Vec2f p3) {
 		float[] x_cof = new float[4];
@@ -320,7 +372,7 @@ public class CubicBezierCurve extends BezierCurve {
 		return y_cof;
 	}
 
-/////////////////////REWRITE THIS////////////////////////
+	/////////////////////REWRITE THIS////////////////////////
 	/** Takes in four coefficients in c as [0, t, t^2, t^3] and 
 	 * an array s. Returns number of real roots and populates s.
 	 * c = double[4], s = double[3]*/
@@ -382,7 +434,7 @@ public class CubicBezierCurve extends BezierCurve {
 			s[ i ] -= sub;  
 		return num;  
 	}  
-	
+
 	/**Calculates intersection between curve and line.
 	 * Useful for POI and collision detection. */
 	public ArrayList<Vec2f> collidesLine(LineSegment l) {
@@ -402,10 +454,10 @@ public class CubicBezierCurve extends BezierCurve {
 		//Find roots of the new polynomial, curve plugged into line 
 		double[] r = new double[3];
 		solveCubic(pArr, r);
-		
+
 		//Three roots; given -1 if invalid or imaginary
 		assert r.length == 3;	
-		
+
 		ArrayList<Vec2f> pts = new ArrayList<Vec2f>();
 		for (int i=0; i<3; i++) {
 			//get t for each root
@@ -414,10 +466,10 @@ public class CubicBezierCurve extends BezierCurve {
 			Float x0 = bx[0]*t*t*t+bx[1]*t*t+bx[2]*t+bx[3];
 			Float y0 = by[0]*t*t*t+by[1]*t*t+by[2]*t+by[3];
 			Vec2f p = new Vec2f(x0, y0);
-			
+
 			//Add poi to list, then remove if out of range
 			pts.add(p);
-		
+
 			//Check if intersections are in bounds of line seg (so far, intersections with infinite line)
 			float check;
 			//If not vertical line
@@ -434,8 +486,8 @@ public class CubicBezierCurve extends BezierCurve {
 		}
 		return pts;
 	}
-	
-	
+
+
 	/*collision detection and POI*/
 	/**Double dispatch for collision and poi*/
 	@Override
@@ -446,7 +498,7 @@ public class CubicBezierCurve extends BezierCurve {
 	public Vec2f poi(Shape s) {
 		return s.poiCurve(this);
 	}
-	
+
 	/**Collision and point of intersection for circles. POI returns 
 	 * nearest point to circle's center on curve. Doesn't really matter,
 	 * since circles have arbitrary rotation and curves don't rotate.*/
@@ -458,7 +510,7 @@ public class CubicBezierCurve extends BezierCurve {
 		}
 		this.setCollisionInfo(null);
 		c.setCollisionInfo(null);
-		
+
 		Vec2f p = this.nearestPointOnCurve(c.getCentroid());
 		float dist = p.dist(c.getCentroid());
 		Vec2f mtv = p.minus(c.getCentroid()).normalized().smult(c.getRadius()-dist);
@@ -473,7 +525,7 @@ public class CubicBezierCurve extends BezierCurve {
 	public Vec2f poiCircle(CircleShape c) {
 		return this.nearestPointOnCurve(c.getCentroid());
 	}
-	
+
 	@Override
 	public boolean collidesAAB(AARectShape aab) {
 		PolygonShape p = aab.rectToPoly();
@@ -481,7 +533,7 @@ public class CubicBezierCurve extends BezierCurve {
 		aab.setCollisionInfo(p.getCollisionInfo());
 		return collides;
 	}
-	
+
 	/**Collision and point of intersection for Polygons.*/
 	@Override
 	public boolean collidesPolygon(PolygonShape p) {
@@ -491,7 +543,7 @@ public class CubicBezierCurve extends BezierCurve {
 		}		
 		this.setCollisionInfo(null);
 		p.setCollisionInfo(null);
-		
+
 		boolean collision = false;
 		Vec2f[] verts = p.getVertices();		
 		ArrayList<LineSegment> sides = new ArrayList<LineSegment>();
@@ -531,7 +583,7 @@ public class CubicBezierCurve extends BezierCurve {
 			LineSegment closestSide = null;
 			Vec2f sidePoint = null;
 			float minDist = Float.POSITIVE_INFINITY;
-			
+
 			for (LineSegment side: sides) {			
 				Vec2f xpoint = Vec2f.lineIntersect(closestPoint, pointAlongNorm, side.start, side.end);
 				if (xpoint != null) {
@@ -546,7 +598,7 @@ public class CubicBezierCurve extends BezierCurve {
 			//Check if intersection point on shape is below curve
 			if ((sidePoint.minus(closestPoint)).dot(unit_norm) < 0) 
 				mtv_segs.add(closestSide);
-			
+
 			Vec2f mtv = null;
 			float maxMag = 0;
 			LineSegment mtvSeg = null;
@@ -573,14 +625,14 @@ public class CubicBezierCurve extends BezierCurve {
 		}	
 		return collision;
 	}
-	
+
 	@Override
 	public Vec2f poiPolygon(PolygonShape p) {
 		if (_pois.isEmpty())
 			return null;
 		return Vec2f.average(_pois);
 	}
-	
+
 	@Override
 	public Vec2f getCentroid() {
 		ArrayList<Vec2f> c = new ArrayList<Vec2f>();
@@ -597,21 +649,21 @@ public class CubicBezierCurve extends BezierCurve {
 	public void draw(Graphics2D g) {		
 		g.setStroke(new BasicStroke(super.getBorderWidth()));
 		g.setColor(super.getBorderColor());
-		
+
 		/* line segment method */
 		/*for (LineSegment seg: _segs) {
 			seg.draw(g);
 		}
-		*/
-		
-		
+		 */
+
+
 		/*CubicCurve2D method */
 		CubicCurve2D curve = new CubicCurve2D.Float(start.x, start.y, ctrl_one.x, ctrl_one.y, ctrl_two.x, ctrl_two.y, end.x, end.y);
 		g.draw(curve);
-		 
-		
-/////VISUALIZATION FOR DEBUGGING
-/*		for (CircleShape circle: _drawDots) {
+
+
+		/////VISUALIZATION FOR DEBUGGING
+		/*		for (CircleShape circle: _drawDots) {
 			circle.draw(g);
 		}
 		g.setColor(Color.WHITE);
@@ -619,4 +671,95 @@ public class CubicBezierCurve extends BezierCurve {
 			line.draw(g);
 		}*/
 	}
+
+	
+	/**
+	 * see http://www.iut-arles.up.univ-mrs.fr/web/romain-raffin/sites/romain-raffin/IMG/pdf/Solving_the_nearest_point_on_curve_problem.pdf
+	 * @return
+	 */
+	private Polynomial getPCurveDotProduct(Vec2f p) {
+		int n = 3;
+		Polynomial result = Polynomial.wrap(0d);
+		for(int i = 0; i <= n; i++) {
+			for(int j = 0; j <= n-1; j++) {
+				float z = choose(n, i)*choose(n-1, j)/choose(2*n-1, i+j);
+				Vec2f c = getPoint(i).minus(p);
+				Vec2f d = (getPoint(j+1).minus(getPoint(j))).smult((float)n);
+				float w = c.dot(d.smult(z));
+				Polynomial toAdd = getBernsteinPolynomial(2*n-1, i+j);
+				toAdd = PolynomialOps.multiply(toAdd, Polynomial.wrap(w), null);
+				result = PolynomialOps.add(result, toAdd, null);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Gets the desired Bernstein polynomial. See
+	 * http://www.iut-arles.up.univ-mrs.fr/web/romain-raffin/sites/romain-raffin/IMG/pdf/Solving_the_nearest_point_on_curve_problem.pdf
+	 * @param n
+	 * @param i
+	 * @return
+	 */
+	public static Polynomial getBernsteinPolynomial(int n, int i) {
+		assert(0 <= i && i <= n);
+
+		Polynomial one = Polynomial.wrap(1d);
+		Polynomial t  = Polynomial.wrap(0d, 1d); 
+		Polynomial oneMinust = Polynomial.wrap(1d, -1d);
+		Polynomial scalar = Polynomial.wrap(choose(n, i));
+
+		Polynomial p1 = one, p2 = one;
+		for(int j = 0; j < i; j++) {
+			p1 = PolynomialOps.multiply(p1, t, null);
+		}
+		for(int j = 0; j < n-i; j++) {
+			p2 = PolynomialOps.multiply(p2, oneMinust, null);
+		}
+
+		Polynomial result = PolynomialOps.multiply(p1, p2, null);
+		return PolynomialOps.multiply(result, scalar, null);
+
+
+
+	}
+
+	/**
+	 * gets the point (control or end point) corresponding to the given index
+	 * @param i
+	 * @return
+	 */
+	private Vec2f getPoint(int i) {
+		switch(i){
+		case 0: return start;
+		case 1: return ctrl_one;
+		case 2: return ctrl_two;
+		case 3: return end;
+		}
+		assert(false);
+		return null;
+	}
+
+	/**
+	 * Math choose function (i.e. 'n choose k')
+	 * @param n
+	 * @param k
+	 * @return
+	 */
+	public static float choose(int n, int k) {
+		if(n < 0 || k > n || k < 0)  {
+			System.err.println("Error: invalid input for choose");
+			return 0f;
+		}
+		int numerator = 1;
+		int denominator = 1;
+		for(int i = 1; i <=k; i++) {
+			numerator*=n-i+1;
+			denominator*=i;
+		}
+		return numerator/denominator;
+	}
+
+
+	
 }

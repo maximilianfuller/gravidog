@@ -16,7 +16,7 @@ import cs195n.Vec2f;
 import cs195n.Vec2i;
 
 public class PlayScreen extends GravidogScreen {
-
+	
 	protected App app;
 	private Viewport _viewport;
 	private GravidogWorld _gameWorld;
@@ -137,7 +137,7 @@ public class PlayScreen extends GravidogScreen {
 
 	@Override
 	public void onMouseMoved(MouseEvent e) {
-		_gameWorld.onMouseMoved(e);	
+		_gameWorld.onMouseMoved(e);
 	}
 
 	@Override

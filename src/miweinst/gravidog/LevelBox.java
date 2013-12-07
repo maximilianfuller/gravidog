@@ -55,7 +55,7 @@ public class LevelBox {
 			file_path = new String("level_one.nlf");	
 			break;
 		case 2: 
-			file_path = new String("level_two.nlf");
+			file_path = new String("test.nlf");
 			break;
 		case 3:
 			file_path = new String("level_three.nlf");
