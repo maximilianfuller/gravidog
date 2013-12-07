@@ -31,9 +31,11 @@ public class LevelMenuScreen extends GravidogScreen {
 		//Closed
 		LevelBox third = new LevelBox(3);
 		third.box.setColor(Color.LIGHT_GRAY);
+		third.setLevelOpen(true);
 		//Closed
 		LevelBox fourth = new LevelBox(4);
-		third.box.setColor(Color.LIGHT_GRAY);
+		fourth.box.setColor(Color.LIGHT_GRAY);
+		fourth.setLevelOpen(true);
 		
 		_boxes.add(first);
 		_boxes.add(second);
