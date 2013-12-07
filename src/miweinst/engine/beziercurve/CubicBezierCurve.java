@@ -236,8 +236,6 @@ public class CubicBezierCurve extends BezierCurve {
 					closest = (float) z.getReal();
 					closestDist = dist;
 				}
-				
-				
 			}
 		}
 		assert(closest != Float.POSITIVE_INFINITY);
@@ -656,6 +654,7 @@ public class CubicBezierCurve extends BezierCurve {
 		}
 		 */
 
+		g.setColor(super.getColor());
 
 		/*CubicCurve2D method */
 		CubicCurve2D curve = new CubicCurve2D.Float(start.x, start.y, ctrl_one.x, ctrl_one.y, ctrl_two.x, ctrl_two.y, end.x, end.y);
@@ -664,6 +663,10 @@ public class CubicBezierCurve extends BezierCurve {
 
 		/////VISUALIZATION FOR DEBUGGING
 		/*		for (CircleShape circle: _drawDots) {
+=======
+/////VISUALIZATION FOR DEBUGGING
+/*		for (CircleShape circle: _drawDots) {
+>>>>>>> 823cfa1776f6360eda340fd3ee0e2b4c0c232d52
 			circle.draw(g);
 		}
 		g.setColor(Color.WHITE);

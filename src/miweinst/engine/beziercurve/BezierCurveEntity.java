@@ -2,8 +2,8 @@ package miweinst.engine.beziercurve;
 
 import java.util.Map;
 
-import miweinst.engine.shape.AARectShape;
 import miweinst.engine.shape.CircleShape;
+import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
@@ -21,15 +21,14 @@ public class BezierCurveEntity extends PhysicsEntity {
 		this.setStatic(true);
 		this.setInteractive(true);
 		super.setShape(_curve);
-////
-		//If want to use path
-/*		_path = new BezierPath();
-		super.setShape(_path);*/
 	}
 
 	@Override
 	public void setProperties(Map<String, String> props) {
 		super.setProperties(props);
+		if (props.containsKey("border_width")) {
+			_curve.setBorderWidth(Float.parseFloat(props.get("border_width")));
+		}
 	}	
 
 	/*AAB are control points, and circles are endpoints. The
@@ -42,7 +41,7 @@ public class BezierCurveEntity extends PhysicsEntity {
 		super.setShape(_path);*/
 		
 		super.setShape(_curve);
-		if (s instanceof AARectShape) {
+		if (s instanceof PolygonShape) {
 			if (!_points[1]) {
 				_curve.ctrl_one = s.getLocation();
 				_points[1] = true;

@@ -24,6 +24,7 @@ public class BezierPath extends Shape {
 	private ArrayList<CubicBezierCurve> _curves;
 //// Visualization
 	private static ArrayList<CircleShape> _drawDots;
+	private boolean _isFilled;
 
 	public BezierPath() {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));
@@ -31,6 +32,8 @@ public class BezierPath extends Shape {
 		_segs = getDrawingSegments();
 		_curves = new ArrayList<CubicBezierCurve>();
 		_drawDots = new ArrayList<CircleShape>();		
+		
+		_isFilled = true;
 	}
 	public BezierPath(ArrayList<Vec2f> points) {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));
@@ -48,6 +51,7 @@ public class BezierPath extends Shape {
 		
 		this.setColor(Color.WHITE);
 		this.setBorderWidth(.8f);
+		_isFilled = true;
 	}
 
 	/*Change properties of all curves in path by override
@@ -65,6 +69,13 @@ public class BezierPath extends Shape {
 		for (BezierCurve curve: _curves) {
 			curve.setBorderWidth(.8f);
 		}
+	}
+	
+	public boolean isFilled() {
+		return _isFilled;
+	}
+	public void setFilled(boolean fill) {
+		_isFilled = fill;
 	}
 		
 	public void addPoint(Vec2f pt) {
@@ -228,28 +239,6 @@ public class BezierPath extends Shape {
 		return path;
 	}
 	
-	public void draw(Graphics2D g) {
-		g.setColor(this.getColor());
-		g.setStroke(new BasicStroke(this.getBorderWidth()));
-		/*for (LineSegment seg: _segs) {
-			seg.draw(g);
-		}*/
-		for (BezierCurve curve: _curves) {
-			curve.draw(g);
-		}
-/////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL
-/*		for (CircleShape dot: _drawDots) {
-			dot.draw(g);
-		}*/
-		
-/// 	FILL IN CLOSED CURVE
-//		Path2D path = toPath(_segs);
-//		Color col = g.getColor();
-//		g.setColor(Color.WHITE);
-//		g.fill(path);
-//		g.setColor(col);
-	}
-	
 	@Override
 	public boolean collides(Shape s) {	
 
@@ -373,5 +362,28 @@ public class BezierPath extends Shape {
 	public Vec2f projectOnto(SeparatingAxis sep) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void draw(Graphics2D g) {
+		g.setColor(this.getColor());
+		g.setStroke(new BasicStroke(this.getBorderWidth()));
+		for (BezierCurve curve: _curves) {
+			curve.draw(g);
+		}
+		/*Right now just fills whatever Shape's color is. But 
+		 * could break it up into _fillColor and _borderColor
+		 * if ever want it to be different colors b/w fill and border.*/
+		if (_isFilled) {
+			Path2D path = toPath(_segs);
+//			Color col = g.getColor();
+//			g.setColor(this.getColor());
+			g.fill(path);
+//			g.setColor(col);
+		}
+		
+/////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL
+	/*		for (CircleShape dot: _drawDots) {
+				dot.draw(g);
+			}*/			
 	}
 }

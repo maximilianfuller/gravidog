@@ -1,29 +1,31 @@
 
 
+NOTE:
+Every level must have a Player object and a Door object, or else null pointer exception. Because
+reference to Player and Door are used for specific actions and IO.
+	Maybe we could make our own InvalidLevelException and throw it if there's no Player or Door?
+
+
 BUG: Jiggly Viewport rotation
-BUG: YOU FALL THROUGH LOWER CURVE, only lower curve. DOTS IN UPPER CURVE, only upper curve
+	//find polynomial solver or root finder in library...
 
-ASK TA:
-	Tridiagonal class? ask TA
-	Player disappears from curve after a bit (possibly has to do with time step?)
+BUG: STILL? Player disappears from curve after a bit (possibly has to do with time step?)
+	And Boulders disappear when they're both on the curve! (see Level 2)
 
-TODO: Boulder and other objects affected by world
-TODO: Relay entity that lets you open door after one star
-	Door gray until star picked up, then turns yellow/green or whatever color
+BUG: PinEntity has no default constructor PinEntity(GameWorld world). 
+	Cannot use in LevelEditor without it.
+
+TODO: resolution proportional to length
 TODO: Show stars and open/closed levels on LevelMenu
-TODO: Keep track of stars for each level
+TODO: optimize time step
+TODO: Boulder and other objects affected by world
 TODO: Save/Load levels
-TODO: Fill in closed curves
-	Commented out g.fill code in BezierPath
+TODO: Sprites and pretty graphics
 
-BUG: Weird speed up/slow down when holding dir
 
 TODO: Optimization!
 	Make closestPointOnCurve faster!!
 	TRY?: Using RootBisection to find roots of equation for closestPointOnCurve. Just turn that dot product into a class that implements the Function class, with a method f that returns f(x) at a specified x. Then RootBisection should find roots using midpoint iterations. Returns root within a given interval (specified as a Bracket object)
 
-BUG: Collisions only getting called in one direction, if you extend functionality of collides (i.e. Player for jumping) it might never actually get called. Could change PhysicsEntity so it's not calling other.getShape().collides but rather calling other.collides().
-	- Buuuut for now we can just make sure the Player is added to beginning of list...
-
-
+BUG: walls don't work both ways for Polygons only.
 

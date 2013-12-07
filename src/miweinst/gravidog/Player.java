@@ -3,6 +3,7 @@ package miweinst.gravidog;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +18,6 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
-	
-	
 	//Inputs: defined as anonymous classes, only one method to override
 	//doSetColor sets Player color; args "color"
 	public Input doSetColor = new Input()
@@ -51,9 +50,9 @@ public class Player extends PhysicsEntity {
 			_gravitySwitched = false;
 		}
 	};
+	//SAVE AND LOAD IO
 	//store data regarding player's progress in levell to be written to resources/save_data.txt
-	public Input doStore = new Input() 
-	{
+	public Input doStore = new Input() {
 		/* For checkpoint saving in M4, doWrite actually called at same
 		 * time as data storage. So for M4, doWrite not run from connection 
 		 * but rather from doStore.run*/
@@ -70,8 +69,7 @@ public class Player extends PhysicsEntity {
 		}
 	};
 	//write any stored data to resources/save_data.txt, only once
-	public Input doWrite = new Input()
-	{
+	public Input doWrite = new Input() {
 		public void run(Map<String, String> args) {
 			if (!_dataWritten) {
 				FileIO.write(_saveData);
@@ -80,8 +78,7 @@ public class Player extends PhysicsEntity {
 		}
 	};
 	//resets all save data to initial values; called on quit
-	public Input doResetData = new Input() 
-	{
+	public Input doResetData = new Input() {
 		public void run(Map<String, String> args) {
 			_saveData.clear();
 			setDataWritten(false);
@@ -89,17 +86,11 @@ public class Player extends PhysicsEntity {
 		}
 	};
 	//reads whether or not Player has reached checkpoint, and Player's prev color
-	public Input doRead = new Input()
-	{
+	public Input doRead = new Input() {
 		public void run(Map<String, String> args) {
 			//i.e. if save_data loaded successfully
 			if (args != null) {
-				/*				if (args.containsKey("checkpoint")) {
-					boolean reached = Boolean.parseBoolean(args.get("checkpoint"));
-					if (reached) 
-						setLocation(new Vec2f(-21.45f, 188.16f));
-				}
-				if (args.containsKey("color")) {
+				/* if (args.containsKey("color")) {
 					setShapeColor(MWorld.stringToColor(args.get("color")));
 				}*/
 			}
@@ -107,12 +98,13 @@ public class Player extends PhysicsEntity {
 	};
 
 	//	private GameWorld _world;
+	private final float FRICTION_COEFFICIENT = 10;
+	private final float _jumpImpulse = 1200;
 	private Shape _shape;
-	private float _jumpImpulse;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
-	private final float FRICTION_COEFFICIENT = 10;
+	private HashMap<Integer, Integer> _stars;
 
 	public Player(GameWorld world) {
 		super(world);
@@ -127,26 +119,43 @@ public class Player extends PhysicsEntity {
 		shape.setColor(col);
 		shape.setBorderWidth(.5f);
 		shape.setBorderColor(Color.BLACK);
-
-		_jumpImpulse = 4500;
+		
+		_stars = new HashMap<Integer, Integer>();
 
 		this.setShape(shape);
 		this.setLocation(location);
-		this.setMass(40f);
+		this.setMass(10f);
 		this.setStatic(false);		
 		_shape = shape;		
 		_saveData = new ArrayList<String>();
 		_gravitySwitched = false;
 		_dataWritten = false;
 	}
-
-	/*Allows method to override the built in check
+	
+	/**Allows method to override the built in check
 	 * on writing save data to file, specifically
 	 * used to reset data.*/
 	private void setDataWritten(boolean b) {
 		_dataWritten = b;
 	}
-
+	
+	/**Increments by one star on current level.*/	
+	public void addStar() {
+		_stars.put(LevelMenuScreen.CURRENT_LEVEL, getStars() + 1);
+	}
+	/** Returns 0 if lvl not contained in HashMap*/
+	public int getStars() {
+		int lvl = LevelMenuScreen.CURRENT_LEVEL;
+		if (_stars.containsKey(lvl))
+			return _stars.get(lvl);
+		else
+			return 0;
+	}
+	/**Returns stars earned at specified level number*/
+	public int getStarsFor(int level) {
+		return _stars.get(level);
+	}
+	
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		List<Vec2f> otherMTVs = new ArrayList<Vec2f>();
@@ -154,9 +163,8 @@ public class Player extends PhysicsEntity {
 		List<PhysicsCollisionInfo> infos = getCollisionInfo();
 		PhysicsCollisionInfo info = null;
 		float max = 0;
-		//choose mtv with largest cross product with gravity
+		//Choose mtv with largest cross product with gravity
 		for (PhysicsCollisionInfo i: infos) {
-
 			if (i != null && i.other.isGravitational()) {
 				float diffValue = Math.abs(i.mtv.normalized().cross(GRAVITY.normalized()));
 				if(diffValue >= max) {
@@ -166,18 +174,19 @@ public class Player extends PhysicsEntity {
 				otherMTVs.add(i.mtv);
 			}
 		}
-
 		if (info != null) {
 			Vec2f mtv = info.mtv;
 			float mag = GRAVITY.mag();
+						
 			Vec2f mtv_norm = mtv.normalized();
 			GRAVITY = mtv_norm.smult(-mag);
 
-			// if gravity change between entities
+			//If gravity change between entities
 			if(otherMTVs.size() >= 2) {
 				System.out.println(otherMTVs);
-				//give player a small nudge perpindicular to mtv to avoid switching gravity on every tick
-				//when the player is wedged in a corner.
+				/*Give player a small nudge perpindicular to mtv 
+				* to avoid switching gravity on every tick
+				* when the player is wedged in a corner. */
 				Vec2f newPlatformMTV = info.mtv;
 				Vec2f oldPlatformMTV = otherMTVs.get(0) == newPlatformMTV ? otherMTVs.get(1) : otherMTVs.get(0);
 				Vec2f dir = newPlatformMTV.getNormal();
@@ -186,8 +195,7 @@ public class Player extends PhysicsEntity {
 				}
 				this.applyImpulse(dir.smult(this.getMass()*100), getCentroid());
 
-			}
-			
+			}			
 		}
 		if(info != null) {
 			applyfriction();
@@ -195,12 +203,10 @@ public class Player extends PhysicsEntity {
 	}	
 
 	private void applyfriction() {
-		//opposes movement perpindicular to gravity
+		//Opposes movement perpindicular to gravity
 		Vec2f gravityNormal = GRAVITY.getNormal();
 		Vec2f force = getVelocity().projectOnto(gravityNormal).smult(-FRICTION_COEFFICIENT);
 		this.applyForce(force, getCentroid());
-		
-		
 	}
 
 	/* Applies upward impulse if colliding with something by set _jumpImpulse

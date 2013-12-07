@@ -14,7 +14,7 @@ import cs195n.Vec2f;
 
 public class CurvedPathEntity extends PhysicsEntity {
 	
-	private BezierPath _path;
+	private BezierPath _bezierPath;
 	private ArrayList<Vec2f> _knots;
 	private ArrayList<Vec2f> _actrls;
 	private ArrayList<Vec2f> _bctrls;
@@ -23,21 +23,21 @@ public class CurvedPathEntity extends PhysicsEntity {
 	public CurvedPathEntity(GameWorld world) {
 		super(world);
 		_knots = new ArrayList<Vec2f>();
-		_path = new BezierPath();
+		_bezierPath = new BezierPath();
 		_closed = true;
 		init();
 	}
 	public CurvedPathEntity(GameWorld world, ArrayList<Vec2f> points) {
 		super(world);
 		_knots = points;
-		_path = BezierPath.generateClosedCurve(_knots.toArray(new Vec2f[_knots.size()]), _actrls, _bctrls, _closed);	
+		_bezierPath = BezierPath.generateClosedCurve(_knots.toArray(new Vec2f[_knots.size()]), _actrls, _bctrls, _closed);	
 		_closed = true;
 		init();
 	}
 	private void init() {
 		_actrls = new ArrayList<Vec2f>();
 		_bctrls = new ArrayList<Vec2f>();
-		super.setShape(_path);		
+		super.setShape(_bezierPath);		
 		this.setStatic(true);
 		this.setVisible(true);
 	}
@@ -52,15 +52,21 @@ public class CurvedPathEntity extends PhysicsEntity {
 		_actrls.clear();
 		_bctrls.clear();
 		_knots.add(s.getLocation());
-		_path = BezierPath.generateClosedCurve(_knots.toArray(new Vec2f[_knots.size()]), _actrls, _bctrls, _closed);		
-		super.setShape(_path);
+		_bezierPath = BezierPath.generateClosedCurve(_knots.toArray(new Vec2f[_knots.size()]), _actrls, _bctrls, _closed);		
+		super.setShape(_bezierPath);
 	}
 	
 	@Override
 	public void setProperties(Map<String, String> props) {
 		super.setProperties(props);
+		if (props.containsKey("fill")) {
+			_bezierPath.setFilled(Boolean.parseBoolean(props.get("fill")));
+		}
 		if (props.containsKey("closed")) {
 			_closed = Boolean.parseBoolean(props.get("closed"));
+		}
+		if (props.containsKey("color")) {
+			_bezierPath.setColor(GameWorld.stringToColor(props.get("color")));
 		}
 	}
 }

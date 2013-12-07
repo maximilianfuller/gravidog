@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import miweinst.engine.App;
 import miweinst.engine.screen.Viewport;
 import miweinst.engine.shape.AARectShape;
+import miweinst.engine.world.PhysicsEntity;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 
@@ -23,11 +24,10 @@ public class PlayScreen extends GravidogScreen {
 	private Vec2f _lastMouse;
 	private float _cameraRadius = 0f; //currently, the player will always be in the center of the screen
 	private final float ROTATION_SPEED = (float)Math.PI; //in radians per second
-	
+
+////// DO WE USE THIS?
 	//The viewport should not perform a timed rotation by a 
-	private final float ROTATION_BUFFER = (float)Math.PI/20f; // in radians. 
-
-
+//	private final float ROTATION_BUFFER = (float)Math.PI/20f; // in radians. 
 
 	public PlayScreen(App a, File file) {
 		super(a);
@@ -73,11 +73,18 @@ public class PlayScreen extends GravidogScreen {
 			_gameWorld.quitReset();
 			System.exit(0);
 		}
-		if (e.getKeyChar() == 'r') 
+		if (e.getKeyChar() == 'r') {
 			app.setScreen(new LevelMenuScreen(app));
+		}	
 		_gameWorld.onKeyPressed(e);
+		
+///////////
+	/* 
+	 * MAX,
 
-		/* testing for viewport */
+	 * WE DON'T NEED THESE ANYMORE RIGHT?
+	 */
+/*		 testing for viewport 
 		if(e.getKeyChar() == 'a') {
 			_viewport.panInPixels(new Vec2f(-5f, 0f));
 		}
@@ -95,7 +102,7 @@ public class PlayScreen extends GravidogScreen {
 		}
 		if(e.getKeyChar() == 'x') {
 			_viewport.rotate(-.05f);
-		}
+		}*/
 	}
 
 	@Override
@@ -113,8 +120,6 @@ public class PlayScreen extends GravidogScreen {
 		if (!e.isAltDown())
 			_gameWorld.onMousePressed(e);		
 		_lastMouse = new Vec2f(e.getX(), e.getY());
-
-
 	}
 
 	@Override
@@ -168,7 +173,7 @@ public class PlayScreen extends GravidogScreen {
 
 	private void rotateToPlayer(long nanosSincePreviousTick) {
 		//set the goal angle (the player's current orientation)
-		Vec2f dir = _gameWorld.getPlayer().GRAVITY.normalized();
+		Vec2f dir = PhysicsEntity.GRAVITY.normalized();
 		float goalTheta = 0f;
 		if(dir.x != 0f) {
 			goalTheta = (float) Math.atan(dir.y/dir.x); //offset from positive x axis

@@ -1,31 +1,72 @@
 package miweinst.gravidog;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.util.Map;
 
 import miweinst.engine.entityIO.Connection;
-import miweinst.engine.shape.AARectShape;
-import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.WhileSensorEntity;
-import cs195n.Vec2f;
 
 /*Just a SensorEntity that draws a Rectangle on top of it,
  * so no physical interactions just sensor detection.*/
 
 public class GoalDoor extends WhileSensorEntity {
 	
+	private GravidogWorld _gworld;
+	private Player _player;
+	private Color _closedColor;
+	private Color _openColor;
 	
 	public GoalDoor(GameWorld world) {
-		super(world);
-		
-		GravidogWorld gworld = (GravidogWorld)world;
-			
-		super.setEntities(gworld.getPlayer());
-		
+		super(world);		
+		_gworld = (GravidogWorld)world;			
+		_player = _gworld.getPlayer();
+		super.setEntities(_player);
 		this.setVisible(true);
 		
+		_closedColor = Color.GRAY;
+		//light green
+		_openColor = new Color(87, 228, 92);
+		this.setShapeColor(_closedColor);
+				
+		this.getShape().setBorderWidth(10f);
 		//Connect Sensor.onDetect to World.doDoorReached
-		super.onDetect.connect(new Connection(gworld.doDoorReached));
+		super.onDetect.connect(new Connection(_gworld.doDoorReached));
+	}
+	/**Color when door is locked.*/
+	public Color getClosedColor() {
+		return _closedColor;
+	}
+	/**Color when door is unlocked.*/
+	public Color getOpenColor() {
+		return _openColor;
+	}
+
+	@Override
+	public void onTick(long nanos) {
+		super.onTick(nanos);
+		if (_player == null) {
+			_player = _gworld.getPlayer();
+			super.setEntities(_player);
+		}
+	}
+	
+	@Override
+	public void setProperties(Map<String, String> props) {
+		super.setProperties(props);
+		//Overrides any curr shape color set in Shape properties
+		this.setShapeColor(_closedColor);
+		if (props.containsKey("closed_color")) {
+			Color cCol = GameWorld.stringToColor(props.get("closed_color"));
+			this.setShapeColor(cCol);
+			_closedColor = cCol;
+		}
+		if (props.containsKey("open_color")) {
+			_openColor = GameWorld.stringToColor(props.get("open_color"));
+		}
+		//"color" defaults to _openColor
+		if (props.containsKey("color")) {
+			_openColor = GameWorld.stringToColor(props.get("color"));
+		}
 	}
 }

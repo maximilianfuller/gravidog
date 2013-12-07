@@ -12,6 +12,7 @@ import cs195n.Vec2f;
 
 public class LevelMenuScreen extends GravidogScreen {
 	
+	public static int CURRENT_LEVEL = 1;
 	private ArrayList<LevelBox> _boxes;
 		
 	public LevelMenuScreen(App a) {
@@ -26,18 +27,31 @@ public class LevelMenuScreen extends GravidogScreen {
 		//Closed
 		LevelBox second = new LevelBox(2);
 		second.box.setColor(Color.LIGHT_GRAY);
+		second.setLevelOpen(true);
 		//Closed
 		LevelBox third = new LevelBox(3);
+		third.box.setColor(Color.LIGHT_GRAY);
+		//Closed
+		LevelBox fourth = new LevelBox(4);
 		third.box.setColor(Color.LIGHT_GRAY);
 		
 		_boxes.add(first);
 		_boxes.add(second);
 		_boxes.add(third);
+		_boxes.add(fourth);
 	}
 	
-	/* GO! */
+	/**Sets the box for the specified level
+	 * number to be open. Sets frame visible.*/
+	public void openBox(int boxNumber) {
+		//Adjust for zero-indexing for ArrayList
+		_boxes.get(boxNumber-1).setLevelOpen(true);
+	}
+	
+	/** GO! */
 	private void startLevel(String lvlPath) {
-		app.setScreen(new PlayScreen(app, new File(lvlPath)));
+		if (lvlPath != null)
+			app.setScreen(new PlayScreen(app, new File(lvlPath)));
 	}
 	
 /* PROBABLY GET RID OF THESE METHODS. BUT MIGHT WANT TO OVERRIDE
@@ -59,6 +73,7 @@ public class LevelMenuScreen extends GravidogScreen {
 		for (LevelBox box: _boxes) { 
 			if (box.contains(new Vec2f(e.getX(), e.getY()))) {
 				if (box.isLevelOpen()) {
+					CURRENT_LEVEL = box.level_num;
 					this.startLevel(box.level_path);
 				}
 			}	

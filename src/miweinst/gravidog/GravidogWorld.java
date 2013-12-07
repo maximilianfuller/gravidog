@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import miweinst.engine.App;
-import miweinst.engine.FileIO;
 import miweinst.engine.beziercurve.BezierCurveEntity;
 import miweinst.engine.beziercurve.CurvedPathEntity;
 import miweinst.engine.contraints.PinEntity;
@@ -41,22 +40,33 @@ import cs195n.LevelData.ShapeData.Type;
 import cs195n.Vec2f;
 
 public class GravidogWorld extends GameWorld {    
-
-	public Input doDoorReached = new Input() 
-	{
+	//Calls levelWin if Relay is enabled
+	public Input doDoorReached = new Input() {
 		public void run(Map<String, String> args) {
-			_app.setScreen(new LevelMenuScreen(_app));
+			//_doorRelay has Connection to doLevelWin
+			_doorRelay.doActivate();
 		}
 	};
-	
-	public Input starCollected = new Input() {
+	//Enables relay when any star is collected
+	public Input doStarCollected = new Input() {
 		public void run(Map<String, String> args) {
-			//TODO
+			_doorRelay.doEnable();
+			_player.addStar();
+			_door.setShapeColor(_door.getOpenColor());
+		}
+	};
+	//Level win
+	public Input doLevelWin = new Input() {
+		public void run(Map<String, String> args) {
+			LevelMenuScreen levelMenu = new LevelMenuScreen(_app);
+			levelMenu.openBox(LevelMenuScreen.CURRENT_LEVEL + 1);
+			_app.setScreen(levelMenu);
 		}
 	};
 
 	private App _app;
 	private Player _player;
+	private GoalDoor _door;
 	//Player movement using boolean state array
 	private boolean[] _arrowKeyStates;
 	//Lazor visualization for raycasting
@@ -66,8 +76,7 @@ public class GravidogWorld extends GameWorld {
 	private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
 	//Variable name mapped to PhysicsEntity instance
 	private HashDecorator<String, PhysicsEntity> _entities;
-
-	
+	private RelayEntity _doorRelay;
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
 		super(app, viewport);
@@ -76,6 +85,10 @@ public class GravidogWorld extends GameWorld {
 		for (int i=0; i<_arrowKeyStates.length; i++) 
 			_arrowKeyStates[i]=false;
 		_lazorBool = false;
+		
+		//Unlocks door when star collected
+		_doorRelay = new RelayEntity(this);
+		_doorRelay.onActivate.connect(new Connection(doLevelWin));
 
 		////////////// START LEVEL READER /////////////////////
 
@@ -92,6 +105,7 @@ public class GravidogWorld extends GameWorld {
 		_classes.setDecoration("SpringEntity", SpringEntity.class);
 		_classes.setDecoration("GoalDoor", GoalDoor.class);
 		_classes.setDecoration("Star", Star.class);
+		_classes.setDecoration("Boulder", Boulder.class);
 
 		///Decoration set to each Entity read from LevelEditor!
 		_entities = new HashDecorator<String, PhysicsEntity>();                                        
@@ -111,9 +125,6 @@ public class GravidogWorld extends GameWorld {
 		}
 		
 		if (level != null) {
-			//Properties of entire level
-			this.setProperties(level.getProperties());
-
 			//Each Entity in Level
 			for (EntityData ent: level.getEntities()) {
 				//Make instance of PhysicsEntity
@@ -132,6 +143,9 @@ public class GravidogWorld extends GameWorld {
 				if (entity instanceof Player) {
 					_player = (Player) entity;
 				}       
+				if (entity instanceof GoalDoor) {
+					_door = (GoalDoor) entity;
+				}
 				else if (entity instanceof WhileSensorEntity) {
 					WhileSensorEntity playerSensor = (WhileSensorEntity) entity;
 					playerSensor.setEntities(_player);
@@ -145,7 +159,7 @@ public class GravidogWorld extends GameWorld {
 							float rad = s.getRadius();
 							shape = new CircleShape(s.getCenter(), rad);
 						} else if (shapeType == Type.BOX) {
-							shape = new AARectShape(s.getMin(), new Vec2f(s.getWidth(), s.getHeight()));
+							shape = new AARectShape(s.getMin(), new Vec2f(s.getWidth(), s.getHeight())).rectToPoly();
 						} else if (shapeType == Type.POLY) {
 							shape = new PolygonShape(PolygonShape.getCentroidOf(s.getVerts()), s.getVerts().toArray(new Vec2f[s.getVerts().size()]));
 						}
@@ -202,48 +216,48 @@ public class GravidogWorld extends GameWorld {
 					}
 				}
 			}
-		} else {
+			/* Properties of entire level
+			 * Set after entities because it has 
+			 * viewport scale and static GRAVITY*/ 
+			this.setProperties(level.getProperties());
+		} 
+		else {
 			System.err.println("Level is null! MWorld()");
 		}
 		
 		/////////////////^^^^^^^^^^                
 
+		//TEST ENTITIES (Directly Instantiated)
 		//Constraint Entities to test stuff
-		/*        		Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
-                PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
-                pin.setMass(1f);
-                this.addEntity(pin);
+/*		Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
+        PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
+        pin.setMass(1f);
+        this.addEntity(pin);*/
 
-                Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
-                SpringEntity spring = new SpringEntity(this, springEntityShape);
-                spring.setMass(1f);
-                spring.setSpringConstant(100f);
-                spring.setFrictionConstant(1f);
-                this.addEntity(spring);
-*/
+/*		Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+		SpringEntity spring = new SpringEntity(this, springEntityShape);
+		spring.setMass(1f);
+		spring.setSpringConstant(100f);
+		spring.setFrictionConstant(1f);
+		this.addEntity(spring);*/
 
-				//Square to test stuff with
-/*           PolygonShape entityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
-            PhysicsEntity test = new PhysicsEntity(this);
-            test.setShape(entityShape);
-            test.setMass(1f);
-            test.setGravitational(false);
-            this.addEntity(test);
+/*		//Square to test stuff with
+		PolygonShape entityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+        PhysicsEntity test = new PhysicsEntity(this);
+        test.setShape(entityShape);
+        test.setMass(1f);
+        test.setGravitational(false);
+        this.addEntity(test);*/
       	
 ////////////	
-			//Restore save_data
-			/* MICHAEL--
-			 * COMMENTING OUT BECAUSE OF NULL POINTER EXCEPTION WHEN TRYING TO MAKE A NEW LEVEL
-			 * 
-			 */
-			//_player.doRead.run(FileIO.read());
+		//_player.doRead.run(FileIO.read());
 	}
 
 	/*Called when game is quit.*/
 	public void quitReset() {
 		_player.doResetData.run(new HashMap<String, String>());
 	}
-
+	
 	/* Calls tick based on fixed timestep. Passes in an
 	 * adjusted nanosSincePreviousTick so speed of entity
 	 * movement remains relatively constant regardless of timestep.
