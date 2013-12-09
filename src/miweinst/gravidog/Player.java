@@ -99,7 +99,7 @@ public class Player extends PhysicsEntity {
 
 	//	private GameWorld _world;
 	private final float FRICTION_COEFFICIENT = 10;
-	private final float _jumpImpulse = 1200;
+	private final float _jumpImpulse;
 	private Shape _shape;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
@@ -125,6 +125,8 @@ public class Player extends PhysicsEntity {
 		this.setShape(shape);
 		this.setLocation(location);
 		this.setMass(10f);
+		_jumpImpulse = getMass()*120;
+		
 		this.setStatic(false);		
 		_shape = shape;		
 		_saveData = new ArrayList<String>();
@@ -183,7 +185,6 @@ public class Player extends PhysicsEntity {
 
 			//If gravity change between entities
 			if(otherMTVs.size() >= 2) {
-				System.out.println(otherMTVs);
 				/*Give player a small nudge perpindicular to mtv 
 				* to avoid switching gravity on every tick
 				* when the player is wedged in a corner. */

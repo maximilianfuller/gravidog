@@ -15,12 +15,20 @@ BUG: STILL? Player disappears from curve after a bit (possibly has to do with ti
 BUG: PinEntity has no default constructor PinEntity(GameWorld world). 
 	Cannot use in LevelEditor without it.
 
+TODO: Give PhysicsEntity a _density so that Mass is defined by area and density
+
+TODO: Make Boulder a Polygon and cap its rotational velocity
 TODO: resolution proportional to length
 TODO: Show stars and open/closed levels on LevelMenu
-TODO: optimize time step
+	Make a level win or lose screen
+TODO: Optimize time step
 TODO: Boulder and other objects affected by world
 TODO: Save/Load levels
 TODO: Sprites and pretty graphics
+	Use online. Mina's too busy
+
+BUG: AARectShape's location is getting set at center. 
+	But World reads level editor's box as a PolygonShape (rectToPoly), so just don't use AARectShape
 
 
 TODO: Optimization!

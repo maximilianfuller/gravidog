@@ -17,7 +17,7 @@ import cs195n.Vec2f;
 import cs195n.Vec2i;
 
 public class PlayScreen extends GravidogScreen {
-	
+
 	protected App app;
 	private Viewport _viewport;
 	private GravidogWorld _gameWorld;
@@ -25,12 +25,12 @@ public class PlayScreen extends GravidogScreen {
 	private float _cameraRadius = 0f; //currently, the player will always be in the center of the screen
 	private final float ROTATION_SPEED = (float)Math.PI; //in radians per second
 
-////// DO WE USE THIS?
+	////// DO WE USE THIS?
 	//The viewport should not perform a timed rotation by a 
-//	private final float ROTATION_BUFFER = (float)Math.PI/20f; // in radians. 
+	//	private final float ROTATION_BUFFER = (float)Math.PI/20f; // in radians. 
 
 	public PlayScreen(App a, File file) {
-		super(a);
+		super(a);		
 		app = a;
 		//Bounds of Viewport window on screen, in pixels
 		Vec2f windowDim = a.getDimensions();
@@ -77,14 +77,14 @@ public class PlayScreen extends GravidogScreen {
 			app.setScreen(new LevelMenuScreen(app));
 		}	
 		_gameWorld.onKeyPressed(e);
-		
-///////////
-	/* 
-	 * MAX,
 
-	 * WE DON'T NEED THESE ANYMORE RIGHT?
-	 */
-/*		 testing for viewport 
+		///////////
+		/* 
+		 * MAX,
+
+		 * WE DON'T NEED THESE ANYMORE RIGHT?
+		 */
+		/*		 testing for viewport 
 		if(e.getKeyChar() == 'a') {
 			_viewport.panInPixels(new Vec2f(-5f, 0f));
 		}
@@ -163,11 +163,13 @@ public class PlayScreen extends GravidogScreen {
 	private void panToPlayer() {
 		Vec2f playerLocOnScreen = _viewport.gamePointToScreen(_gameWorld.getPlayer().getLocation());
 		Vec2f playerOffsetFromCenter = playerLocOnScreen.minus(_viewport.getCenterOfScreen());
-		Vec2f offsetNorm = playerOffsetFromCenter.normalized();
-		Vec2f screenCameraOffset = offsetNorm.smult(_cameraRadius);
-		if(playerOffsetFromCenter.mag() > screenCameraOffset.mag()) {	
-			Vec2f panOffset = playerOffsetFromCenter.minus(screenCameraOffset);
-			_viewport.panInPixels(panOffset);
+		if(!playerOffsetFromCenter.isZero()) {
+			Vec2f offsetNorm = playerOffsetFromCenter.normalized();
+			Vec2f screenCameraOffset = offsetNorm.smult(_cameraRadius);
+			if(playerOffsetFromCenter.mag() > screenCameraOffset.mag()) {	
+				Vec2f panOffset = playerOffsetFromCenter.minus(screenCameraOffset);
+				_viewport.panInPixels(panOffset);
+			}
 		}
 	}
 
@@ -189,11 +191,11 @@ public class PlayScreen extends GravidogScreen {
 		//rotate towards _goalTheta (used for timed viewport rotation)
 		float rotationDir;
 		float thetaOffset = _viewport.getTheta() - goalTheta;
-		
+
 		//confine to the 0 to 2pi range
 		thetaOffset += (float)Math.PI*2f;
 		thetaOffset%=(float)Math.PI*2f; 		
-		
+
 		if(thetaOffset < Math.PI) {
 			//rotate CCW
 			rotationDir = -1f;
@@ -201,7 +203,7 @@ public class PlayScreen extends GravidogScreen {
 			//rotate CC
 			rotationDir = 1f;
 		}
-		
+
 		float rotationThisTick = rotationDir*ROTATION_SPEED*nanosSincePreviousTick/1000000000f;
 		if(Math.abs(rotationThisTick) > Math.PI - Math.abs(thetaOffset - Math.PI)) {
 			_viewport.setTheta(goalTheta);

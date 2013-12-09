@@ -6,21 +6,20 @@ import java.awt.Graphics2D;
 import java.awt.geom.CubicCurve2D;
 import java.util.ArrayList;
 import java.util.List;
-import org.ddogleg.solver.Polynomial;
-import org.ddogleg.solver.PolynomialOps;
-import org.ddogleg.solver.PolynomialRoots;
-import org.ddogleg.solver.RootFinderType;
-import org.ddogleg.solver.PolynomialSolver;
 
 import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.shape.AARectShape;
 import miweinst.engine.shape.CircleShape;
 import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
-import miweinst.gravidog.GravidogWorld;
-import miweinst.gravidog.PlayScreen;
-import cs195n.Vec2f;
+
+import org.ddogleg.solver.Polynomial;
+import org.ddogleg.solver.PolynomialOps;
+import org.ddogleg.solver.PolynomialRoots;
+import org.ddogleg.solver.RootFinderType;
 import org.ejml.data.Complex64F;
+
+import cs195n.Vec2f;
 
 public class CubicBezierCurve extends BezierCurve {
 
@@ -33,6 +32,8 @@ public class CubicBezierCurve extends BezierCurve {
 	////Visualization
 	private ArrayList<CircleShape> _drawDots;
 	private ArrayList<LineSegment> _drawLines;
+	
+	private boolean _drawBorder;
 
 	private float approxLineLength;
 	private Float inflectionPointTValue;
@@ -66,6 +67,7 @@ public class CubicBezierCurve extends BezierCurve {
 		this.setLocation(start);
 		this.updateSegs();
 		_pois = new ArrayList<Vec2f>();
+		_drawBorder = false;
 		//////		
 		_drawDots = new ArrayList<CircleShape>();
 		_drawLines = new ArrayList<LineSegment>();
@@ -638,15 +640,23 @@ public class CubicBezierCurve extends BezierCurve {
 		c.add(end);
 		return Vec2f.average(c);
 	}
+	
+	/**Draw border at getBorderWidth or set border width to 0*/
+	public void drawBorder(boolean border) {
+		_drawBorder = border;
+	}
 
 	/* Draws a Cubic Bezier Curve (with two control _points) by first
 	 * recursively getting a List of _points which should be drawn, 
 	 * depending on resolution/smoothness set by THRESHOLD (findDrawingPoints),
 	 * then draws a line segment between each of the drawing _points.*/
 	@Override
-	public void draw(Graphics2D g) {		
-		g.setStroke(new BasicStroke(super.getBorderWidth()));
+	public void draw(Graphics2D g) {	
+		g.setStroke(new BasicStroke(0));
 		g.setColor(super.getBorderColor());
+		if (_drawBorder) {
+			g.setStroke(new BasicStroke(getBorderWidth()));
+		}
 
 		/* line segment method */
 		/*for (LineSegment seg: _segs) {

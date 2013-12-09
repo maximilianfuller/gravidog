@@ -122,6 +122,7 @@ public class PolygonShape extends Shape {
 			Vec2f v2 = vertices.get((i+1)%n);
 			area += (v1.cross(v2));
 		}
+		assert area != 0;
 		return area/2f;
 	}
 	

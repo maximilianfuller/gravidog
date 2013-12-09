@@ -29,7 +29,6 @@ public class App extends SwingFrontEnd {
 
 	public App(String title, boolean fullscreen) {
 		super(title, fullscreen);
-		
 		_haveHiddenScreen = false;
 		
 		//Start with DEFAULT_WINDOW_SIZE defined in CS195NFrontEnd

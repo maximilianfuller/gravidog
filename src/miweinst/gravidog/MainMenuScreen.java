@@ -15,7 +15,7 @@ import cs195n.Vec2i;
 public class MainMenuScreen extends GravidogScreen {
 	
 	private PolygonShape _background;
-	private PolygonShape _decor;
+//	private PolygonShape _decor;
 	
 	private Text _textOne;
 	private Text _textTwo;
@@ -50,10 +50,10 @@ public class MainMenuScreen extends GravidogScreen {
 		_textOne.setColor(new Color(47, 125, 147, 130));
 		_textTwo.setColor(new Color(47, 125, 147, 74));
 
-		Vec2f[] decVerts = {new Vec2f(0, 0), new Vec2f(0, d.y), 
+/*		Vec2f[] decVerts = {new Vec2f(0, 0), new Vec2f(0, d.y), 
 				new Vec2f(d.x, 0), new Vec2f(d.x, d.y)};	
 		_decor = new PolygonShape(decVerts);
-		_decor.setColor(Color.WHITE);
+		_decor.setColor(Color.WHITE);*/
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class MainMenuScreen extends GravidogScreen {
 	@Override
 	public void onDraw(Graphics2D g) {
 		_background.draw(g);
-		_decor.draw(g);
+//		_decor.draw(g);
 		_textThree.draw(g);
 		_textOne.draw(g);
 		_textTwo.draw(g);

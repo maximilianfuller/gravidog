@@ -80,6 +80,7 @@ public class GravidogWorld extends GameWorld {
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
 		super(app, viewport);
+		
 		_app = app;
 		_arrowKeyStates = new boolean[4];
 		for (int i=0; i<_arrowKeyStates.length; i++) 
@@ -130,6 +131,7 @@ public class GravidogWorld extends GameWorld {
 				//Make instance of PhysicsEntity
 				String entityClass = ent.getEntityClass();
 				String entityName = ent.getName();
+
 				//Create new Entity instance out of Class 
 				PhysicsEntity entity = null;
 				try {
@@ -173,7 +175,7 @@ public class GravidogWorld extends GameWorld {
 					}
 					//Set PhysicsEntity properties                                                
 					entity.setProperties(ent.getProperties());
-
+					
 					//Add Entity to World Map
 					_entities.setDecoration(entityName, entity);
 					//Add Entity to GameWorld List
@@ -271,9 +273,10 @@ public class GravidogWorld extends GameWorld {
 			//Conditions by array of boolean key states
 			Vec2f norm = PhysicsEntity.GRAVITY.getNormal();
 			norm = norm.normalized();
+			float mag = _player.getMass()*120;
 			//Left key down
 			if (_arrowKeyStates[0]) {
-				_player.goalVelocity(norm.smult(-3000));
+				_player.goalVelocity(norm.smult(-mag));
 			}
 			//Up key down
 			if (_arrowKeyStates[1]) {
@@ -281,11 +284,11 @@ public class GravidogWorld extends GameWorld {
 			}
 			//Right key down
 			if (_arrowKeyStates[2]) {
-				_player.goalVelocity(norm.smult(3000));
+				_player.goalVelocity(norm.smult(mag));
 			}
 			//Down key down
 			if (_arrowKeyStates[3]) {
-				_player.goalVelocity(PhysicsEntity.GRAVITY.normalized().smult(3000));           
+				_player.goalVelocity(PhysicsEntity.GRAVITY.normalized().smult(mag));           
 			}
 		}
 	}

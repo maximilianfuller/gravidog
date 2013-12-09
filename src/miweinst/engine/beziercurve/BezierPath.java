@@ -366,19 +366,15 @@ public class BezierPath extends Shape {
 	
 	public void draw(Graphics2D g) {
 		g.setColor(this.getColor());
-		g.setStroke(new BasicStroke(this.getBorderWidth()));
-		for (BezierCurve curve: _curves) {
-			curve.draw(g);
-		}
 		/*Right now just fills whatever Shape's color is. But 
 		 * could break it up into _fillColor and _borderColor
 		 * if ever want it to be different colors b/w fill and border.*/
 		if (_isFilled) {
 			Path2D path = toPath(_segs);
-//			Color col = g.getColor();
-//			g.setColor(this.getColor());
 			g.fill(path);
-//			g.setColor(col);
+		}
+		for (BezierCurve curve: _curves) {
+			curve.draw(g);
 		}
 		
 /////  FOR VISUALIZING CONNECTIONS  (KNOTS) BETWEEN CURVES! SUPER HELPFUL

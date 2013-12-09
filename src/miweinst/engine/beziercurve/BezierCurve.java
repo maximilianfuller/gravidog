@@ -13,6 +13,11 @@ public abstract class BezierCurve extends Shape {
 	public BezierCurve(Vec2f loc, Vec2f dim) {
 		super(loc, dim);
 	}
+	
+	/**EMPTY METHOD IN BEZIERCURVE, overridden in CubicBezierCuve*/
+	public void drawBorder(boolean border) {
+	}
+
 
 	@Override
 	public boolean collides(miweinst.engine.shape.Shape s) {

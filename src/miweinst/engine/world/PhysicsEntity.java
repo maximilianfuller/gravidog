@@ -8,13 +8,14 @@ import miweinst.engine.collisiondetection.ShapeCollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
+import miweinst.gravidog.Boulder;
 import cs195n.Vec2f;
 
 public class PhysicsEntity extends MovingEntity {
 	public final String string = "PhysicsEntity";
 
 	//Gravity acts on all objects of GameWorld equally
-	public static Vec2f GRAVITY = new Vec2f(0, -75f);
+	public static Vec2f GRAVITY = new Vec2f(0, -200f);
 
 	//Self-explanatory attributes of physical object
 	private float _mass;
@@ -199,7 +200,7 @@ public class PhysicsEntity extends MovingEntity {
 	
 	public void goalVelocity(Vec2f gv) {
 		Vec2f dV = gv.minus(_vel);
-		Vec2f force = dV.smult(2.5f);
+		Vec2f force = dV.smult(getMass()/10);
 		this.applyForce(force, getCentroid());
 	}
 
@@ -240,11 +241,15 @@ public class PhysicsEntity extends MovingEntity {
 	 * This does not override super's method, b/c takes
 	 * PhysicsEntity. Super's method called if MovingEntity
 	 * of different subclass is passed in, w/o collision response.*/
-	public boolean collides(PhysicsEntity other) {		
-		boolean collision = super.collides(other);  
-		if (_isInteractive && other.isInteractive()) {
-			this.collisionResponse(other);
+	public boolean collides(PhysicsEntity other) {	
+		//Don't need to collide two static objects
+		if (this.isStatic() && other.isStatic()) {
+			return false;
 		}
+		boolean collision = super.collides(other);  
+
+		if (_isInteractive && other.isInteractive()) 
+				this.collisionResponse(other);
 		return collision;
 	}
 
@@ -252,6 +257,7 @@ public class PhysicsEntity extends MovingEntity {
 	 * detected. Moves each Entity away from each other
 	 * by mtv/2, according to their ShapeCollisionInfo object.*/
 	public void collisionResponse(PhysicsEntity other) {
+		
 		//Get ShapeCollisionInfo information cache, s
 		ShapeCollisionInfo otherData = other.getShape().getCollisionInfo();
 		//containing obj is 'other' b/c double dispatch
@@ -259,50 +265,49 @@ public class PhysicsEntity extends MovingEntity {
 
 		//Avoid null pointer by checking POI exists (there is that weird penetration case)
 		if (otherData != null && thisData != null && other.getShape().poi(getShape()) != null) {
-			//Get MTVs and locations for each Entity
-			Vec2f otherMTV = otherData.getMTV();	
-			Vec2f thisMTV = thisData.getMTV();			
-			Vec2f otherNewLoc = other.getLocation();
-			Vec2f thisNewLoc = this.getLocation();				
-			Vec2f poi = this.getShape().poi(other.getShape());
+			if (!otherData.getMTV().isZero() && !thisData.getMTV().isZero()) {
+				//Get MTVs and locations for each Entity
+				Vec2f otherMTV = otherData.getMTV();	
+				Vec2f thisMTV = thisData.getMTV();			
+				Vec2f otherNewLoc = other.getLocation();
+				Vec2f thisNewLoc = this.getLocation();				
+				Vec2f poi = this.getShape().poi(other.getShape());
 
-			//Point of intersection should be same when called from either direction
-			assert poi == other.getShape().poi(this.getShape());
+				if (!other.isStatic()) {
+					//s new location
+					float mult = _mass/(_mass+other.getMass());
+					if(this.isStatic())
+						mult = 1;
+					otherNewLoc = other.getLocation().plus(otherMTV.smult(mult));
+				}
+				if (!this.isStatic()) {
+					float mult = other.getMass()/(_mass+other.getMass());
+					if(other.isStatic())
+						mult = 1;
+					thisNewLoc = this.getLocation().plus(thisMTV.smult(mult));
+				}		
+				//1 Calculate impulse before translating
+				Vec2f[] imps = calculateImpulse(other);		
+				//2 Translate it out
+				other.setLocation(otherNewLoc);
+				this.setLocation(thisNewLoc);
 
-			if (!other.isStatic()) {
-				//s new location
-				float mult = _mass/(_mass+other.getMass());
-				if(this.isStatic())
-					mult = 1;
-				otherNewLoc = other.getLocation().plus(otherMTV.smult(mult));
+				//3 Then set the impulse
+				other.applyImpulse(imps[0], poi);
+				this.applyImpulse(imps[1], poi);
+
+				//Updates reference to most recent MTV
+				other.setCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
+				this.setCollisionInfo(new PhysicsCollisionInfo(thisMTV, other));
 			}
-			if (!this.isStatic()) {
-				float mult = other.getMass()/(_mass+other.getMass());
-				if(other.isStatic())
-					mult = 1;
-				thisNewLoc = this.getLocation().plus(thisMTV.smult(mult));
-			}		
-			//1 Calculate impulse before translating
-			Vec2f[] imps = calculateImpulse(other);		
-			//2 Translate it out
-			other.setLocation(otherNewLoc);
-			this.setLocation(thisNewLoc);
-
-			//3 Then set the impulse
-			other.applyImpulse(imps[0], poi);
-			this.applyImpulse(imps[1], poi);
-			
-			//Updates reference to most recent MTV
-			other.setCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
-			this.setCollisionInfo(new PhysicsCollisionInfo(thisMTV, other));
-		}
-		//Void condition because collisionResponse only called if collision detected
-		else {
-			if (otherData == null) {
-				other.setCollisionInfo(null);
-			}
-			if (thisData == null) {
-				this.setCollisionInfo(null);
+			//Void condition because collisionResponse only called if collision detected
+			else {
+				if (otherData == null) {
+					other.setCollisionInfo(null);
+				}
+				if (thisData == null) {
+					this.setCollisionInfo(null);
+				}
 			}
 		}
 	}
@@ -336,6 +341,20 @@ public class PhysicsEntity extends MovingEntity {
 		}
 		imps[1] = (numerator.sdiv(denominator));
 		imps[0] = imps[1].invert();
+		
+/////////DEBUGGING		
+		if (this instanceof Boulder) {
+/*			System.out.println();
+			System.out.println("m_a: " + m_a);
+			System.out.println("m_b: " + m_b);
+			System.out.println("this moi: " + this.getMomentOfInertia(_mass));
+			System.out.println("other moi: " + other.getMomentOfInertia(other.getMass()));
+			System.out.println("denominator: " + denominator);
+			System.out.println("shape mtv: " + this.getShape().getCollisionInfo().getMTV());
+			System.out.println("n: " + n);
+			System.out.println("u_a: " + u_a);
+			System.out.println("u_b: " + u_b);*/
+		}
 
 		//Old, non-rotating collision response (flat impulse calculation)
 		/*		if (!this.isRotatable() && !other.isRotatable()) {
