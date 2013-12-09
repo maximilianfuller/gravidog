@@ -243,11 +243,9 @@ public class PhysicsEntity extends MovingEntity {
 	 * of different subclass is passed in, w/o collision response.*/
 	public boolean collides(PhysicsEntity other) {	
 		//Don't need to collide two static objects
-		if (this.isStatic() && other.isStatic()) {
+		if (this.isStatic() && other.isStatic()) 			
 			return false;
-		}
 		boolean collision = super.collides(other);  
-
 		if (_isInteractive && other.isInteractive()) 
 				this.collisionResponse(other);
 		return collision;
@@ -256,13 +254,11 @@ public class PhysicsEntity extends MovingEntity {
 	/* Handles response if collision between entities is 
 	 * detected. Moves each Entity away from each other
 	 * by mtv/2, according to their ShapeCollisionInfo object.*/
-	public void collisionResponse(PhysicsEntity other) {
-		
+	public void collisionResponse(PhysicsEntity other) {		
 		//Get ShapeCollisionInfo information cache, s
 		ShapeCollisionInfo otherData = other.getShape().getCollisionInfo();
 		//containing obj is 'other' b/c double dispatch
 		ShapeCollisionInfo thisData = this.getShape().getCollisionInfo();
-
 		//Avoid null pointer by checking POI exists (there is that weird penetration case)
 		if (otherData != null && thisData != null && other.getShape().poi(getShape()) != null) {
 			if (!otherData.getMTV().isZero() && !thisData.getMTV().isZero()) {
@@ -300,14 +296,14 @@ public class PhysicsEntity extends MovingEntity {
 				other.setCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
 				this.setCollisionInfo(new PhysicsCollisionInfo(thisMTV, other));
 			}
-			//Void condition because collisionResponse only called if collision detected
-			else {
-				if (otherData == null) {
-					other.setCollisionInfo(null);
-				}
-				if (thisData == null) {
-					this.setCollisionInfo(null);
-				}
+		}
+		//Void condition because collisionResponse only called if collision detected
+		else {
+			if (otherData == null) {
+				other.setCollisionInfo(null);
+			}
+			if (thisData == null) {
+				this.setCollisionInfo(null);
 			}
 		}
 	}

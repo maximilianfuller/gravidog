@@ -1,22 +1,16 @@
 
 
 NOTE:
-Every level must have a Player object and a Door object, or else null pointer exception. Because
-reference to Player and Door are used for specific actions and IO.
+Every level must have a Player object and a Door object, or else null pointer exception. Because reference to Player and Door are used for specific actions/IO.
 	Maybe we could make our own InvalidLevelException and throw it if there's no Player or Door?
 
-
-BUG: Jiggly Viewport rotation
-	//find polynomial solver or root finder in library...
-
-BUG: STILL? Player disappears from curve after a bit (possibly has to do with time step?)
-	And Boulders disappear when they're both on the curve! (see Level 2)
 
 BUG: PinEntity has no default constructor PinEntity(GameWorld world). 
 	Cannot use in LevelEditor without it.
 
 TODO: Give PhysicsEntity a _density so that Mass is defined by area and density
 
+TODO: Make sensors on every level that call a Player input doDie
 TODO: Make Boulder a Polygon and cap its rotational velocity
 TODO: resolution proportional to length
 TODO: Show stars and open/closed levels on LevelMenu

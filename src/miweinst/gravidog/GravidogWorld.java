@@ -40,27 +40,51 @@ import cs195n.LevelData.ShapeData.Type;
 import cs195n.Vec2f;
 
 public class GravidogWorld extends GameWorld {    
+	
+	private boolean _doorReached = false;
+	private boolean _falseWin = false;
+	
 	//Calls levelWin if Relay is enabled
 	public Input doDoorReached = new Input() {
 		public void run(Map<String, String> args) {
-			//_doorRelay has Connection to doLevelWin
-			_doorRelay.doActivate();
+//////
+//			System.out.println("doDoorReached");
+			if (!_doorReached) {
+				//_doorRelay has Connection to doLevelWin
+				_doorRelay.doActivate();
+				_doorReached = true;			
+			}
 		}
 	};
 	//Enables relay when any star is collected
 	public Input doStarCollected = new Input() {
 		public void run(Map<String, String> args) {
 			_doorRelay.doEnable();
-			_player.addStar();
+			LevelMenuScreen.addStar();
 			_door.setShapeColor(_door.getOpenColor());
 		}
 	};
 	//Level win
 	public Input doLevelWin = new Input() {
 		public void run(Map<String, String> args) {
+/////////
+//			System.out.println("doLevelWin");
 			LevelMenuScreen levelMenu = new LevelMenuScreen(_app);
-			levelMenu.openBox(LevelMenuScreen.CURRENT_LEVEL + 1);
+			//Only save stars if _doorReached, not if resetted with toLevelScreen
+			if (!_falseWin) {
+				//Show stars earned for current level
+				levelMenu.updateStars();
+			}
+			else {
+				//Clear stars anyway so multiple playthroughs are not cumulative
+				levelMenu.clearStars();
+				_falseWin = false;
+			}
+			//Unlock next level (levelnum+1)
+			levelMenu.openLevel(LevelMenuScreen.CURRENT_LEVEL + 1);
 			_app.setScreen(levelMenu);
+			//Reset boolean
+			_doorReached = false;
 		}
 	};
 
@@ -258,6 +282,13 @@ public class GravidogWorld extends GameWorld {
 	/*Called when game is quit.*/
 	public void quitReset() {
 		_player.doResetData.run(new HashMap<String, String>());
+	}
+	
+	/**Goes back to LevelMenuScreen without resetting game.
+	 * Maintains star information.*/
+	public void toLevelMenu() {
+		_falseWin = true;
+		this.doLevelWin.run(null);
 	}
 	
 	/* Calls tick based on fixed timestep. Passes in an

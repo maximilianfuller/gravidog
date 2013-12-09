@@ -20,17 +20,9 @@ public class App extends SwingFrontEnd {
 	//Polymorphically calls game subclasses of Screen
 		//Keep updating in setScreen method
 	public Screen _currScreen;
-	
-	//Can load another Screen behind the visible one, to set visible on method call.
-	public Screen _hiddenScreen;
-	//Indicates whether a screen is hiding
-	public boolean _haveHiddenScreen;
-	
 
 	public App(String title, boolean fullscreen) {
 		super(title, fullscreen);
-		_haveHiddenScreen = false;
-		
 		//Start with DEFAULT_WINDOW_SIZE defined in CS195NFrontEnd
 		_currWindowSize = DEFAULT_WINDOW_SIZE;
 	}
@@ -44,22 +36,6 @@ public class App extends SwingFrontEnd {
 		_currScreen = screen;
 	}
 	
-	public void setHiddenScreen(Screen screen) {
-		_hiddenScreen = screen;
-		_haveHiddenScreen = true;
-	}
-	
-	public boolean haveHiddenScreen() {
-		return _haveHiddenScreen;
-	}
-	
-	public void showHiddenScreen() {
-		_currScreen = _hiddenScreen;
-		_hiddenScreen = null;
-		_haveHiddenScreen = false;
-	}
-	
-
 	public Vec2f getDimensions() {
 		return _currWindowSize;
 	}	

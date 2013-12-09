@@ -74,7 +74,10 @@ public class PlayScreen extends GravidogScreen {
 			System.exit(0);
 		}
 		if (e.getKeyChar() == 'r') {
-			app.setScreen(new LevelMenuScreen(app));
+//////////
+			//Artificially "win" without storing stars
+			_gameWorld.toLevelMenu();
+//			app.setScreen(new LevelMenuScreen(app));
 		}	
 		_gameWorld.onKeyPressed(e);
 

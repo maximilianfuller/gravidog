@@ -104,7 +104,6 @@ public class Player extends PhysicsEntity {
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
 	private boolean _dataWritten;
-	private HashMap<Integer, Integer> _stars;
 
 	public Player(GameWorld world) {
 		super(world);
@@ -120,8 +119,6 @@ public class Player extends PhysicsEntity {
 		shape.setBorderWidth(.5f);
 		shape.setBorderColor(Color.BLACK);
 		
-		_stars = new HashMap<Integer, Integer>();
-
 		this.setShape(shape);
 		this.setLocation(location);
 		this.setMass(10f);
@@ -139,23 +136,6 @@ public class Player extends PhysicsEntity {
 	 * used to reset data.*/
 	private void setDataWritten(boolean b) {
 		_dataWritten = b;
-	}
-	
-	/**Increments by one star on current level.*/	
-	public void addStar() {
-		_stars.put(LevelMenuScreen.CURRENT_LEVEL, getStars() + 1);
-	}
-	/** Returns 0 if lvl not contained in HashMap*/
-	public int getStars() {
-		int lvl = LevelMenuScreen.CURRENT_LEVEL;
-		if (_stars.containsKey(lvl))
-			return _stars.get(lvl);
-		else
-			return 0;
-	}
-	/**Returns stars earned at specified level number*/
-	public int getStarsFor(int level) {
-		return _stars.get(level);
 	}
 	
 	@Override

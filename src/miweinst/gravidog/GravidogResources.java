@@ -1,12 +1,9 @@
 package miweinst.gravidog;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.HashMap;
 
 import miweinst.engine.gfx.sprite.Resources;
-import miweinst.engine.gfx.sprite.SpriteLoader;
-import cs195n.Vec2i;
 
 public class GravidogResources extends Resources {
 
@@ -23,13 +20,17 @@ public class GravidogResources extends Resources {
 		//Load first sheet	
 		
 		//Loads single sprite, level_one preview frame
-		File f = new File("src/miweinst/resources/frame_one.jpg");
-		SpriteLoader levelLoader = new SpriteLoader(f, new Vec2i(0, 0), 0, new Vec2i(1, 1), 0);
+/*		File f = new File("src/miweinst/resources/frame_one.jpg");
+		SpriteLoader levelLoader = new SpriteLoader(f, new Vec2i(0, 0), 0, new Vec2i(1, 1), 0);*/
 		
-		BufferedImage[][] levelOut = levelLoader.getSprites();
+/*		File star_file = new File("src/miweinst/resources/star_med.png");
+		SpriteLoader starLoader = new SpriteLoader(star_file, new Vec2i(0, 0), 0, new Vec2i(1, 1), 0);
+		_cache.put("star", starLoader.getSprites()[0]);*/
+		
+/*		BufferedImage[][] levelOut = levelLoader.getSprites();
 		
 		BufferedImage[] levelOneFrame = levelOut[0];
-		_cache.put("frame_level_one", levelOneFrame);
+		_cache.put("frame_level_one", levelOneFrame);*/
 				
 		//Sets the cache of Resources superclass so that 
 		super.setCache(_cache);
