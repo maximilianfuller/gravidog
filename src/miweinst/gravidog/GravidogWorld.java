@@ -42,13 +42,10 @@ import cs195n.Vec2f;
 public class GravidogWorld extends GameWorld {    
 	
 	private boolean _doorReached = false;
-	private boolean _falseWin = false;
 	
 	//Calls levelWin if Relay is enabled
 	public Input doDoorReached = new Input() {
 		public void run(Map<String, String> args) {
-//////
-//			System.out.println("doDoorReached");
 			if (!_doorReached) {
 				//_doorRelay has Connection to doLevelWin
 				_doorRelay.doActivate();
@@ -67,19 +64,11 @@ public class GravidogWorld extends GameWorld {
 	//Level win
 	public Input doLevelWin = new Input() {
 		public void run(Map<String, String> args) {
-/////////
-//			System.out.println("doLevelWin");
+///Will save game at the end of every level
+//			LevelMenuScreen.save();
 			LevelMenuScreen levelMenu = new LevelMenuScreen(_app);
-			//Only save stars if _doorReached, not if resetted with toLevelScreen
-			if (!_falseWin) {
-				//Show stars earned for current level
-				levelMenu.updateStars();
-			}
-			else {
-				//Clear stars anyway so multiple playthroughs are not cumulative
-				levelMenu.clearStars();
-				_falseWin = false;
-			}
+			//Show stars earned for current level
+			levelMenu.updateStars();
 			//Unlock next level (levelnum+1)
 			levelMenu.openLevel(LevelMenuScreen.CURRENT_LEVEL + 1);
 			_app.setScreen(levelMenu);
@@ -283,14 +272,7 @@ public class GravidogWorld extends GameWorld {
 	public void quitReset() {
 		_player.doResetData.run(new HashMap<String, String>());
 	}
-	
-	/**Goes back to LevelMenuScreen without resetting game.
-	 * Maintains star information.*/
-	public void toLevelMenu() {
-		_falseWin = true;
-		this.doLevelWin.run(null);
-	}
-	
+
 	/* Calls tick based on fixed timestep. Passes in an
 	 * adjusted nanosSincePreviousTick so speed of entity
 	 * movement remains relatively constant regardless of timestep.
@@ -304,14 +286,14 @@ public class GravidogWorld extends GameWorld {
 			//Conditions by array of boolean key states
 			Vec2f norm = PhysicsEntity.GRAVITY.getNormal();
 			norm = norm.normalized();
-			float mag = _player.getMass()*120;
+			float mag = _player.getMass()*170;
 			//Left key down
 			if (_arrowKeyStates[0]) {
 				_player.goalVelocity(norm.smult(-mag));
 			}
 			//Up key down
 			if (_arrowKeyStates[1]) {
-				//        			_player.jump();
+//        			_player.jump();
 			}
 			//Right key down
 			if (_arrowKeyStates[2]) {

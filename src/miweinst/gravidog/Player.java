@@ -3,11 +3,9 @@ package miweinst.gravidog;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import miweinst.engine.FileIO;
 import miweinst.engine.collisiondetection.PhysicsCollisionInfo;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.shape.CircleShape;
@@ -57,7 +55,7 @@ public class Player extends PhysicsEntity {
 		 * time as data storage. So for M4, doWrite not run from connection 
 		 * but rather from doStore.run*/
 		public void run(Map<String, String> args) {
-			if (args.containsKey("checkpoint"))
+			/*if (args.containsKey("checkpoint"))
 				_saveData.add(new String("checkpoint: " + args.get("checkpoint")));
 
 			//Store Player's color for restoration at save.
@@ -65,24 +63,24 @@ public class Player extends PhysicsEntity {
 			String col = new String(Integer.toString(curr.getRed()) + "," +  Integer.toString(curr.getGreen()) + "," + Integer.toString(curr.getBlue()));
 			_saveData.add(new String("color: " + col));
 
-			doWrite.run(args);
+			doWrite.run(args);*/
 		}
 	};
 	//write any stored data to resources/save_data.txt, only once
 	public Input doWrite = new Input() {
 		public void run(Map<String, String> args) {
-			if (!_dataWritten) {
+/*			if (!_dataWritten) {
 				FileIO.write(_saveData);
 				_dataWritten = true;
-			}
+			}*/
 		}
 	};
 	//resets all save data to initial values; called on quit
 	public Input doResetData = new Input() {
 		public void run(Map<String, String> args) {
-			_saveData.clear();
+/*			_saveData.clear();
 			setDataWritten(false);
-			doWrite.run(args);
+			doWrite.run(args);*/
 		}
 	};
 	//reads whether or not Player has reached checkpoint, and Player's prev color
@@ -101,9 +99,9 @@ public class Player extends PhysicsEntity {
 	private final float FRICTION_COEFFICIENT = 10;
 	private final float _jumpImpulse;
 	private Shape _shape;
-	private List<String> _saveData;
+//	private List<String> _saveData;
 	private boolean _gravitySwitched;
-	private boolean _dataWritten;
+//	private boolean _dataWritten;
 
 	public Player(GameWorld world) {
 		super(world);
@@ -126,17 +124,18 @@ public class Player extends PhysicsEntity {
 		
 		this.setStatic(false);		
 		_shape = shape;		
-		_saveData = new ArrayList<String>();
 		_gravitySwitched = false;
-		_dataWritten = false;
+		
+//		_saveData = new ArrayList<String>();
+//		_dataWritten = false;
 	}
 	
-	/**Allows method to override the built in check
+	/*Allows method to override the built in check
 	 * on writing save data to file, specifically
 	 * used to reset data.*/
-	private void setDataWritten(boolean b) {
-		_dataWritten = b;
-	}
+/*	private void setDataWritten(boolean b) {
+//		_dataWritten = b;
+	}*/
 	
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
