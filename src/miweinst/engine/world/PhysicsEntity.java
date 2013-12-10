@@ -18,7 +18,7 @@ public class PhysicsEntity extends MovingEntity {
 	public static Vec2f GRAVITY = new Vec2f(0, -200f);
 
 	//Self-explanatory attributes of physical object
-	private float _mass;
+	private float _density; //mass per square game unit. a density of 1 will mean a mass equal to the area of the shape
 	private Vec2f _vel;
 	private Vec2f _force, _impulse;
 	private float _restitution;
@@ -53,7 +53,7 @@ public class PhysicsEntity extends MovingEntity {
 		super.setDx(_vel.x);
 		super.setDy(_vel.y);		
 		GRAVITY = new Vec2f(0, -75f);
-		_mass = 1;
+		_density = 1f;
 		_restitution = 0f;		
 		_force = new Vec2f(0, 0);
 		_impulse = new Vec2f(0, 0);		
@@ -88,13 +88,14 @@ public class PhysicsEntity extends MovingEntity {
 		super.setShape(s);
 	}
 
-	/*Sets/Gets mass of this Entity.*/
 	public float getMass() {
-		return _mass;
+		return _density * getShape().getArea();
 	}
-	public void setMass(float m) {
-		_mass = m;
+	
+	public void setDensity(float density) {
+		_density = density;
 	}
+	
 	public Vec2f getCentroid() {
 		return super.getShape().getCentroid();
 	}
@@ -125,7 +126,7 @@ public class PhysicsEntity extends MovingEntity {
 		//Update reference to current location
 		//		_pos = this.getLocation();
 		//Applies gravitational force down as Y-component
-		this.applyForce(GRAVITY.smult(_mass), getShape().getCentroid());						
+		this.applyForce(GRAVITY.smult(getMass()), getShape().getCentroid());						
 		//Update vel, pos; reset force, impulse
 		this.symplecticUpdate(nanosSincePreviousTick);
 //		this.setLocation(_pos);		
@@ -138,13 +139,13 @@ public class PhysicsEntity extends MovingEntity {
 		//Turn into seconds
 		float time = nanos/1000000000.0f;		
 		//vel = vel + t*force/m + impulse/m 	(= vel + acc*time)
-		_vel = _vel.plus(_force.smult(time).sdiv(_mass).plus(_impulse.sdiv(_mass)));	
+		_vel = _vel.plus(_force.smult(time).sdiv(getMass()).plus(_impulse.sdiv(getMass())));	
 		//pos = pos + t*vel		 (= pos + vel*time)
 		setLocation(getLocation().plus(_vel.smult(time)));
 
 		//Update rotational stuff
-		_angularVel += _angularForce*(time/getMomentOfInertia(_mass));
-		_angularVel += _angularImpulse/getMomentOfInertia(_mass);
+		_angularVel += _angularForce*(time/getMomentOfInertia(getMass()));
+		_angularVel += _angularImpulse/getMomentOfInertia(getMass());
 		//_angle += _angularVel*secondsElapsed;
 		getShape().setAngle(getShape().getAngle() + _angularVel*time);
 
@@ -180,29 +181,6 @@ public class PhysicsEntity extends MovingEntity {
 		}
 	}
 
-	/*Applies force until goal velocity is reached.
-	 * Force is proportional to difference between 
-	 * current x-vel and goal x-vel. So force decreases
-	 * as PhysicsEntity gains velocity.
-	 * Separate mutators for X- and Y-component of velocity
-	 * instead of wrapping in a Vec2f object because
-	 * x, y are almost never set together.*/
-	public void goalVelocityX(float vx) {		
-		float dV = vx - _vel.x;
-		Vec2f F = new Vec2f(dV*2.5f, 0);
-		this.applyForce(F, getCentroid());
-	}
-	public void goalVelocityY(float vy) {		
-		float dV = vy - _vel.y;
-		Vec2f F = new Vec2f(0, dV*2.5f);
-		this.applyForce(F, getCentroid());
-	}
-	
-	public void goalVelocity(Vec2f gv) {
-		Vec2f dV = gv.minus(_vel);
-		Vec2f force = dV.smult(getMass()/10);
-		this.applyForce(force, getCentroid());
-	}
 
 	/*Bypass force and impulse to mutate velocity directly.*/
 	public void setVelocity(Vec2f vel) {
@@ -271,13 +249,13 @@ public class PhysicsEntity extends MovingEntity {
 
 				if (!other.isStatic()) {
 					//s new location
-					float mult = _mass/(_mass+other.getMass());
+					float mult = getMass()/(getMass()+other.getMass());
 					if(this.isStatic())
 						mult = 1;
 					otherNewLoc = other.getLocation().plus(otherMTV.smult(mult));
 				}
 				if (!this.isStatic()) {
-					float mult = other.getMass()/(_mass+other.getMass());
+					float mult = other.getMass()/(getMass()+other.getMass());
 					if(other.isStatic())
 						mult = 1;
 					thisNewLoc = this.getLocation().plus(thisMTV.smult(mult));
@@ -312,6 +290,8 @@ public class PhysicsEntity extends MovingEntity {
 	 * correct impulse for collision response between two shapes in 
 	 * collisionResponse method.*/
 	public Vec2f[] calculateImpulse(PhysicsEntity other) {
+		assert(!this.isStatic() || !other.isStatic());
+		
 		//Impulse array, equal but opposite: [impulseA, impulseB]
 		Vec2f[] imps = new Vec2f[2];
 		float cor = (float) Math.sqrt(this.getRestitution()*other.getRestitution());
@@ -325,16 +305,18 @@ public class PhysicsEntity extends MovingEntity {
 		Vec2f n = this.getShape().getCollisionInfo().getMTV().normalized();
 
 		Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
-		float denominator = 1f/m_a + 1f/m_b;
+		float denominator = 0f;
 		//Only non-static entities have non-null getCentroid() and getMomentOfInertia() [i.e. BezierCurveEntity does not]
+		
 		if (!this.isStatic()) {
 			Vec2f r1Perp = getCentroid().minus(poi).getNormal().normalized();
-			denominator += (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(_mass);;
+			denominator += (r1Perp.dot(n) * r1Perp.dot(n)) / this.getMomentOfInertia(getMass()) + 1f/m_a;
 		}
 		if (!other.isStatic()) {
 			Vec2f r2Perp = other.getCentroid().minus(poi).getNormal().normalized();
-			denominator += (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass());;
+			denominator += (r2Perp.dot(n) * r2Perp.dot(n)) / other.getMomentOfInertia(other.getMass()) + 1f/m_b;
 		}
+		
 		imps[1] = (numerator.sdiv(denominator));
 		imps[0] = imps[1].invert();
 		
@@ -414,8 +396,8 @@ public class PhysicsEntity extends MovingEntity {
 		if (props.containsKey("restitution")) 
 			this.setRestitution(Float.parseFloat(props.get("restitution")));
 		//mass
-		if (props.containsKey("mass")) 
-			this.setMass(Float.parseFloat(props.get("mass")));						
+		if (props.containsKey("density")) 
+			this.setDensity(Float.parseFloat(props.get("density")));						
 		//static
 		if (props.containsKey("static")) 
 			this.setStatic(Boolean.parseBoolean(props.get("static")));						
@@ -436,7 +418,7 @@ public class PhysicsEntity extends MovingEntity {
 		if (new String("doDisappear").equals(s)) {
 			return doDisappear;
 		}
-		System.out.println("No input found (PhysicsEntity.getInputOf)");
+		System.err.println("No input found (PhysicsEntity.getInputOf)");
 		return null;
 	}
 	public Output getOutput(String o) {

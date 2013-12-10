@@ -47,7 +47,8 @@ public class Text {
 		float buttonSize = text.getFontSize();
 		Vec2f buttonDim = new Vec2f((text.getString().length()-2)*buttonSize, buttonSize);
 		Vec2f buttonLoc = new Vec2f(text.getLocation().x + buttonDim.x/2, text.getLocation().y - buttonSize/2);
-		PolygonShape bounds = new AARectShape(buttonLoc, buttonDim).rectToPoly();
+		//Pass in Boolean because uses default java coordinates
+		PolygonShape bounds = new AARectShape(buttonLoc, buttonDim).rectToPoly(false);
 		bounds.setLocation(buttonLoc);
 		bounds.setDimensions(buttonDim);
 		return bounds;

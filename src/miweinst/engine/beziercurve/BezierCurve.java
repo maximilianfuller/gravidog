@@ -61,7 +61,7 @@ public abstract class BezierCurve extends Shape {
 	@Override
 	public float getArea() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 1f;
 	}
 	
 	@Override

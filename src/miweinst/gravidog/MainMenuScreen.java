@@ -101,9 +101,9 @@ public class MainMenuScreen extends GravidogScreen {
 		_textTitle1.draw(g);
 		_textTitle2.draw(g);
 		//Visualize bounding boxes used to watch for click
-//		_buttonPlay.draw(g);
-//		_buttonReset.draw(g);
-//		_buttonQuit.draw(g);
+/*		_buttonPlay.draw(g);
+		_buttonReset.draw(g);
+		_buttonQuit.draw(g);*/
 	}
 /*	@Override
 	public void onKeyPressed(KeyEvent e) {

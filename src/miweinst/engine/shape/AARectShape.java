@@ -63,16 +63,45 @@ public class AARectShape extends Shape {
 	 * into Polygon allows Polygon collision algorithm to be recycled;
 	 * not as efficient, because uses two extra axes, but more stable for now.*/
 	public PolygonShape rectToPoly() {
-		//Array of vertices in counter-clockwise order
-		Vec2f upperRight = new Vec2f(this.getMaxX(), this.getMinY());
-		Vec2f upperLeft = new Vec2f(this.getMinX(), this.getMinY());
-		Vec2f lowerLeft = new Vec2f(this.getMinX(), this.getMaxY());
-		Vec2f lowerRight = new Vec2f(this.getMaxX(), this.getMaxY());
+		return rectToPoly(true);
+/*		//Array of vertices in counter-clockwise order
+		Vec2f upperRight = new Vec2f(this.getMaxX(), this.getMaxY());
+		Vec2f upperLeft = new Vec2f(this.getMinX(), this.getMaxY());
+		Vec2f lowerLeft = new Vec2f(this.getMinX(), this.getMinY());
+		Vec2f lowerRight = new Vec2f(this.getMaxX(), this.getMinY());
 		Vec2f[] verts = new Vec2f[4];
 		verts[0] = upperRight;
 		verts[1] = upperLeft;
 		verts[2] = lowerLeft;
 		verts[3] = lowerRight;	
+		PolygonShape poly = new PolygonShape(PolygonShape.getCentroidOf(Arrays.asList(verts)), verts);
+		return poly;*/
+	}
+	
+	public PolygonShape rectToPoly(boolean mathCoords) {
+		Vec2f[] verts = new Vec2f[4];
+		if (mathCoords) {
+			//Array of vertices in counter-clockwise order
+			Vec2f upperRight = new Vec2f(this.getMaxX(), this.getMaxY());
+			Vec2f upperLeft = new Vec2f(this.getMinX(), this.getMaxY());
+			Vec2f lowerLeft = new Vec2f(this.getMinX(), this.getMinY());
+			Vec2f lowerRight = new Vec2f(this.getMaxX(), this.getMinY());
+			verts[0] = upperRight;
+			verts[1] = upperLeft;
+			verts[2] = lowerLeft;
+			verts[3] = lowerRight;	
+		}
+		else {
+			//Array of vertices in counter-clockwise order
+			Vec2f upperRight = new Vec2f(this.getMaxX(), this.getMinY());
+			Vec2f upperLeft = new Vec2f(this.getMinX(), this.getMinY());
+			Vec2f lowerLeft = new Vec2f(this.getMinX(), this.getMaxY());
+			Vec2f lowerRight = new Vec2f(this.getMaxX(), this.getMaxY());
+			verts[0] = upperRight;
+			verts[1] = upperLeft;
+			verts[2] = lowerLeft;
+			verts[3] = lowerRight;	
+		}
 		PolygonShape poly = new PolygonShape(PolygonShape.getCentroidOf(Arrays.asList(verts)), verts);
 		return poly;
 	}
