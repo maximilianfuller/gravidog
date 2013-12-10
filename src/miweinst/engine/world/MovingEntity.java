@@ -20,7 +20,6 @@ import cs195n.Vec2f;
  */
 
 public abstract class MovingEntity extends Entity {
-	public final String string = "MovingEntity";
 
 	/* Entity visualization, or if Shape is
 	 * not visible and Sprite is specified in 

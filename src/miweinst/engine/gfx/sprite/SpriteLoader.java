@@ -28,7 +28,14 @@ public class SpriteLoader {
 	private BufferedImage _spriteSheet;
 	private BufferedImage[][] _sprites;
 	
-								//width, height					//cols, rows	
+	/**
+	 * 						
+	 * @param f
+	 * @param spriteSize width x height in pixels
+	 * @param padding in pixels
+	 * @param sheetSize cols x rows
+	 * @param sheetBorder 
+	 */
 	public SpriteLoader(File f, Vec2i spriteSize, int padding, Vec2i sheetSize, int sheetBorder) {		
 		try {
 			_spriteSheet = ImageIO.read(f);

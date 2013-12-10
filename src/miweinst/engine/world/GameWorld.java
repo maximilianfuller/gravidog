@@ -30,13 +30,13 @@ public class GameWorld {
 	private float _accumulatedTime;
 	private int _iters;		
 	private ArrayList<PhysicsEntity> _entities;		
-	protected Viewport viewport;
+	private Viewport _viewport;
 
 	public GameWorld(App app, Viewport v) {
 		//Default initialized dimensions; mutate in setDimensions()
 		_worldDim = new Vec2f(375, 135);		
-		viewport = v;
-		_windowDim = viewport.getScreenSize();
+		_viewport = v;
+		_windowDim = _viewport.getScreenSize();
 		
 		_entities = new ArrayList<PhysicsEntity>();
 		
@@ -101,11 +101,11 @@ public class GameWorld {
 	
 	/*Gets/Sets Viewport's scale.*/
 	public void setScale(float newScale) {
-		viewport.zoom(newScale);
+		_viewport.zoom(newScale);
 //		_scale = (int) newScale;
 	}
 	public float getScale() {
-		return viewport.getScale();
+		return _viewport.getScale();
 	}
 	
 	
@@ -230,7 +230,7 @@ public class GameWorld {
 	public void setProperties(Map<String, String> props) {
 		if (props.containsKey("bgcolor")) {
 			//WON'T WORK IF VIEWPORT SCREEN IS ALREADY SET TO COLOR OR TRANSPARENCY IN PLAYSCREEN!
-			viewport.setScreenColor(stringToColor(props.get("bgcolor")));
+			_viewport.setScreenColor(stringToColor(props.get("bgcolor")));
 		}
 		if (props.containsKey("gravity")) {
 			//Sets Y-component of initial gravity
@@ -241,7 +241,7 @@ public class GameWorld {
 		}
 		//X and Y coordinate of viewport window in game world (game units)
 		if (props.containsKey("x") && props.containsKey("y")) {
-			viewport.setPortCenterInGameUnits(new Vec2f(Float.parseFloat(props.get("x")), Float.parseFloat(props.get("y"))));
+			_viewport.setPortCenterInGameUnits(new Vec2f(Float.parseFloat(props.get("x")), Float.parseFloat(props.get("y"))));
 		}
 		
 	}
@@ -286,5 +286,9 @@ public class GameWorld {
 		for (PhysicsEntity e: _entities) {
 			e.draw(g);
 		}
+	}
+	
+	public Viewport getViewport() {
+		return _viewport;
 	}
 }
