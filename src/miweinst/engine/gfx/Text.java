@@ -5,8 +5,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 
+import miweinst.engine.shape.AARectShape;
+import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
 import cs195n.Vec2f;
 
@@ -42,14 +43,25 @@ public class Text {
 		setColor(Color.BLACK); //Default text color
 		setFontSize(12);	//Default font size	
 	}
+	public static PolygonShape getApproximateBounds(Text text) {
+		float buttonSize = text.getFontSize();
+		Vec2f buttonDim = new Vec2f((text.getString().length()-2)*buttonSize, buttonSize);
+		Vec2f buttonLoc = new Vec2f(text.getLocation().x + buttonDim.x/2, text.getLocation().y - buttonSize/2);
+		PolygonShape bounds = new AARectShape(buttonLoc, buttonDim).rectToPoly();
+		bounds.setLocation(buttonLoc);
+		bounds.setDimensions(buttonDim);
+		return bounds;
+	}
 	
-	public Vec2f getBoundingBox() {
+//// NOT WORKING
+/*	public Vec2f getBoundingBox() {
 		setFontType(_fontType,_fontStyle);	//Update type, style and size
-		FontRenderContext frc = new FontRenderContext(new AffineTransform(), false, false);
+		AffineTransform tx = new AffineTransform();
+		FontRenderContext frc = new FontRenderContext(tx, false, false);
 		Rectangle2D box = _font.getStringBounds(_string, frc);
 		Vec2f dim = new Vec2f((float) box.getWidth(), (float) box.getHeight());
 		return dim;
-	}
+	}*/
 	
 	
 	/*Toggles whether text string is drawn by Graphics*/
@@ -148,7 +160,7 @@ public class Text {
 	
 	public void centerTextHorizontal() {
 //		updateContainer(_container);
-		double w = getBoundingBox().x;		
+		double w = getApproximateBounds(this).getDimensions().x;		
 		float x = (float) (_container.getWidth()/2 - w/2);	
 		Vec2f newLoc = new Vec2f(x, _location.y);
 		_location = newLoc;
@@ -156,7 +168,7 @@ public class Text {
 	
 	public void centerTextVertical() {
 //		updateContainer(_container);
-		double h = getBoundingBox().y;
+		double h = getApproximateBounds(this).getDimensions().y;
 		float y = (float) (_container.getHeight()/2 + h/4);
 		Vec2f newLoc = new Vec2f(_location.x, y);
 		_location = newLoc;

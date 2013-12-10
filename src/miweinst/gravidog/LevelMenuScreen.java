@@ -43,6 +43,16 @@ public class LevelMenuScreen extends GravidogScreen {
 		_boxes.add(second);
 		_boxes.add(third);
 		_boxes.add(fourth);
+		
+////////	LOAD
+		//Load star data upon instantiation
+		/*Map<String, String> starData = FileIO.read();
+		for (Integer i=0; i<starData.size(); i++) {
+			Integer starCount = Integer.parseInt(starData.get(i.toString()));
+////
+			System.out.println("load: " + i.toString() + ", " + starCount);
+//			_boxes.get(i).setStars(starCount);
+		}*/
 	}
 	
 	/** GO! */
@@ -55,8 +65,9 @@ public class LevelMenuScreen extends GravidogScreen {
 	/**Sets the box for the specified level
 	 * number to be open. Sets frame visible. */
 	public void openLevel(int boxNumber) {
-		//Adjust for zero-indexing for ArrayList
-		_boxes.get(boxNumber-1).setLevelOpen(true);
+		if (_boxes.contains(boxNumber-1))
+			//Adjust for zero-indexing for ArrayList
+			_boxes.get(boxNumber-1).setLevelOpen(true);
 	}
 	
 	/* Star methods */
@@ -83,6 +94,27 @@ public class LevelMenuScreen extends GravidogScreen {
 		return star_map.get(level);
 	}
 	
+/////// SAVE
+/*	public static void save() {
+		HashMap<String, String> saveData = new HashMap<String, String>();
+		ArrayList<String> saveList = new ArrayList<String>();
+		for (Integer i=0; i<max_star_map.size(); i++) {
+			if (max_star_map.containsKey(i)) {
+				saveData.put(i.toString(), max_star_map.get(i).toString());
+			}
+			else {
+				saveData.put(i.toString(), new Integer(0).toString());
+			}
+			String line = i.toString() + ": " + saveData.get(i.toString());
+			saveList.add(line);
+/////
+			//Check save String by line
+			System.out.println("save: " + line);
+		}
+		FileIO.write(saveList);
+	}*/
+//////^^^^
+	
 	/**Sets stars of LevelBox to current stars if
 	 * the score is higher than max score, else to max
 	 * score again.*/
@@ -108,6 +140,8 @@ public class LevelMenuScreen extends GravidogScreen {
 			_boxes.get(i).setStars(max_star_map.get(i));
 		}
 		clearStars();
+/////
+//		save();
 	}
 	/**Clears current level's star information, but retains
 	 * high score star information for all levels.*/
