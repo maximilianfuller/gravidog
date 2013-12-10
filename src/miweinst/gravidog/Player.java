@@ -2,7 +2,10 @@ package miweinst.gravidog;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +23,8 @@ public class Player extends PhysicsEntity {
 	private final float JUMP_IMPULSE_COEFFICIENT = 25f;
 	private float GOAL_VELOCITY_COEFFICIENT = 20f;
 	private final float FRICTION_COEFFICIENT = 10;
-
+	private final float SPRITE_CYCLE_PERIOD = 1f;
+	
 	//Inputs: defined as anonymous classes, only one method to override
 	//doSetColor sets Player color; args "color"
 	public Input doSetColor = new Input()
@@ -106,6 +110,8 @@ public class Player extends PhysicsEntity {
 //	private List<String> _saveData;
 	private boolean _gravitySwitched;
 //	private boolean _dataWritten;
+	private float _secondsSinceFirstFrame;
+	private GameWorld _world;
 
 	public Player(GameWorld world) {
 		super(world);
@@ -128,7 +134,10 @@ public class Player extends PhysicsEntity {
 		this.setStatic(false);		
 		_shape = shape;		
 		_gravitySwitched = false;
+		_secondsSinceFirstFrame = 0f;
 		
+		_world = world;
+			
 //		_saveData = new ArrayList<String>();
 //		_dataWritten = false;
 	}
@@ -183,6 +192,9 @@ public class Player extends PhysicsEntity {
 		if(info != null) {
 			applyfriction();
 		}
+		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
+		_secondsSinceFirstFrame%=SPRITE_CYCLE_PERIOD;
+				
 	}	
 
 	private void applyfriction() {
@@ -211,27 +223,55 @@ public class Player extends PhysicsEntity {
 	
 	public void moveRight() {
 		Vec2f dir = GRAVITY.getNormal().normalized();
-		goalVelocity(dir.smult((float) (GOAL_VELOCITY_COEFFICIENT*Math.sqrt(getMass()))));
+		goalVelocity(dir.smult(getGoalVelocity()));
 	}
 	
 	public void moveLeft() {
 		Vec2f dir = GRAVITY.getNormal().normalized().invert();
-		goalVelocity(dir.smult((float) (GOAL_VELOCITY_COEFFICIENT*Math.sqrt(getMass()))));
+		goalVelocity(dir.smult(getGoalVelocity()));
 	}
 	
 	public void moveDown() {
 		Vec2f dir = GRAVITY.normalized();
-		goalVelocity(dir.smult((float) (GOAL_VELOCITY_COEFFICIENT*Math.sqrt(getMass()))));
+		goalVelocity(dir.smult(getGoalVelocity()));
 	}
 
 	/*Center of Player's body.*/
 	public Vec2f getCenter() {
 		return _shape.getCentroid();
 	}
+	
+	private float getGoalVelocity() {
+		return (float)(GOAL_VELOCITY_COEFFICIENT*Math.sqrt(getMass()));
+	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		super.draw(g);
+		BufferedImage[] walking = GravidogResources.getValue("walking");
+		BufferedImage[] running = GravidogResources.getValue("running");
+		BufferedImage[] standing = GravidogResources.getValue("standing");
+		
+		BufferedImage[] current = getVelocity().mag() < getGoalVelocity()/2 ? walking : running;
+		current = getVelocity().mag()<getGoalVelocity()/50 ? standing : current;
+		int i = (int)((_secondsSinceFirstFrame/SPRITE_CYCLE_PERIOD)*current.length);
+		BufferedImage currentImage = current[i];
+		
+		AffineTransform at = new AffineTransform();
+		float playerWidth = 2*((CircleShape)getShape()).getRadius();
+		float scale = playerWidth/current[i].getWidth();
+		scale*= 2.5f; //make the image a little larger to accommodate image margins
+		float dir = getVelocity().dot(GRAVITY.getNormal()) > 0 ? 1f : -1f;
+		
+		at.translate(getLocation().x, getLocation().y);
+		at.scale(scale, -1f*scale);
+		at.rotate(-_world.getViewport().getTheta());
+		at.scale(dir, 1f);
+		at.translate(-125, -95); //(should be (-125, -75), but image is too large for bounding circle)
+		
+		
+		g.drawImage(current[i], at, null);
+		
 	}
 
 	@Override
