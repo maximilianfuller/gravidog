@@ -21,7 +21,6 @@ public class StaticBoundary extends PhysicsEntity {
 		_rect.setBorderColor(Color.BLACK);
 		
 		this.setShape(_rect);		
-		this.setMass(10000); //unnecessary, but y'know
 		this.setStatic(true);
 	}
 	

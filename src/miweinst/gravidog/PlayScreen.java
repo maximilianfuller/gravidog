@@ -82,31 +82,7 @@ public class PlayScreen extends GravidogScreen {
 		}	
 		_gameWorld.onKeyPressed(e);
 
-		///////////
-		/* 
-		 * MAX,
-
-		 * WE DON'T NEED THESE ANYMORE RIGHT?
-		 */
-		/*		 testing for viewport 
-		if(e.getKeyChar() == 'a') {
-			_viewport.panInPixels(new Vec2f(-5f, 0f));
-		}
-		if(e.getKeyChar() == 'd') {
-			_viewport.panInPixels(new Vec2f(5f, 0f));
-		}
-		if(e.getKeyChar() == 'w') {
-			_viewport.panInPixels(new Vec2f(0f, 5f));
-		}
-		if(e.getKeyChar() == 's') {
-			_viewport.panInPixels(new Vec2f(0f, -5f));
-		}
-		if(e.getKeyChar() == 'z') {
-			_viewport.rotate(.05f);
-		}
-		if(e.getKeyChar() == 'x') {
-			_viewport.rotate(-.05f);
-		}*/
+		
 	}
 
 	@Override

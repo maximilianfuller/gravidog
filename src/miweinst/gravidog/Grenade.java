@@ -44,7 +44,7 @@ public class Grenade extends PhysicsEntity {
 		_fireRad = _grenade.getRadius();
 		_exploded = false;
 		this.setShape(_grenade);
-		this.setMass(.3f);
+		this.setDensity(.3f);
 		//Radius inside which Entities are given impulse
 		_blastRadius = 25;
 		//i.e. 20 times ray vector; multiplyer keeps impulse constant over any # of rays cast

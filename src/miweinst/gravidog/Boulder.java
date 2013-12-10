@@ -26,7 +26,7 @@ public class Boulder extends PhysicsEntity {
 		this.setLocation(location);
 		this.setStatic(false);
 		
-		this.setMass(.2f);
+		this.setDensity(.2f);
 		this.setRestitution(.6f);
 		
 		this.setGravitational(false);

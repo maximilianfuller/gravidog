@@ -64,10 +64,10 @@ public class AARectShape extends Shape {
 	 * not as efficient, because uses two extra axes, but more stable for now.*/
 	public PolygonShape rectToPoly() {
 		//Array of vertices in counter-clockwise order
-		Vec2f upperRight = new Vec2f(this.getMaxX(), this.getMinY());
-		Vec2f upperLeft = new Vec2f(this.getMinX(), this.getMinY());
-		Vec2f lowerLeft = new Vec2f(this.getMinX(), this.getMaxY());
-		Vec2f lowerRight = new Vec2f(this.getMaxX(), this.getMaxY());
+		Vec2f upperRight = new Vec2f(this.getMaxX(), this.getMaxY());
+		Vec2f upperLeft = new Vec2f(this.getMinX(), this.getMaxY());
+		Vec2f lowerLeft = new Vec2f(this.getMinX(), this.getMinY());
+		Vec2f lowerRight = new Vec2f(this.getMaxX(), this.getMinY());
 		Vec2f[] verts = new Vec2f[4];
 		verts[0] = upperRight;
 		verts[1] = upperLeft;

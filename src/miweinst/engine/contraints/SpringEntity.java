@@ -18,7 +18,6 @@ public class SpringEntity extends PhysicsEntity {
 		//Default Shape for mandatory constructor
 		PolygonShape shape = new AARectShape(new Vec2f(50f,80f), new Vec2f(10f, 10f)).rectToPoly();
 		setShape(shape);
-		setMass(1f);
 		setSpringConstant(100f);
 		setFrictionConstant(1f);		
 		init();

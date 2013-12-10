@@ -40,7 +40,6 @@ public class TestWorld extends GameWorld {
 
 		Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
 		SpringEntity spring = new SpringEntity(this, springEntityShape);
-		spring.setMass(1f);
 		spring.setSpringConstant(100f);
 		spring.setFrictionConstant(1f);
 		this.addEntity(spring);

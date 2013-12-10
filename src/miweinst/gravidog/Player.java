@@ -18,6 +18,11 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
+	private static final float MOVEMENT_FORCE_COEFFICIENT = 1f;
+	private final float JUMP_IMPULSE_COEFFICIENT = 25f;
+	private float GOAL_VELOCITY_COEFFICIENT = 20f;
+	private final float FRICTION_COEFFICIENT = 10;
+
 	//Inputs: defined as anonymous classes, only one method to override
 	//doSetColor sets Player color; args "color"
 	public Input doSetColor = new Input()
@@ -98,8 +103,7 @@ public class Player extends PhysicsEntity {
 	};
 
 	//	private GameWorld _world;
-	private final float FRICTION_COEFFICIENT = 10;
-	private final float _jumpImpulse;
+	
 	private Shape _shape;
 	private List<String> _saveData;
 	private boolean _gravitySwitched;
@@ -121,8 +125,7 @@ public class Player extends PhysicsEntity {
 		
 		this.setShape(shape);
 		this.setLocation(location);
-		this.setMass(10f);
-		_jumpImpulse = getMass()*120;
+		this.setDensity(1f);
 		
 		this.setStatic(false);		
 		_shape = shape;		
@@ -203,8 +206,23 @@ public class Player extends PhysicsEntity {
 		}
 		if (info != null) {
 			Vec2f mtv = info.mtv;
-			this.applyImpulse(mtv.normalized().smult(_jumpImpulse), getCentroid());
+			this.applyImpulse(mtv.normalized().smult((float) (JUMP_IMPULSE_COEFFICIENT*(float)Math.sqrt(getMass())*getMass())), getCentroid());
 		}
+	}
+	
+	public void moveRight() {
+		Vec2f dir = GRAVITY.getNormal().normalized();
+		goalVelocity(dir.smult((float) (GOAL_VELOCITY_COEFFICIENT*Math.sqrt(getMass()))));
+	}
+	
+	public void moveLeft() {
+		Vec2f dir = GRAVITY.getNormal().normalized().invert();
+		goalVelocity(dir.smult((float) (GOAL_VELOCITY_COEFFICIENT*Math.sqrt(getMass()))));
+	}
+	
+	public void moveDown() {
+		Vec2f dir = GRAVITY.normalized();
+		goalVelocity(dir.smult((float) (GOAL_VELOCITY_COEFFICIENT*Math.sqrt(getMass()))));
 	}
 
 	/*Center of Player's body.*/
@@ -252,5 +270,20 @@ public class Player extends PhysicsEntity {
 	public void setBorder(String width, String color) {
 		getShape().setBorderWidth(Float.parseFloat(width));
 		this.getShape().setBorderColor(GameWorld.stringToColor(color));
+	}
+	
+
+	/*Applies force until goal velocity is reached.
+	 * Force is proportional to difference between 
+	 * current x-vel and goal x-vel. So force decreases
+	 * as PhysicsEntity gains velocity.
+	 * Separate mutators for X- and Y-component of velocity
+	 * instead of wrapping in a Vec2f object because
+	 * x, y are almost never set together.*/
+	
+	private void goalVelocity(Vec2f gv) {
+		Vec2f dV = gv.minus(getVelocity());
+		Vec2f force = dV.smult(getMass()*MOVEMENT_FORCE_COEFFICIENT);
+		this.applyForce(force, getCentroid());
 	}
 }

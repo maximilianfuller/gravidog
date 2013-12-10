@@ -234,7 +234,6 @@ private class TestEntity extends PhysicsEntity {
 
 			this.setStatic(true);
 			this.setRestitution(0);
-			this.setMass(1);
 		} else if (shape == "closed bezier") {
 			Vec2f[] knots = new Vec2f[4];
 			knots[0] = new Vec2f(100, 75);
@@ -248,7 +247,6 @@ private class TestEntity extends PhysicsEntity {
 			test_shape = closedCurve;
 			this.setStatic(true);
 			this.setRestitution(0);
-			this.setMass(1);;
 		}
 
 		super.setShape(test_shape);

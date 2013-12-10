@@ -43,6 +43,7 @@ public class GravidogWorld extends GameWorld {
 	
 	private boolean _doorReached = false;
 	private boolean _falseWin = false;
+	private final Vec2f GRAVITY_COEFFICIENT = new Vec2f(0f, -20f);
 	
 	//Calls levelWin if Relay is enabled
 	public Input doDoorReached = new Input() {
@@ -246,6 +247,7 @@ public class GravidogWorld extends GameWorld {
 			 * Set after entities because it has 
 			 * viewport scale and static GRAVITY*/ 
 			this.setProperties(level.getProperties());
+			PhysicsEntity.setGravity(GRAVITY_COEFFICIENT.smult((float)Math.sqrt(_player.getMass())));
 		} 
 		else {
 			System.err.println("Level is null! MWorld()");
@@ -301,13 +303,10 @@ public class GravidogWorld extends GameWorld {
 		super.onTick(nanosSincePreviousTick);
 		//        	long nanos = nanosSincePreviousTick/super.getIterations();
 		for (int i=1; i<=super.getIterations(); i++) {
-			//Conditions by array of boolean key states
-			Vec2f norm = PhysicsEntity.GRAVITY.getNormal();
-			norm = norm.normalized();
-			float mag = _player.getMass()*120;
+			
 			//Left key down
 			if (_arrowKeyStates[0]) {
-				_player.goalVelocity(norm.smult(-mag));
+				_player.moveLeft();
 			}
 			//Up key down
 			if (_arrowKeyStates[1]) {
@@ -315,11 +314,11 @@ public class GravidogWorld extends GameWorld {
 			}
 			//Right key down
 			if (_arrowKeyStates[2]) {
-				_player.goalVelocity(norm.smult(mag));
+				_player.moveRight();
 			}
 			//Down key down
 			if (_arrowKeyStates[3]) {
-				_player.goalVelocity(PhysicsEntity.GRAVITY.normalized().smult(mag));           
+				_player.moveDown();           
 			}
 		}
 	}
