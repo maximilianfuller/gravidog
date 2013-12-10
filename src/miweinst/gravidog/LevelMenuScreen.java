@@ -68,9 +68,6 @@ public class LevelMenuScreen extends GravidogScreen {
 		if (_boxes.contains(boxNumber-1))
 			//Adjust for zero-indexing for ArrayList
 			_boxes.get(boxNumber-1).setLevelOpen(true);
-		else {
-			System.out.println("Level does not exist. (LevelMenuScreen.openLevel(int)");
-		}
 	}
 	
 	/* Star methods */
