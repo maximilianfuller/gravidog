@@ -6,8 +6,10 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import miweinst.engine.App;
+import miweinst.engine.FileIO;
 import cs195n.Vec2f;
 
 public class LevelMenuScreen extends GravidogScreen {	
@@ -29,30 +31,68 @@ public class LevelMenuScreen extends GravidogScreen {
 		//Closed
 		LevelBox second = new LevelBox(2);
 		second.box.setColor(Color.LIGHT_GRAY);
-		second.setLevelOpen(true);
 		//Closed
 		LevelBox third = new LevelBox(3);
 		third.box.setColor(Color.LIGHT_GRAY);
-		third.setLevelOpen(true);
 		//Closed
 		LevelBox fourth = new LevelBox(4);
 		fourth.box.setColor(Color.LIGHT_GRAY);
-		fourth.setLevelOpen(true);
 		
 		_boxes.add(first);
 		_boxes.add(second);
 		_boxes.add(third);
 		_boxes.add(fourth);
 		
-////////	LOAD
+		//Use to test levels and whatnot
+//		second.setLevelOpen(true);
+//		third.setLevelOpen(true);
+//		fourth.setLevelOpen(true);
+		
+		//Loads level upon instantiation
+		loadLevel();
+	}
+	
+	// Save/Load 	
+	/**Loads star data for each level and sets
+	 * levels open or closed accordingly. 
+	 * Called only in constructor of LevelMenuScreen.*/
+	private void loadLevel() {
+		//First level is always open
+		_boxes.get(0).setLevelOpen(true);
 		//Load star data upon instantiation
-		/*Map<String, String> starData = FileIO.read();
+		Map<String, String> starData = FileIO.read();
 		for (Integer i=0; i<starData.size(); i++) {
-			Integer starCount = Integer.parseInt(starData.get(i.toString()));
-////
-			System.out.println("load: " + i.toString() + ", " + starCount);
-//			_boxes.get(i).setStars(starCount);
-		}*/
+			if (i > 0) {
+				//Get star count of previous level to set open/closed
+				Integer j = i-1;
+				Integer lastCount = Integer.parseInt(starData.get(j.toString()));
+				//If previous level has 1-3 stars
+				if (lastCount > 0) {
+					_boxes.get(i).setLevelOpen(true);
+				}
+			}		
+			//Update star count
+			Integer starCount = Integer.parseInt(starData.get(i.toString()));			
+			max_star_map.put(i, starCount);
+			_boxes.get(i).setStars(starCount);
+		}
+	}
+	
+	/**Saves star data for each level to save_data.txt.*/
+	public static void save() {
+		HashMap<String, String> saveData = new HashMap<String, String>();
+		ArrayList<String> saveList = new ArrayList<String>();
+		for (Integer i=0; i<max_star_map.size(); i++) {
+			if (max_star_map.containsKey(i)) {
+				saveData.put(i.toString(), max_star_map.get(i).toString());
+			}
+			else {
+				saveData.put(i.toString(), new Integer(0).toString());
+			}
+			String line = i.toString() + ": " + saveData.get(i.toString());
+			saveList.add(line);
+		}
+		FileIO.write(saveList);
 	}
 	
 	/** GO! */
@@ -62,12 +102,20 @@ public class LevelMenuScreen extends GravidogScreen {
 	}
 	
 	/* Information on level menu, draws updated menu. */
-	/**Sets the box for the specified level
-	 * number to be open. Sets frame visible. */
+	/**Sets the level for the specified box
+	 * number to be open. Also sets frame visible. */
 	public void openLevel(int boxNumber) {
-		if (_boxes.contains(boxNumber-1))
+		if (boxNumber < _boxes.size()) {
 			//Adjust for zero-indexing for ArrayList
-			_boxes.get(boxNumber-1).setLevelOpen(true);
+			_boxes.get(boxNumber).setLevelOpen(true);
+		}
+	}
+	
+	/** Erases all save data and star maps. */
+	public static void clear() {
+		FileIO.write(new ArrayList<String>());
+		max_star_map.clear();
+		star_map.clear();
 	}
 	
 	/* Star methods */
@@ -94,27 +142,6 @@ public class LevelMenuScreen extends GravidogScreen {
 		return star_map.get(level);
 	}
 	
-/////// SAVE
-/*	public static void save() {
-		HashMap<String, String> saveData = new HashMap<String, String>();
-		ArrayList<String> saveList = new ArrayList<String>();
-		for (Integer i=0; i<max_star_map.size(); i++) {
-			if (max_star_map.containsKey(i)) {
-				saveData.put(i.toString(), max_star_map.get(i).toString());
-			}
-			else {
-				saveData.put(i.toString(), new Integer(0).toString());
-			}
-			String line = i.toString() + ": " + saveData.get(i.toString());
-			saveList.add(line);
-/////
-			//Check save String by line
-			System.out.println("save: " + line);
-		}
-		FileIO.write(saveList);
-	}*/
-//////^^^^
-	
 	/**Sets stars of LevelBox to current stars if
 	 * the score is higher than max score, else to max
 	 * score again.*/
@@ -140,8 +167,6 @@ public class LevelMenuScreen extends GravidogScreen {
 			_boxes.get(i).setStars(max_star_map.get(i));
 		}
 		clearStars();
-/////
-//		save();
 	}
 	/**Clears current level's star information, but retains
 	 * high score star information for all levels.*/

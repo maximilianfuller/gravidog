@@ -29,6 +29,12 @@ public class FileIO{
 			File file = new File(OUTPUT_FILE_NAME);
 			if (!file.exists())
 				file.createNewFile();
+////
+			//Handle permissions for user
+			file.setReadable(true, false);
+			file.setWritable(true, false);
+			file.setExecutable(true, false);
+//////
 			
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);

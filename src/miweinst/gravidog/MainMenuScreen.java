@@ -105,17 +105,21 @@ public class MainMenuScreen extends GravidogScreen {
 //		_buttonReset.draw(g);
 //		_buttonQuit.draw(g);
 	}
-	@Override
+/*	@Override
 	public void onKeyPressed(KeyEvent e) {
 		super.onKeyPressed(e);
-		//TODO
-	}
+
+	}*/
 
 	@Override
 	public void onMousePressed(MouseEvent e) {
 		Vec2f loc = new Vec2f(e.getX(), e.getY());
 		if (_buttonPlay.contains(loc))
 			app.setScreen(new LevelMenuScreen(app));
+		if (_buttonReset.contains(loc)) {
+			LevelMenuScreen.clear();
+			app.setScreen(new LevelMenuScreen(app));
+		}
 		if (_buttonQuit.contains(loc)) 
 			System.exit(0);
 	}

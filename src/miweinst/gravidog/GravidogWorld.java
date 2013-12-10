@@ -64,16 +64,18 @@ public class GravidogWorld extends GameWorld {
 	//Level win
 	public Input doLevelWin = new Input() {
 		public void run(Map<String, String> args) {
-///Will save game at the end of every level
-//			LevelMenuScreen.save();
 			LevelMenuScreen levelMenu = new LevelMenuScreen(_app);
 			//Show stars earned for current level
 			levelMenu.updateStars();
 			//Unlock next level (levelnum+1)
-			levelMenu.openLevel(LevelMenuScreen.CURRENT_LEVEL + 1);
+			/*CURRENT_LEVEL index is next level in LevelMenu because of zero-indexing.*/
+			levelMenu.openLevel(LevelMenuScreen.CURRENT_LEVEL);
 			_app.setScreen(levelMenu);
 			//Reset boolean
 			_doorReached = false;
+			
+			///Will save game at the end of every level
+			LevelMenuScreen.save();
 		}
 	};
 
