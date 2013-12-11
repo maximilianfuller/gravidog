@@ -83,6 +83,12 @@ public class LevelBox {
 		case 5:
 			file_path = new String("level_five.nlf");
 			break;
+		case 6:
+			file_path = new String("level_seven.nlf");
+			break;
+		case 7:
+//			file_path = new String("level_seven.nlf");
+			break;
 		default:	//Just default to Level One
 			file_path = new String("level_one.nlf");
 			break;
@@ -113,9 +119,16 @@ public class LevelBox {
 		case 5:
 			_imgExists = false;
 			break;
+		case 6:
+			_imgExists = false;
+			break;
+		case 7:
+			_imgExists = false;
+			break;
 		default:
 			//System.out.println("Default " + num);
 			f = new File("src/miweinst/resources/frame_one.jpg");
+			_imgExists = false;
 			break;
 		}
 		try {

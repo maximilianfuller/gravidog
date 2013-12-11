@@ -168,7 +168,6 @@ public class GravidogWorld extends GameWorld {
 				}    
 
 
-
 				if (entity != null) {
 					//Shapes in Entity
 					for (ShapeData s: ent.getShapes()) {
