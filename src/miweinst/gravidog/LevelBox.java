@@ -94,17 +94,22 @@ public class LevelBox {
 		File f = null;
 		switch(num) {
 		case 1:
-			f = new File("src/miweinst/resources/frame_one.jpg");
+//			f = new File("src/miweinst/resources/frame_one.jpg");
+			_imgExists = false;
 			break;
 		case 2:
 //			f = new File("src/miweinst/resources/frame_one.jpg");
 			_imgExists = false;
 			break;
 		case 3:
-			f = new File("src/miweinst/resources/frame_three.jpg");
+//			f = new File("src/miweinst/resources/frame_three.jpg");
+			_imgExists = false;
 			break;
 		case 4:
 //			f = new File("src/miweinst/resources/frame_four.jpg");
+			_imgExists = false;
+			break;
+		case 5:
 			_imgExists = false;
 			break;
 		default:
