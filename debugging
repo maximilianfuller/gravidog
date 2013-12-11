@@ -5,23 +5,17 @@ Every level must have a Player object and a Door object, or else null pointer ex
 BUG: LevelBounds does not work at beginning of level editor list
 
 FINAL3
--Star sprites
--dieing
--Two levels
--dog size and constants
--jumping
--spring constants
+-One levels
 
 POLISH:
 -fill in curves
 -title menu
 -level menu
 -pause menu
+-jumping
 
 
-BUG: change sensor entity to not call oncollides
-BUG: PinEntity has no default constructor PinEntity(GameWorld world). 
-	Cannot use in LevelEditor without it.
+BUG: rotational physics is bugged
 
 
 TODO: Make sensors surrounding every level that call a Player input doDie

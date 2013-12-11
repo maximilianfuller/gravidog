@@ -29,7 +29,7 @@ import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.RelayEntity;
-import miweinst.engine.world.WhileSensorEntity;
+import miweinst.engine.world.SensorEntity;
 import cs195n.CS195NLevelReader;
 import cs195n.CS195NLevelReader.InvalidLevelException;
 import cs195n.LevelData;
@@ -40,11 +40,11 @@ import cs195n.LevelData.ShapeData.Type;
 import cs195n.Vec2f;
 
 public class GravidogWorld extends GameWorld {    
-	
+
 	private boolean _doorReached = false;
 	private final Vec2f GRAVITY_COEFFICIENT = new Vec2f(0f, -20f);
 
-	
+
 	//Calls levelWin if Relay is enabled
 	public Input doDoorReached = new Input() {
 		public void run(Map<String, String> args) {
@@ -75,7 +75,7 @@ public class GravidogWorld extends GameWorld {
 			_app.setScreen(levelMenu);
 			//Reset boolean
 			_doorReached = false;
-			
+
 			///Will save game at the end of every level
 			LevelMenuScreen.save();
 		}
@@ -105,13 +105,13 @@ public class GravidogWorld extends GameWorld {
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
 		super(app, viewport);
-		
+
 		_app = app;
 		_arrowKeyStates = new boolean[4];
 		for (int i=0; i<_arrowKeyStates.length; i++) 
 			_arrowKeyStates[i]=false;
 		_lazorBool = false;
-		
+
 		//Unlocks door when star collected
 		_doorRelay = new RelayEntity(this);
 		_doorRelay.onActivate.connect(new Connection(doLevelWin));
@@ -123,7 +123,7 @@ public class GravidogWorld extends GameWorld {
 		_classes.setDecoration("PhysicsEntity", PhysicsEntity.class);
 		_classes.setDecoration("Player", Player.class);
 		_classes.setDecoration("StaticBoundary", StaticBoundary.class);
-		_classes.setDecoration("WhileSensorEntity", WhileSensorEntity.class);
+		_classes.setDecoration("SensorEntity", SensorEntity.class);
 		_classes.setDecoration("RelayEntity", RelayEntity.class);
 		_classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
 		_classes.setDecoration("CurvedPathEntity", CurvedPathEntity.class);
@@ -149,7 +149,7 @@ public class GravidogWorld extends GameWorld {
 			System.err.println("File not found!! MWorld()");
 			fe.printStackTrace();
 		}
-		
+
 		if (level != null) {
 			//Each Entity in Level
 			for (EntityData ent: level.getEntities()) {
@@ -165,18 +165,10 @@ public class GravidogWorld extends GameWorld {
 				} catch (Exception e) {
 					System.err.println("Exception...: " + e.getMessage());
 					e.printStackTrace();
-				}                                                                                
-				//Cast PhysicsEntity to specific subclass
-				if (entity instanceof Player) {
-					_player = (Player) entity;
-				}       
-				if (entity instanceof GoalDoor) {
-					_door = (GoalDoor) entity;
-				}
-				else if (entity instanceof WhileSensorEntity) {
-					WhileSensorEntity playerSensor = (WhileSensorEntity) entity;
-					playerSensor.setEntities(_player);
-				}                        
+				}    
+
+
+
 				if (entity != null) {
 					//Shapes in Entity
 					for (ShapeData s: ent.getShapes()) {
@@ -200,19 +192,22 @@ public class GravidogWorld extends GameWorld {
 					}
 					//Set PhysicsEntity properties                                                
 					entity.setProperties(ent.getProperties());
-					
+
 					//Add Entity to World Map
 					_entities.setDecoration(entityName, entity);
+
 					//Add Entity to GameWorld List
-					this.addEntity(entity);
-					
 					//LevelBounds must be drawn first
 					if (entity instanceof LevelBounds) {
-						this.removeEntity(entity);
 						this.addEntityToFront(entity);
+					} else {
+						this.addEntity(entity);
 					}
+
+
 				}
-			}                                
+			}
+
 			//Each Connection in Level
 			for (ConnectionData c: level.getConnections()) {
 				String src = c.getSource();
@@ -249,6 +244,23 @@ public class GravidogWorld extends GameWorld {
 					}
 				}
 			}
+
+			//special cases
+			for(PhysicsEntity entity : this.getEntities()) {
+				if (entity instanceof Player) {
+					_player = (Player) entity;
+				}
+			}
+			for(PhysicsEntity entity : this.getEntities()) {
+				if (entity instanceof GoalDoor) {
+					_door = (GoalDoor) entity;
+				}
+				if (entity instanceof SensorEntity) {
+					SensorEntity playerSensor = (SensorEntity) entity;
+					playerSensor.setEntities(_player);
+				}
+			}
+
 			/* Properties of entire level
 			 * Set after entities because it has 
 			 * viewport scale and static GRAVITY*/ 
@@ -258,32 +270,32 @@ public class GravidogWorld extends GameWorld {
 		else {
 			System.err.println("Level is null! MWorld()");
 		}
-		
+
 		/////////////////^^^^^^^^^^                
 
 		//TEST ENTITIES (Directly Instantiated)
 		//Constraint Entities to test stuff
-/*		Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
+		/*		Shape pinEntityShape = new AARectShape(new Vec2f(50f, 60f), new Vec2f(15f, 4f)).rectToPoly();
         PinEntity pin = new PinEntity(this, new Vec2f(50f, 60f), pinEntityShape);
         pin.setMass(1f);
         this.addEntity(pin);*/
 
-/*		Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
+		/*		Shape springEntityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
 		SpringEntity spring = new SpringEntity(this, springEntityShape);
 		spring.setMass(1f);
 		spring.setSpringConstant(100f);
 		spring.setFrictionConstant(1f);
 		this.addEntity(spring);*/
 
-/*		//Square to test stuff with
+		/*		//Square to test stuff with
 		PolygonShape entityShape = new AARectShape(new Vec2f(134f,80f), new Vec2f(10f, 10f)).rectToPoly();
         PhysicsEntity test = new PhysicsEntity(this);
         test.setShape(entityShape);
         test.setMass(1f);
         test.setGravitational(false);
         this.addEntity(test);*/
-      	
-////////////	
+
+		////////////	
 		//_player.doRead.run(FileIO.read());
 	}
 
@@ -300,18 +312,11 @@ public class GravidogWorld extends GameWorld {
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		super.onTick(nanosSincePreviousTick);
-		for(PhysicsEntity e : this.getEntities()) {
-			System.out.println(e);
-		}
 		//        	long nanos = nanosSincePreviousTick/super.getIterations();
 		for (int i=1; i<=super.getIterations(); i++) {
 			//Left key down
 			if (_arrowKeyStates[0]) {
 				_player.moveLeft();
-			}
-			//Up key down
-			if (_arrowKeyStates[1]) {
-//        			_player.jump();
 			}
 			//Right key down
 			if (_arrowKeyStates[2]) {
@@ -349,14 +354,12 @@ public class GravidogWorld extends GameWorld {
 	/* Arrow key sets state boolean which opens
 	 * calling of goalVelocity in onTick.*/
 	public void onKeyPressed(KeyEvent e) {
-		if (e.getKeyCode() == 38) {
+		if(e.getKeyCode() == KeyEvent.VK_UP && !_arrowKeyStates[1]) {
 			_player.jump();
 		}
-		else {
-			int arrow = e.getKeyCode()-37;
-			if (arrow >= 0 && arrow < _arrowKeyStates.length) {
-				_arrowKeyStates[arrow] = true;
-			}
+		int arrow = e.getKeyCode()-37;
+		if (arrow >= 0 && arrow < _arrowKeyStates.length) {
+			_arrowKeyStates[arrow] = true;
 		}
 	}
 	/* Releasing arrow key sets state boolean back to false.*/

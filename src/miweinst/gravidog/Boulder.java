@@ -8,10 +8,10 @@ import miweinst.engine.entityIO.Input;
 import miweinst.engine.shape.CircleShape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
-import miweinst.engine.world.WhileSensorEntity;
+import miweinst.engine.world.SensorEntity;
 import cs195n.Vec2f;
 
-public class Boulder extends WhileSensorEntity {
+public class Boulder extends SensorEntity {
 
 	GravidogWorld _world;
 	public Boulder(GameWorld world) {
@@ -21,6 +21,7 @@ public class Boulder extends WhileSensorEntity {
 		this.setDensity(.2f);
 		this.setRestitution(.6f);
 		super.onDetect.connect(new Connection(_world.doLevelLose));
+		
 		this.setGravitational(false);
 		this.setVisible(true);
 		this.setInteractive(true);

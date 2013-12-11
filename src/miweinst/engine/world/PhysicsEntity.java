@@ -130,6 +130,7 @@ public class PhysicsEntity extends MovingEntity {
 
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
+		//System.out.println(this + ":" + _angularVel);
 		//In MovingEntity, moves by delta(x, y)
 		super.onTick(nanosSincePreviousTick);
 		//Update reference to current location
@@ -217,7 +218,7 @@ public class PhysicsEntity extends MovingEntity {
 	public ArrayList<PhysicsCollisionInfo> getCollisionInfo() {
 		return _collisionInfo;
 	}
-	public void setCollisionInfo(PhysicsCollisionInfo info) {
+	public void addCollisionInfo(PhysicsCollisionInfo info) {
 		_collisionInfo.add(info);
 	}
 
@@ -235,6 +236,12 @@ public class PhysicsEntity extends MovingEntity {
 		if (_isInteractive && other.isInteractive()) 
 				this.collisionResponse(other);
 		return collision;
+	}
+	
+	public boolean collidesWithoutCollisionResponse(PhysicsEntity other) {
+		if (this.isStatic() && other.isStatic()) 			
+			return false;
+		return super.collides(other); 
 	}
 
 	/* Handles response if collision between entities is 
@@ -278,21 +285,19 @@ public class PhysicsEntity extends MovingEntity {
 				//3 Then set the impulse
 				other.applyImpulse(imps[0], poi);
 				this.applyImpulse(imps[1], poi);
-				
-				
 
 				//Updates reference to most recent MTV
-				other.setCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
-				this.setCollisionInfo(new PhysicsCollisionInfo(thisMTV, other));
+				other.addCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
+				this.addCollisionInfo(new PhysicsCollisionInfo(thisMTV, other));
 			}
 		}
 		//Void condition because collisionResponse only called if collision detected
 		else {
 			if (otherData == null) {
-				other.setCollisionInfo(null);
+				other.addCollisionInfo(null);
 			}
 			if (thisData == null) {
-				this.setCollisionInfo(null);
+				this.addCollisionInfo(null);
 			}
 		}
 	}
@@ -308,11 +313,20 @@ public class PhysicsEntity extends MovingEntity {
 		float cor = (float) Math.sqrt(this.getRestitution()*other.getRestitution());
 
 		float m_a = this.getMass();
-		float m_b = other.getMass();		
+		float m_b = other.getMass();
+		//velocity of entities AT THE POI projected onto the mtv
+		
+		Vec2f poi = this.getShape().poi(other.getShape());
+		if(this instanceof PinEntity || other instanceof PinEntity) {
+			//System.out.println("vel" + other.getVelocity());
+			//System.out.println("vel at point" + other.getVelocityAtPoint(poi) + " at " + poi);
+		}
+		//Vec2f u_a = this.getVelocityAtPoint(poi).projectOnto(this.getShape().getCollisionInfo().getMTV());
+		//Vec2f u_b = other.getVelocityAtPoint(poi).projectOnto(other.getShape().getCollisionInfo().getMTV());	
 		Vec2f u_a = this.getVelocity().projectOnto(this.getShape().getCollisionInfo().getMTV());
 		Vec2f u_b = other.getVelocity().projectOnto(other.getShape().getCollisionInfo().getMTV());	
 
-		Vec2f poi = this.getShape().poi(other.getShape());
+		
 		Vec2f n = this.getShape().getCollisionInfo().getMTV().normalized();
 
 		Vec2f numerator = (u_a.minus(u_b)).smult((-1f) * (1 + cor));
@@ -331,11 +345,6 @@ public class PhysicsEntity extends MovingEntity {
 		imps[1] = (numerator.sdiv(denominator));
 		imps[0] = imps[1].invert();
 		
-		
-		if(this instanceof PinEntity || other instanceof PinEntity) {
-			System.out.println("num " + numerator);
-			System.out.println("den" + denominator);
-		}
 		
 /////////DEBUGGING		
 		if (this instanceof Boulder) {
@@ -440,5 +449,45 @@ public class PhysicsEntity extends MovingEntity {
 	}
 	public Output getOutput(String o) {
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @return whether or not this entity collided with any other entities last tick
+	 */
+	public boolean didCollide() {
+		for(PhysicsCollisionInfo c : this.getCollisionInfo()) {
+			if(c != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param other
+	 * @return whether or not this entity collided with other last tick
+	 */
+	public boolean didCollide(PhysicsEntity other) {
+		for(PhysicsCollisionInfo c : this.getCollisionInfo()) {
+ 			if(c != null && c.other == other) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public Vec2f getVelocityAtPoint(Vec2f p) {
+		//velocity of point due to linear velocity
+		Vec2f linVel = getVelocity();
+		//velocity of point due to rotational velocity
+		Vec2f angVelDir = p.minus(getCentroid()).getNormal().normalized();
+		float r = p.minus(getCentroid()).mag();
+		float angVelMag = r *_angularVel;
+		Vec2f angVel = angVelDir.smult(angVelMag);
+		//System.out.println("angvel " + _angularVel);
+		//System.out.println("linVel " + linVel);
+		return linVel.plus(angVel);
 	}
 }

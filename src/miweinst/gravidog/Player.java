@@ -20,10 +20,15 @@ import cs195n.Vec2f;
 public class Player extends PhysicsEntity {
 
 	private static final float MOVEMENT_FORCE_COEFFICIENT = 1.5f;
-	private final float JUMP_IMPULSE_COEFFICIENT = 15f;
+	private final float JUMP_IMPULSE_COEFFICIENT = 12f;
 	private float GOAL_VELOCITY_COEFFICIENT = 10f;
-	private final float FRICTION_COEFFICIENT = 200f;
-	private final float SPRITE_CYCLE_PERIOD = 1f;
+	private final float FRICTION_COEFFICIENT = 1f;
+	private final float spriteCyclePeriod = 1f;
+	private Shape _shape;
+	private boolean _gravitySwitched;
+	private float _secondsSinceFirstFrame;
+	private boolean isFacingRight;
+
 	
 	//Inputs: defined as anonymous classes, only one method to override
 	//doSetColor sets Player color; args "color"
@@ -104,15 +109,8 @@ public class Player extends PhysicsEntity {
 		}
 	};
 
-	//	private GameWorld _world;
 	
-	private Shape _shape;
-//	private List<String> _saveData;
-	private boolean _gravitySwitched;
-//	private boolean _dataWritten;
-	private float _secondsSinceFirstFrame;
-	private GameWorld _world;
-
+	
 	public Player(GameWorld world) {
 		super(world);
 		//		_world = world;
@@ -136,7 +134,6 @@ public class Player extends PhysicsEntity {
 		_gravitySwitched = false;
 		_secondsSinceFirstFrame = 0f;
 		
-		_world = world;
 			
 //		_saveData = new ArrayList<String>();
 //		_dataWritten = false;
@@ -151,24 +148,35 @@ public class Player extends PhysicsEntity {
 	
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
-		List<Vec2f> otherMTVs = new ArrayList<Vec2f>();
 		super.onTick(nanosSincePreviousTick);
+		setGravity();
+		if(didCollide()) {
+			applyfriction();
+		}
+				
+		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
+		_secondsSinceFirstFrame%=spriteCyclePeriod;
+		
+	}	
+	
+	private void setGravity() {
+		List<Vec2f> otherMTVs = new ArrayList<Vec2f>();
 		List<PhysicsCollisionInfo> infos = getCollisionInfo();
-		PhysicsCollisionInfo info = null;
+		PhysicsCollisionInfo infoToBeUsed = null;
 		float max = 0;
 		//Choose mtv with largest cross product with gravity
 		for (PhysicsCollisionInfo i: infos) {
 			if (i != null && i.other.isGravitational()) {
 				float diffValue = Math.abs(i.mtv.normalized().cross(GRAVITY.normalized()));
 				if(diffValue >= max) {
-					info = i;
+					infoToBeUsed = i;
 					max = diffValue;
 				}
 				otherMTVs.add(i.mtv);
 			}
 		}
-		if (info != null) {
-			Vec2f mtv = info.mtv;
+		if (infoToBeUsed != null) {
+			Vec2f mtv = infoToBeUsed.mtv;
 			float mag = GRAVITY.mag();
 						
 			Vec2f mtv_norm = mtv.normalized();
@@ -179,28 +187,22 @@ public class Player extends PhysicsEntity {
 				/*Give player a small nudge perpindicular to mtv 
 				* to avoid switching gravity on every tick
 				* when the player is wedged in a corner. */
-				Vec2f newPlatformMTV = info.mtv;
+				Vec2f newPlatformMTV = infoToBeUsed.mtv;
 				Vec2f oldPlatformMTV = otherMTVs.get(0) == newPlatformMTV ? otherMTVs.get(1) : otherMTVs.get(0);
 				Vec2f dir = newPlatformMTV.getNormal();
 				if(dir.dot(oldPlatformMTV) < 0) {
 					dir = dir.invert();
 				}
-				this.applyImpulse(dir.smult(this.getMass()*100), getCentroid());
+				this.applyImpulse(dir.smult(this.getMass()*200), getCentroid());
 
 			}			
 		}
-		if(info != null) {
-			applyfriction();
-		}
-		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
-		_secondsSinceFirstFrame%=SPRITE_CYCLE_PERIOD;
-				
-	}	
+	}
 
 	private void applyfriction() {
 		//Opposes movement perpindicular to gravity
 		Vec2f gravityNormal = GRAVITY.getNormal();
-		Vec2f force = getVelocity().projectOnto(gravityNormal).smult(-FRICTION_COEFFICIENT);
+		Vec2f force = getVelocity().projectOnto(gravityNormal).smult(-FRICTION_COEFFICIENT*getMass());
 		this.applyForce(force, getCentroid());
 	}
 
@@ -224,11 +226,13 @@ public class Player extends PhysicsEntity {
 	public void moveRight() {
 		Vec2f dir = GRAVITY.getNormal().normalized();
 		goalVelocity(dir.smult(getGoalVelocity()));
+		isFacingRight = true;
 	}
 	
 	public void moveLeft() {
 		Vec2f dir = GRAVITY.getNormal().normalized().invert();
 		goalVelocity(dir.smult(getGoalVelocity()));
+		isFacingRight = false;
 	}
 	
 	public void moveDown() {
@@ -252,23 +256,51 @@ public class Player extends PhysicsEntity {
 		BufferedImage[] walking = GravidogResources.getValue("walking");
 		BufferedImage[] running = GravidogResources.getValue("running");
 		BufferedImage[] standing = GravidogResources.getValue("standing");
+		BufferedImage[] jumping = GravidogResources.getValue("jumping");
 		
-		BufferedImage[] current = getVelocity().mag() < getGoalVelocity()/2 ? walking : running;
-		current = getVelocity().mag()<getGoalVelocity()/50 ? standing : current;
-		int i = (int)((_secondsSinceFirstFrame/SPRITE_CYCLE_PERIOD)*current.length);
+		BufferedImage[] current;
+		
+		float dir = isFacingRight ? 1f : -1f;
+		float currRelativeVel = dir * getVelocity().dot(GRAVITY.getNormal().normalized());
+		
+		if (currRelativeVel < getGoalVelocity()/50) {
+			current = standing;
+		} else if (currRelativeVel < getGoalVelocity()/2) {
+			current = walking;
+		} else {
+			current = running;
+		}
+				
+		if(!didCollide()) {
+			current = jumping;
+		}
+		
+		int i = (int)((_secondsSinceFirstFrame/spriteCyclePeriod)*current.length);
 		BufferedImage currentImage = current[i];
 		
 		AffineTransform at = new AffineTransform();
 		float playerWidth = 2*((CircleShape)getShape()).getRadius();
 		float scale = playerWidth/currentImage.getWidth();
 		scale*= 1.5f; //make the image a little larger to accommodate image margins
-		float dir = getVelocity().dot(GRAVITY.getNormal()) > 0 ? 1f : -1f;
+		
+		Vec2f gravDir = GRAVITY.normalized();
+		
+		float theta = 0f;
+		if(gravDir.x != 0f) {
+			theta = (float) Math.atan(gravDir.y/gravDir.x); //offset from positive x axis
+		} else {
+			theta = (float) (gravDir.y < 0 ? -Math.PI/2 : Math.PI/2);
+		}
+		if(gravDir.x < 0) {
+			theta += Math.PI; //since the range of atan is -pi/2 to pi/2 exclusive, here we get the full range
+		}
+		theta += Math.PI/2; //convert to offset from negative y axis
 		
 		at.translate(getLocation().x, getLocation().y);
 		at.scale(scale, -1f*scale);
-		at.rotate(-_world.getViewport().getTheta());
+		at.rotate(-theta);
 		at.scale(dir, 1f);
-		at.translate(-125, -65); //(should be (-125, -75), but image is too large for bounding circle)
+		at.translate(-125, -65); //pixel offset to center the image
 		
 		
 		g.drawImage(currentImage, at, null);

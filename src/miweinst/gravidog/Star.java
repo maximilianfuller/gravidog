@@ -8,10 +8,10 @@ import miweinst.engine.entityIO.Connection;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.gfx.sprite.Sprite;
 import miweinst.engine.world.GameWorld;
-import miweinst.engine.world.WhileSensorEntity;
+import miweinst.engine.world.SensorEntity;
 import cs195n.Vec2f;
 
-public class Star extends WhileSensorEntity {
+public class Star extends SensorEntity {
 
 	private GravidogWorld _gworld;
 	private Player _player;

@@ -5,9 +5,9 @@ import java.util.Map;
 
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.world.GameWorld;
-import miweinst.engine.world.WhileSensorEntity;
+import miweinst.engine.world.SensorEntity;
 
-public class LevelBounds extends WhileSensorEntity {
+public class LevelBounds extends SensorEntity {
 	
 	private final static Color BGCOLOR = Color.LIGHT_GRAY;
 

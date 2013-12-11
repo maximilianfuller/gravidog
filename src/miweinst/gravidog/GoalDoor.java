@@ -5,12 +5,12 @@ import java.util.Map;
 
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.world.GameWorld;
-import miweinst.engine.world.WhileSensorEntity;
+import miweinst.engine.world.SensorEntity;
 
 /*Just a SensorEntity that draws a Rectangle on top of it,
  * so no physical interactions just sensor detection.*/
 
-public class GoalDoor extends WhileSensorEntity {
+public class GoalDoor extends SensorEntity {
 	
 	private GravidogWorld _gworld;
 	private Player _player;

@@ -37,6 +37,7 @@ public class GravidogResources extends Resources {
 		BufferedImage[] walking = new BufferedImage[levelOut[0].length + levelOut[1].length];
 		BufferedImage[] running = new BufferedImage[levelOut[2].length + levelOut[3].length];
 		BufferedImage[] standing = new BufferedImage[1];
+		BufferedImage[] jumping = new BufferedImage[1];
 		
 		for(int i = 0; i < levelOut[0].length; i++) {
 			walking[i] = levelOut[0][i];
@@ -51,10 +52,12 @@ public class GravidogResources extends Resources {
 			running[levelOut[2].length + i] = levelOut[3][i];
 		}
 		standing[0] = levelOut[0][0];
+		jumping[0] = levelOut[3][0];
 		
 		_cache.put("walking", walking);
 		_cache.put("running", running);
 		_cache.put("standing", standing);
+		_cache.put("jumping", jumping);
 		
 		//Sets the cache of Resources superclass so that 
 		setCache(_cache);

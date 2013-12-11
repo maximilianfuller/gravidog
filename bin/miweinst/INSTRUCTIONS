@@ -13,3 +13,4 @@ In the Main Menu, press 'Play' to play the game, and press 'Reset' to play the g
 
 The number of stars you earn for each level will be saved unless you press 'Reset' to start a new game from the Main Menu.
 
+Levels that are not yet open are gray. Levels you have unlocked are yellow, and will have at least one star. (The level 5 box will be moved onto a new row on the next push)

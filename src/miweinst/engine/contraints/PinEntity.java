@@ -76,6 +76,7 @@ public class PinEntity extends PhysicsEntity {
 		//init _pinOffsetFromCentroid
 		_pinOffsetFromCentroid = _pinLoc.minus(shapeCentroid);
 		this.setGravitational(false);
+		this.setDensity(.01f);
 		
 		
 
