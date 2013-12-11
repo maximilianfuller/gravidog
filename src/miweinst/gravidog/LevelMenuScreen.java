@@ -48,9 +48,9 @@ public class LevelMenuScreen extends GravidogScreen {
 		_boxes.add(fifth);
 		
 		//Use to test levels and whatnot
-//		second.setLevelOpen(true);
-//		third.setLevelOpen(true);
-//		fourth.setLevelOpen(true);
+		second.setLevelOpen(true);
+		third.setLevelOpen(true);
+		fourth.setLevelOpen(true);
 		fifth.setLevelOpen(true);
 		
 		//Loads level upon instantiation

@@ -12,7 +12,7 @@ import miweinst.engine.world.WhileSensorEntity;
 import cs195n.Vec2f;
 
 public class Boulder extends WhileSensorEntity {
-	
+
 	GravidogWorld _world;
 	public Boulder(GameWorld world) {
 		super(world);
@@ -20,12 +20,17 @@ public class Boulder extends WhileSensorEntity {
 
 		this.setDensity(.2f);
 		this.setRestitution(.6f);
-		super.onDetect.connect(new Connection(new Input() 
-		{
-			public void run(Map<String, String> args) {
-				
-			}
-		}));
+		super.onDetect.connect(new Connection(_world.doLevelLose));
 		this.setGravitational(false);
+		this.setVisible(true);
+		this.setInteractive(true);
+		this.setStatic(false);
+	}
+
+	@Override 
+	public void setProperties(Map<String, String> props) {
+		super.setProperties(props);
+		this.getShape().setColor(new Color(255, 160, 160));
+
 	}
 }

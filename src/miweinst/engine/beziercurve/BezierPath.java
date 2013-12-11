@@ -1,6 +1,5 @@
 package miweinst.engine.beziercurve;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
@@ -241,7 +240,6 @@ public class BezierPath extends Shape {
 	
 	@Override
 	public boolean collides(Shape s) {	
-
 		CubicBezierCurve curve = this.findClosestCurve(s);
 		if (curve != null) {
 //			for (CubicBezierCurve curve: _curves) {

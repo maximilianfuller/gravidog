@@ -77,6 +77,7 @@ public class WhileSensorEntity extends PhysicsEntity {
 	 * Also triggers an OIutput*/
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
+		super.onTick(nanosSincePreviousTick);
 		if (this.condition()) 
 			onDetect.run();
 		else

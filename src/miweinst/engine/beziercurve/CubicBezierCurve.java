@@ -35,12 +35,6 @@ public class CubicBezierCurve extends BezierCurve {
 	
 	private boolean _drawBorder;
 
-	private float approxLineLength;
-	private Float inflectionPointTValue;
-	private final static float SAMPLE_RESOLUTION = 500; //samples per game unit of length
-	private final static int NUM_ITERATIONS = 25;
-
-
 	/**Default constructor and constructor taking in four _points (2 endpoints, 2 ctrl _points)*/
 	public CubicBezierCurve() {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));	
@@ -71,7 +65,7 @@ public class CubicBezierCurve extends BezierCurve {
 		//////		
 		_drawDots = new ArrayList<CircleShape>();
 		_drawLines = new ArrayList<LineSegment>();
-		approxLineLength = point1.dist(point2) + point2.dist(point3) + point3.dist(point4);
+//		approxLineLength = point1.dist(point2) + point2.dist(point3) + point3.dist(point4);
 	}
 
 	/**Updates the array of _points, called if any values of

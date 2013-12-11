@@ -19,10 +19,10 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
-	private static final float MOVEMENT_FORCE_COEFFICIENT = 2f;
-	private final float JUMP_IMPULSE_COEFFICIENT = 22f;
-	private float GOAL_VELOCITY_COEFFICIENT = 20f;
-	private final float FRICTION_COEFFICIENT = 10;
+	private static final float MOVEMENT_FORCE_COEFFICIENT = 1.5f;
+	private final float JUMP_IMPULSE_COEFFICIENT = 15f;
+	private float GOAL_VELOCITY_COEFFICIENT = 10f;
+	private final float FRICTION_COEFFICIENT = 200f;
 	private final float SPRITE_CYCLE_PERIOD = 1f;
 	
 	//Inputs: defined as anonymous classes, only one method to override
@@ -261,17 +261,17 @@ public class Player extends PhysicsEntity {
 		AffineTransform at = new AffineTransform();
 		float playerWidth = 2*((CircleShape)getShape()).getRadius();
 		float scale = playerWidth/currentImage.getWidth();
-		scale*= 2.5f; //make the image a little larger to accommodate image margins
+		scale*= 1.5f; //make the image a little larger to accommodate image margins
 		float dir = getVelocity().dot(GRAVITY.getNormal()) > 0 ? 1f : -1f;
 		
 		at.translate(getLocation().x, getLocation().y);
 		at.scale(scale, -1f*scale);
 		at.rotate(-_world.getViewport().getTheta());
 		at.scale(dir, 1f);
-		at.translate(-125, -95); //(should be (-125, -75), but image is too large for bounding circle)
+		at.translate(-125, -65); //(should be (-125, -75), but image is too large for bounding circle)
 		
 		
-		//g.drawImage(currentImage, at, null);
+		g.drawImage(currentImage, at, null);
 		
 	}
 

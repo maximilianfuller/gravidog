@@ -32,6 +32,7 @@ public class Star extends WhileSensorEntity {
 				_collected = true;
 			}
 		}));
+		setStatic(true);
 	}
 	
 	/**Partial override condition() to return

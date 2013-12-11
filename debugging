@@ -2,6 +2,8 @@ NOTE:
 Every level must have a Player object and a Door object, or else null pointer exception. Because reference to Player and Door are used for specific actions/IO.
 	Maybe we could make our own InvalidLevelException and throw it if there's no Player or Door?
 
+BUG: LevelBounds does not work at beginning of level editor list
+
 FINAL3
 -Star sprites
 -dieing
@@ -17,7 +19,7 @@ POLISH:
 -pause menu
 
 
-
+BUG: change sensor entity to not call oncollides
 BUG: PinEntity has no default constructor PinEntity(GameWorld world). 
 	Cannot use in LevelEditor without it.
 
