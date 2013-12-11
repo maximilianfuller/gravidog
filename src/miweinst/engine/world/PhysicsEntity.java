@@ -317,12 +317,15 @@ public class PhysicsEntity extends MovingEntity {
 		//velocity of entities AT THE POI projected onto the mtv
 		
 		Vec2f poi = this.getShape().poi(other.getShape());
+		//physically correct rotation
+		/*
 		if(this instanceof PinEntity || other instanceof PinEntity) {
-			//System.out.println("vel" + other.getVelocity());
-			//System.out.println("vel at point" + other.getVelocityAtPoint(poi) + " at " + poi);
+			System.out.println("vel" + other.getVelocity());
+			System.out.println("vel at point" + other.getVelocityAtPoint(poi) + " at " + poi);
 		}
-		//Vec2f u_a = this.getVelocityAtPoint(poi).projectOnto(this.getShape().getCollisionInfo().getMTV());
-		//Vec2f u_b = other.getVelocityAtPoint(poi).projectOnto(other.getShape().getCollisionInfo().getMTV());	
+		Vec2f u_a = this.getVelocityAtPoint(poi).projectOnto(this.getShape().getCollisionInfo().getMTV());
+		Vec2f u_b = other.getVelocityAtPoint(poi).projectOnto(other.getShape().getCollisionInfo().getMTV());
+		*/	
 		Vec2f u_a = this.getVelocity().projectOnto(this.getShape().getCollisionInfo().getMTV());
 		Vec2f u_b = other.getVelocity().projectOnto(other.getShape().getCollisionInfo().getMTV());	
 

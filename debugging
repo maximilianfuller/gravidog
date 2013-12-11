@@ -16,13 +16,12 @@ POLISH:
 
 
 BUG: rotational physics is bugged
+BUG: jumping with left or right arrow key pressed is weaker
 
 
-TODO: Make sensors surrounding every level that call a Player input doDie
 TODO: Make Boulder a Polygon and cap its rotational velocity
 TODO:	Make a level win or lose screen
 TODO: Optimize time step
-TODO: star graphics
 
 BUG: AARectShape's location is getting set at center. 
 	But World reads level editor's box as a PolygonShape (rectToPoly), so just don't use AARectShape

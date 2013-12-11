@@ -107,7 +107,7 @@ public class PinEntity extends PhysicsEntity {
 		
 		CircleShape centroid = new CircleShape(super.getCentroid(), 1);
 		centroid.setColor(Color.blue);
-		centroid.draw(g);
+		//centroid.draw(g);
 		
 		
 		/*PolygonShape thisShape = (PolygonShape)this.getShape();

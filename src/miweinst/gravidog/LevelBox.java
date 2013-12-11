@@ -25,7 +25,7 @@ import cs195n.Vec2f;
 public class LevelBox {
 	/* Static values can change for resizing */
 	//Spacing between cells
-	public final static float CELL_SPACING = 15f;
+	public final static float CELL_SPACING =30f;
 	//Size of each cells, square
 	public final static float SIDE_LENGTH = 200f;
 	//Default width of border
@@ -33,6 +33,7 @@ public class LevelBox {
 	//Size of star Sprite image
 	public static Vec2f STAR_SIZE = new Vec2f(30, 30);
 	private static File star_file = new File("src/miweinst/resources/star_small.png");
+	private static int COLS = 4;
 
 	//Store level number
 	public final int level_num;
@@ -133,7 +134,9 @@ public class LevelBox {
 		/* Menu UI */
 
 		//Location of box in horizontal linear layout
-		Vec2f loc = new Vec2f(CELL_SPACING*num + SIDE_LENGTH*(num-1), CELL_SPACING);
+		int row = (num-1)/COLS;
+		int col = (num-1)%COLS;
+		Vec2f loc = new Vec2f(CELL_SPACING*(col+1) + SIDE_LENGTH*(col), CELL_SPACING*(row+1) + SIDE_LENGTH*(row));
 		Vec2f dim = new Vec2f(SIDE_LENGTH, SIDE_LENGTH);	//Dim remains constant
 
 		box = new AARectShape(loc, dim);		
@@ -228,7 +231,7 @@ public class LevelBox {
 			else {
 				_color = Color.YELLOW;
 			}
-			Vec2f drawLoc = new Vec2f(box.getX(), box.getHeight());
+			Vec2f drawLoc = new Vec2f(box.getX(), box.getY() + box.getHeight() - CELL_SPACING/2);
 			for (int i=0; i<3; i++) {
 				if (i == 0)
 					_stars[i].draw(g, drawLoc, 1);
