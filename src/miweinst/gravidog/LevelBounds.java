@@ -30,7 +30,7 @@ public class LevelBounds extends WhileSensorEntity {
 	
 	@Override
 	public boolean condition() {
-		//Only save once
+		//Only save on first onNoDetect
 		if (_saved) {
 			return true;
 		}

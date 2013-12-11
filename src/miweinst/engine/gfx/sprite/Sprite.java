@@ -46,6 +46,8 @@ public class Sprite {
 	//Stores the width and height of bounding box on canvas, in game units
 	private Vec2f _dstSize;
 	
+	private boolean _visible = true;
+	
 	public Sprite(Vec2f dstSize, BufferedImage... frames) {
 		_frames = new ArrayList<BufferedImage>();
 		for (int i=0; i<frames.length; i++) {
@@ -70,6 +72,13 @@ public class Sprite {
 
 		//Dimensions of each frame in Sprite is identical, otherwise animation doesn't work
 		_srcSize = new Vec2i(_currFrame.getWidth(), _currFrame.getHeight());
+	}
+	
+	public void setVisible(boolean vis) {
+		_visible = vis;
+	}
+	public boolean isVisible() {
+		return _visible;
 	}
 	
 	/*
@@ -199,10 +208,10 @@ public class Sprite {
 	 * @param pxlLoc
 	 * @param scale
 	 */
-	public void draw(Graphics2D g, Vec2f pxlLoc, float scale) {
+	public void draw(Graphics2D g, Vec2f loc, float scale) {
 		//Upper left in destination
-		Vec2i dstLoc = new Vec2i((int)pxlLoc.x, (int)pxlLoc.y);
-		
+		Vec2i dstLoc = new Vec2i((int)loc.x, (int)loc.y);
+
 		//Upper right in destination
 		int dstW = (int)(_dstSize.x*scale);
 		int dstH = (int)(_dstSize.y*scale);		
@@ -212,9 +221,10 @@ public class Sprite {
 		
 		//Upper right in source image
 		Vec2i srcSize = new Vec2i((int)_srcSize.x, (int)_srcSize.y);
-		
-		//@params:		Image, dst x1, dst y1, dst x2, dst y2, src x1, src y1, src x2, src y2, null		
-		g.drawImage(_currFrame, dstLoc.x, dstLoc.y, dstLoc.x+dstW, dstLoc.y+dstH, srcLoc.x, srcLoc.y, srcSize.x, srcSize.y, null);
+				
+		if (_visible)
+			//@params:		Image, dst x1, dst y1, dst x2, dst y2, src x1, src y1, src x2, src y2, null		
+			g.drawImage(_currFrame, dstLoc.x, dstLoc.y, dstLoc.x+dstW, dstLoc.y+dstH, srcLoc.x, srcLoc.y, srcSize.x, srcSize.y, null);
 	}
 }
 
