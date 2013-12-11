@@ -300,6 +300,9 @@ public class GravidogWorld extends GameWorld {
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		super.onTick(nanosSincePreviousTick);
+		for(PhysicsEntity e : this.getEntities()) {
+			System.out.println(e);
+		}
 		//        	long nanos = nanosSincePreviousTick/super.getIterations();
 		for (int i=1; i<=super.getIterations(); i++) {
 			//Left key down
