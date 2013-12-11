@@ -80,6 +80,14 @@ public class GravidogWorld extends GameWorld {
 			LevelMenuScreen.save();
 		}
 	};
+	//Level lose
+	public Input doLevelLose = new Input() {
+		public void run(Map<String, String> args) {
+			LevelMenuScreen levelMenu = new LevelMenuScreen(_app);
+			_app.setScreen(levelMenu);
+			LevelMenuScreen.save();
+		}
+	};
 
 	private App _app;
 	private Player _player;
@@ -124,11 +132,11 @@ public class GravidogWorld extends GameWorld {
 		_classes.setDecoration("GoalDoor", GoalDoor.class);
 		_classes.setDecoration("Star", Star.class);
 		_classes.setDecoration("Boulder", Boulder.class);
+		_classes.setDecoration("LevelBounds", LevelBounds.class);
 
 		///Decoration set to each Entity read from LevelEditor!
 		_entities = new HashDecorator<String, PhysicsEntity>();                                        
 
-		//        	File f = new File("src/miweinst/resources/level_one.nlf");
 		LevelData level = null;
 		try {
 			level = CS195NLevelReader.readLevel(f);
@@ -197,6 +205,12 @@ public class GravidogWorld extends GameWorld {
 					_entities.setDecoration(entityName, entity);
 					//Add Entity to GameWorld List
 					this.addEntity(entity);
+					
+					//LevelBounds must be drawn first
+					if (entity instanceof LevelBounds) {
+						this.removeEntity(entity);
+						this.addEntityToFront(entity);
+					}
 				}
 			}                                
 			//Each Connection in Level

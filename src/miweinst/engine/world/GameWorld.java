@@ -66,9 +66,9 @@ public class GameWorld {
 						_entities.get(i).collides(_entities.get(j));
 					}
 				}
-				if (_entities.get(i).isStatic() == false) 
-					//Send tick to every entity in list
-					_entities.get(i).onTick(nanosSincePreviousTick/_iters);
+//				if (_entities.get(i).isStatic() == false) 
+				//Send tick to every entity in list
+				_entities.get(i).onTick(nanosSincePreviousTick/_iters);
 			}
 		}
 		_accumulatedTime -= _iters * _timestep; 

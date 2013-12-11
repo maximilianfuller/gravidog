@@ -38,10 +38,16 @@ public class CurvedPathEntity extends PhysicsEntity {
 		_actrls = new ArrayList<Vec2f>();
 		_bctrls = new ArrayList<Vec2f>();
 		super.setShape(_bezierPath);		
-		this.setStatic(true);
+		this.setStatic(true);	//curve segments already static by default
 		this.setVisible(true);
 	}
 	
+	/*THIS IS AN EMPTY ONTICK METHOD BECAUSE BUGS.*/
+	@Override
+	public void onTick(long nanos) {
+//		super.onTick(nanos);
+	}
+
 	/*Sets whether or not this BezierPath is a closed shape.*/
 	public void setClosed(boolean closed) {
 		_closed = closed;

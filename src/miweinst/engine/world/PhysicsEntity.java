@@ -118,13 +118,20 @@ public class PhysicsEntity extends MovingEntity {
 	public void setRestitution(float cor) {
 		_restitution = cor;
 	}
+	
+	/** Partial override of MovingEntity.move to
+	 * bypass move method if PhysicsEntity is static.*/
+	@Override
+	public void move(float dx, float dy) {
+		if (!isStatic()) 
+			super.move(dx, dy);
+	}
 
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		//In MovingEntity, moves by delta(x, y)
 		super.onTick(nanosSincePreviousTick);
 		//Update reference to current location
-		//		_pos = this.getLocation();
 		//Applies gravitational force down as Y-component
 		this.applyForce(GRAVITY.smult(getMass()), getShape().getCentroid());						
 		//Update vel, pos; reset force, impulse
