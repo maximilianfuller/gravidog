@@ -30,25 +30,38 @@ public class PinEntity extends PhysicsEntity {
 		_pinLoc = pinLoc;
 		init();
 	}
+	
+	public PinEntity(GameWorld world) {
+		super(world);
+		_pinLoc = null;
+		super.setShape(null);
+	}
 
 	@Override
 	public void onTick(long _nanosSincePreviousTick) {
 		super.onTick(_nanosSincePreviousTick);
-		//this.applyImpulse(new Vec2f(0f, -10000000f), getCentroid());
 		translateToPin();
 		setVelocity(new Vec2f(0, 0));
-		//setAngle(getAngle() + ((float)Math.PI)/100f);
 	}
 
-	@Override
-	public float getMomentOfInertia(float mass) {
-		return super.getMomentOfInertia(mass);
-	}
+	
 
 	@Override
 	public Vec2f getCentroid() {
 		return _pinLoc;
-		//return _pinLoc;
+	}
+	
+	@Override
+	public void setShape(Shape s) {
+		assert(s instanceof PolygonShape || s instanceof CircleShape);
+		if(s instanceof PolygonShape) {
+			super.setShape(s);
+		} else {
+			_pinLoc = s.getLocation();
+		}
+		if(_pinLoc != null && getShape() != null) {
+			init();
+		}
 	}
 
 

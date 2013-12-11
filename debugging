@@ -1,33 +1,32 @@
-
-
 NOTE:
 Every level must have a Player object and a Door object, or else null pointer exception. Because reference to Player and Door are used for specific actions/IO.
 	Maybe we could make our own InvalidLevelException and throw it if there's no Player or Door?
+
+FINAL3
+-Star sprites
+-dieing
+-Two levels
+-dog size and constants
+-jumping
+-spring constants
+
+POLISH:
+-fill in curves
+-title menu
+-level menu
+-pause menu
+
 
 
 BUG: PinEntity has no default constructor PinEntity(GameWorld world). 
 	Cannot use in LevelEditor without it.
 
-TODO: Give PhysicsEntity a _density so that Mass is defined by area and density
 
 TODO: Make sensors surrounding every level that call a Player input doDie
 TODO: Make Boulder a Polygon and cap its rotational velocity
-TODO: resolution proportional to length
-TODO: Show stars and open/closed levels on LevelMenu
-	Make a level win or lose screen
+TODO:	Make a level win or lose screen
 TODO: Optimize time step
-TODO: Boulder and other objects affected by world
-TODO: Save/Load levels
-TODO: Sprites and pretty graphics
-	Use online. Mina's too busy
+TODO: star graphics
 
 BUG: AARectShape's location is getting set at center. 
 	But World reads level editor's box as a PolygonShape (rectToPoly), so just don't use AARectShape
-
-
-TODO: Optimization!
-	Make closestPointOnCurve faster!!
-	TRY?: Using RootBisection to find roots of equation for closestPointOnCurve. Just turn that dot product into a class that implements the Function class, with a method f that returns f(x) at a specified x. Then RootBisection should find roots using midpoint iterations. Returns root within a given interval (specified as a Bracket object)
-
-BUG: walls don't work both ways for Polygons only.
-
