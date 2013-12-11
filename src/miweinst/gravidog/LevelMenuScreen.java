@@ -57,8 +57,8 @@ public class LevelMenuScreen extends GravidogScreen {
 /*		second.setLevelOpen(true);
 		third.setLevelOpen(true);
 		fourth.setLevelOpen(true);
-		fifth.setLevelOpen(true);*/
-		seventh.setLevelOpen(true);
+		fifth.setLevelOpen(true);
+		seventh.setLevelOpen(true);*/
 		
 		//Loads level upon instantiation
 		loadLevel();
