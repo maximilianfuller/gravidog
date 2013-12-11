@@ -14,15 +14,8 @@ public class PinEntity extends PhysicsEntity {
 
 	private Vec2f _pinOffsetFromCentroid;
 	private Vec2f _pinLoc;
-	private float _momentOfInertia;
 
-	/*public PinEntity(GameWorld world) {
-		super(world);
-		_pinLoc = null;
-		_momentOfInertia = 0f;
-		setStatic(false);
-	}
-	*/
+	
 
 	public PinEntity(GameWorld world, Vec2f pinLoc, Shape shape) {
 		super(world);
@@ -52,6 +45,13 @@ public class PinEntity extends PhysicsEntity {
 	}
 	
 	@Override
+	public float getMomentOfInertia(float mass) {
+		float pinOffsetMag = _pinOffsetFromCentroid.mag();
+		float oldInertia = super.getMomentOfInertia(getMass());
+		return oldInertia + mass*pinOffsetMag*pinOffsetMag;
+	}
+	
+	@Override
 	public void setShape(Shape s) {
 		assert(s instanceof PolygonShape || s instanceof CircleShape);
 		if(s instanceof PolygonShape) {
@@ -75,12 +75,9 @@ public class PinEntity extends PhysicsEntity {
 
 		//init _pinOffsetFromCentroid
 		_pinOffsetFromCentroid = _pinLoc.minus(shapeCentroid);
-
-		//init _momentOfInertia;
-		float pinOffsetMag = _pinOffsetFromCentroid.mag();
-		float oldInertia = super.getMomentOfInertia(getMass());
-		//add MR^2
-		_momentOfInertia = oldInertia + getMass()*pinOffsetMag*pinOffsetMag;
+		this.setGravitational(false);
+		
+		
 
 
 

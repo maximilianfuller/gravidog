@@ -38,15 +38,20 @@ public class LevelMenuScreen extends GravidogScreen {
 		LevelBox fourth = new LevelBox(4);
 		fourth.box.setColor(Color.LIGHT_GRAY);
 		
+		LevelBox fifth = new LevelBox(5);
+		fourth.box.setColor(Color.LIGHT_GRAY);
+		
 		_boxes.add(first);
 		_boxes.add(second);
 		_boxes.add(third);
 		_boxes.add(fourth);
+		_boxes.add(fifth);
 		
 		//Use to test levels and whatnot
 //		second.setLevelOpen(true);
 //		third.setLevelOpen(true);
 //		fourth.setLevelOpen(true);
+		fifth.setLevelOpen(true);
 		
 		//Loads level upon instantiation
 		loadLevel();
