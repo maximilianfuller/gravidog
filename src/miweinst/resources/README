@@ -1,20 +1,14 @@
-FINAL2 README
+FINAL3 README
 
 TOTAL AGGREGATE HOURS: 
-40
+30
 
 KNOWN BUGS:
-curve collision (for level 3 especially) can be buggy. Sometimes the player enters the shape.
+none, but polish needed
 
 REQUIREMENTS:
+Sprites (dog and stars) and more levels.
 
-Gravity changes depending on what surface the player is currently touching.
-
-The viewport pans and rotates with the player and the player's gravity.
-
-We have two levels implemented. A third level (level_two) may be available by playtesting.
-
-ALSO OF NOTE: We use an external library that solves cyclic matrices (pj2.lib.edu.rit). All we use is a single method from one class[Tridiagonal] in the library.
-
- 
+NOTE:
+we will likely submit have a more polished version with a level or two more by demo time tomorrow.
 
