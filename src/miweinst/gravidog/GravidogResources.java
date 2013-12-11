@@ -2,21 +2,33 @@ package miweinst.gravidog;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
-import cs195n.Vec2i;
+import javax.imageio.ImageIO;
 
 import miweinst.engine.gfx.sprite.Resources;
 import miweinst.engine.gfx.sprite.SpriteLoader;
+import cs195n.Vec2i;
 
 public class GravidogResources extends Resources {
 
 	public static void init() {		
 		//Stores arrays of sprite frames in animations, accessed by string key
 		_cache = new HashMap<String, BufferedImage[]>();
+		
+		File fLStar = new File("src/miweinst/resources/star_large.png");
+		BufferedImage largeStar = null;
+		try {
+			largeStar = ImageIO.read(fLStar);
+		} catch (IOException e) {
+			System.out.println("Star file not found.");
+			e.printStackTrace();
+		}
+		
+		BufferedImage[] stars = { largeStar };
+		
+		_cache.put("large_star", stars);
 
 		File f = new File("src/miweinst/resources/blackdog.png");
 		SpriteLoader levelLoader = new SpriteLoader(f, new Vec2i(250, 150), 0, new Vec2i(4, 4), 0);
