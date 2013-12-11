@@ -5,6 +5,7 @@ import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
 import miweinst.engine.world.GameWorld;
 import miweinst.engine.world.PhysicsEntity;
+import miweinst.gravidog.Player;
 import cs195n.Vec2f;
 
 public class SpringEntity extends PhysicsEntity {
@@ -18,8 +19,9 @@ public class SpringEntity extends PhysicsEntity {
 		//Default Shape for mandatory constructor
 		PolygonShape shape = new AARectShape(new Vec2f(50f,80f), new Vec2f(10f, 10f)).rectToPoly();
 		setShape(shape);
-		setSpringConstant(100f);
-		setFrictionConstant(1f);		
+		setSpringConstant(300f*Player.GRAVITY.mag());
+		setFrictionConstant(10f*Player.GRAVITY.mag());
+		this.setDensity(.01f);
 		init();
 	}
 	public SpringEntity(GameWorld world, Shape shape) {

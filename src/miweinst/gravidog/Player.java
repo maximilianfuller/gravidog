@@ -19,8 +19,8 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
-	private static final float MOVEMENT_FORCE_COEFFICIENT = 1f;
-	private final float JUMP_IMPULSE_COEFFICIENT = 25f;
+	private static final float MOVEMENT_FORCE_COEFFICIENT = 2f;
+	private final float JUMP_IMPULSE_COEFFICIENT = 22f;
 	private float GOAL_VELOCITY_COEFFICIENT = 20f;
 	private final float FRICTION_COEFFICIENT = 10;
 	private final float SPRITE_CYCLE_PERIOD = 1f;
@@ -248,6 +248,7 @@ public class Player extends PhysicsEntity {
 	@Override
 	public void draw(Graphics2D g) {
 		super.draw(g);
+		
 		BufferedImage[] walking = GravidogResources.getValue("walking");
 		BufferedImage[] running = GravidogResources.getValue("running");
 		BufferedImage[] standing = GravidogResources.getValue("standing");
@@ -259,7 +260,7 @@ public class Player extends PhysicsEntity {
 		
 		AffineTransform at = new AffineTransform();
 		float playerWidth = 2*((CircleShape)getShape()).getRadius();
-		float scale = playerWidth/current[i].getWidth();
+		float scale = playerWidth/currentImage.getWidth();
 		scale*= 2.5f; //make the image a little larger to accommodate image margins
 		float dir = getVelocity().dot(GRAVITY.getNormal()) > 0 ? 1f : -1f;
 		
@@ -270,7 +271,7 @@ public class Player extends PhysicsEntity {
 		at.translate(-125, -95); //(should be (-125, -75), but image is too large for bounding circle)
 		
 		
-		g.drawImage(current[i], at, null);
+		//g.drawImage(currentImage, at, null);
 		
 	}
 
