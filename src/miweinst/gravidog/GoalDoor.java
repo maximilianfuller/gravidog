@@ -32,6 +32,7 @@ public class GoalDoor extends WhileSensorEntity {
 		this.getShape().setBorderWidth(10f);
 		//Connect Sensor.onDetect to World.doDoorReached
 		super.onDetect.connect(new Connection(_gworld.doDoorReached));
+		setStatic(true);
 	}
 	/**Color when door is locked.*/
 	public Color getClosedColor() {
