@@ -5,6 +5,7 @@ import java.util.Map;
 
 import miweinst.engine.collisiondetection.PhysicsCollisionInfo;
 import miweinst.engine.collisiondetection.ShapeCollisionInfo;
+import miweinst.engine.contraints.PinEntity;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
@@ -239,7 +240,8 @@ public class PhysicsEntity extends MovingEntity {
 	/* Handles response if collision between entities is 
 	 * detected. Moves each Entity away from each other
 	 * by mtv/2, according to their ShapeCollisionInfo object.*/
-	public void collisionResponse(PhysicsEntity other) {		
+	public void collisionResponse(PhysicsEntity other) {
+		
 		//Get ShapeCollisionInfo information cache, s
 		ShapeCollisionInfo otherData = other.getShape().getCollisionInfo();
 		//containing obj is 'other' b/c double dispatch
@@ -276,6 +278,8 @@ public class PhysicsEntity extends MovingEntity {
 				//3 Then set the impulse
 				other.applyImpulse(imps[0], poi);
 				this.applyImpulse(imps[1], poi);
+				
+				
 
 				//Updates reference to most recent MTV
 				other.setCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
@@ -326,6 +330,12 @@ public class PhysicsEntity extends MovingEntity {
 		
 		imps[1] = (numerator.sdiv(denominator));
 		imps[0] = imps[1].invert();
+		
+		
+		if(this instanceof PinEntity || other instanceof PinEntity) {
+			System.out.println("num " + numerator);
+			System.out.println("den" + denominator);
+		}
 		
 /////////DEBUGGING		
 		if (this instanceof Boulder) {

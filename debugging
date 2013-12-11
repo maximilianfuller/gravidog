@@ -19,7 +19,7 @@ POLISH:
 -pause menu
 
 
-
+BUG: change sensor entity to not call oncollides
 BUG: PinEntity has no default constructor PinEntity(GameWorld world). 
 	Cannot use in LevelEditor without it.
 

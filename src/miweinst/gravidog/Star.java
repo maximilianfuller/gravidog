@@ -43,6 +43,7 @@ public class Star extends WhileSensorEntity {
 				_sprite.setVisible(false);
 			}
 		}));
+		setStatic(true);
 	}
 	
 	/**Partial override condition() to return
