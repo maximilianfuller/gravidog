@@ -167,7 +167,6 @@ public class GravidogWorld extends GameWorld {
 					e.printStackTrace();
 				}    
 
-
 				if (entity != null) {
 					//Shapes in Entity
 					for (ShapeData s: ent.getShapes()) {
