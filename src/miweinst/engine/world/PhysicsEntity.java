@@ -138,7 +138,6 @@ public class PhysicsEntity extends MovingEntity {
 		this.applyForce(GRAVITY.smult(getMass()), getShape().getCentroid());						
 		//Update vel, pos; reset force, impulse
 		this.symplecticUpdate(nanosSincePreviousTick);
-//		this.setLocation(_pos);		
 	}
 
 	/* Update Position and Velocity in symplectic order. Use
@@ -156,8 +155,11 @@ public class PhysicsEntity extends MovingEntity {
 		_angularVel += _angularForce*(time/getMomentOfInertia(getMass()));
 		_angularVel += _angularImpulse/getMomentOfInertia(getMass());
 		//_angle += _angularVel*secondsElapsed;
-		getShape().setAngle(getShape().getAngle() + _angularVel*time);
-
+			
+		///Do not change angle of shape if entity non-rotatable
+		if (_isRotatable) 
+			getShape().setAngle(getShape().getAngle() + _angularVel*time);
+		
 		//Reset force and impulse
 		_force = new Vec2f(0f, 0f);
 		_impulse = new Vec2f(0f, 0f);
@@ -170,9 +172,9 @@ public class PhysicsEntity extends MovingEntity {
 	 * (ex: start moving)*/
 	public void applyForce(Vec2f f, Vec2f point) {
 		if (_isStatic == false) {
-			Vec2f r = point.minus(getCentroid());
 			_force = _force.plus(f);
 			if(_isRotatable) {
+				Vec2f r = point.minus(getCentroid());
 				_angularForce += r.cross(_force);
 			}
 		}
@@ -182,9 +184,9 @@ public class PhysicsEntity extends MovingEntity {
 	 * (ex: jumping, collision response)*/
 	public void applyImpulse(Vec2f i, Vec2f point) {
 		if (_isStatic == false) {
-			Vec2f r = point.minus(getShape().getCentroid());
 			_impulse = _impulse.plus(i);
 			if(_isRotatable) {
+				Vec2f r = point.minus(getShape().getCentroid());
 				_angularImpulse += r.cross(_impulse);
 			}
 		}
@@ -283,8 +285,14 @@ public class PhysicsEntity extends MovingEntity {
 				this.setLocation(thisNewLoc);
 
 				//3 Then set the impulse
-				other.applyImpulse(imps[0], poi);
-				this.applyImpulse(imps[1], poi);
+				if (_isRotatable) {
+					other.applyImpulse(imps[0], poi);
+					this.applyImpulse(imps[1], poi);
+				}
+				else {
+					other.applyImpulse(imps[0], other.getCentroid());
+					this.applyImpulse(imps[1], this.getCentroid());
+				}
 
 				//Updates reference to most recent MTV
 				other.addCollisionInfo(new PhysicsCollisionInfo(otherMTV, this));
@@ -314,18 +322,8 @@ public class PhysicsEntity extends MovingEntity {
 
 		float m_a = this.getMass();
 		float m_b = other.getMass();
-		//velocity of entities AT THE POI projected onto the mtv
-		
+		//velocity of entities AT THE POI projected onto the mtv	
 		Vec2f poi = this.getShape().poi(other.getShape());
-		//physically correct rotation
-		/*
-		if(this instanceof PinEntity || other instanceof PinEntity) {
-			System.out.println("vel" + other.getVelocity());
-			System.out.println("vel at point" + other.getVelocityAtPoint(poi) + " at " + poi);
-		}
-		Vec2f u_a = this.getVelocityAtPoint(poi).projectOnto(this.getShape().getCollisionInfo().getMTV());
-		Vec2f u_b = other.getVelocityAtPoint(poi).projectOnto(other.getShape().getCollisionInfo().getMTV());
-		*/	
 		Vec2f u_a = this.getVelocity().projectOnto(this.getShape().getCollisionInfo().getMTV());
 		Vec2f u_b = other.getVelocity().projectOnto(other.getShape().getCollisionInfo().getMTV());	
 
@@ -348,24 +346,8 @@ public class PhysicsEntity extends MovingEntity {
 		imps[1] = (numerator.sdiv(denominator));
 		imps[0] = imps[1].invert();
 		
-		
-/////////DEBUGGING		
-		if (this instanceof Boulder) {
-/*			System.out.println();
-			System.out.println("m_a: " + m_a);
-			System.out.println("m_b: " + m_b);
-			System.out.println("this moi: " + this.getMomentOfInertia(_mass));
-			System.out.println("other moi: " + other.getMomentOfInertia(other.getMass()));
-			System.out.println("denominator: " + denominator);
-			System.out.println("shape mtv: " + this.getShape().getCollisionInfo().getMTV());
-			System.out.println("n: " + n);
-			System.out.println("u_a: " + u_a);
-			System.out.println("u_b: " + u_b);*/
-		}
-
-		//Old, non-rotating collision response (flat impulse calculation)
-		/*		if (!this.isRotatable() && !other.isRotatable()) {
-			//Don't delete yet; impulse calculation for non-rotating entities
+/*		//Old, non-rotating collision response (flat impulse calculation)
+		if (!this.isRotatable() && !other.isRotatable()) {
 			//	Vec2f i_a = (u_b.minus(u_a)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));
 			imps[0] = (u_a.minus(u_b)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));		
 			if (this.isStatic()) {
@@ -407,6 +389,9 @@ public class PhysicsEntity extends MovingEntity {
 	public void setInteractive(boolean r) {
 		_isInteractive = r;
 	}	
+	public boolean isRotatable() {
+		return _isRotatable;
+	}
 	public void setRotatable(boolean r) {
 		_isRotatable = r;
 	}
@@ -427,18 +412,21 @@ public class PhysicsEntity extends MovingEntity {
 		//mass
 		if (props.containsKey("density")) 
 			this.setDensity(Float.parseFloat(props.get("density")));						
-		//static
+		//is static
 		if (props.containsKey("static")) 
 			this.setStatic(Boolean.parseBoolean(props.get("static")));						
-		//interactive
+		//is interactive
 		if (props.containsKey("interactive")) 
 			this.setInteractive(Boolean.parseBoolean(props.get("interactive")));						
-		//visible
+		//is visible
 		if (props.containsKey("visible")) 
 			this.setVisible(Boolean.parseBoolean(props.get("visible")));	
-		//changes gravity
+		//is gravitational
 		if (props.containsKey("gravitational")) 
 			this.setGravitational(Boolean.parseBoolean(props.get("gravitational")));
+		//is rotatable
+		if (props.containsKey("rotatable"))
+			this.setRotatable(Boolean.parseBoolean(props.get("rotatable")));
 	}
 
 	/*Returns the IO class mapped to a particular String,

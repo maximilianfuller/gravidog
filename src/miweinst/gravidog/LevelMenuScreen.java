@@ -43,7 +43,9 @@ public class LevelMenuScreen extends GravidogScreen {
 		
 ////Change to new LevelBox(7) once a level_six is added
 		LevelBox seventh = new LevelBox(6);
-		seventh.box.setColor(Color.LIGHT_GRAY);
+		seventh.box.setColor(Color.LIGHT_GRAY);	
+		LevelBox eighth = new LevelBox(7);
+		eighth.box.setColor(Color.LIGHT_GRAY);
 		
 		_boxes.add(first);
 		_boxes.add(second);
@@ -52,6 +54,7 @@ public class LevelMenuScreen extends GravidogScreen {
 		_boxes.add(fifth);
 		
 		_boxes.add(seventh);
+		_boxes.add(eighth);
 ////// 	TESTING
 		
 		//TOGGLE BOOLEAN FOR TESTING

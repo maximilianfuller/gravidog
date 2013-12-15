@@ -3,7 +3,6 @@ package miweinst.gravidog;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import miweinst.engine.App;
