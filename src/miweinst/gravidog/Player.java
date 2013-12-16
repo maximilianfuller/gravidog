@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -270,8 +269,11 @@ public class Player extends PhysicsEntity {
 		} else {
 			current = running;
 		}
-				
-		if(!didCollide()) {
+		
+		
+		ArrayList<PhysicsCollisionInfo> arr = super.getCollisionInfo();
+//		if(!didCollide()) {
+		if(arr.isEmpty()) {
 			current = jumping;
 		}
 		

@@ -10,6 +10,7 @@ import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
 import miweinst.gravidog.Boulder;
+import miweinst.gravidog.Constants;
 import cs195n.Vec2f;
 
 public class PhysicsEntity extends MovingEntity {
@@ -346,6 +347,11 @@ public class PhysicsEntity extends MovingEntity {
 		imps[1] = (numerator.sdiv(denominator));
 		imps[0] = imps[1].invert();
 		
+		/*
+		 * DON'T DELETE YET. WE MIGHT NEED COLLISION RESPONSE FOR NON-ROTATING CURVES 
+		 * RIGHT NOW WE HAVE CORRECT TRANSLATION OUT AND MTV, BUT NOT THE RIGHT IMPULSE
+		 * I DON'T THINK.
+		 */
 /*		//Old, non-rotating collision response (flat impulse calculation)
 		if (!this.isRotatable() && !other.isRotatable()) {
 			//	Vec2f i_a = (u_b.minus(u_a)).smult((m_a*m_b*(1+cor)) / (m_a + m_b));
@@ -406,6 +412,8 @@ public class PhysicsEntity extends MovingEntity {
 	 * values as Strings.*/
 	@Override
 	public void setProperties(Map<String, String> props) {
+		//constants
+		this.setShapeColor(Constants.GRAVITATIONAL_COL);
 		//restitution
 		if (props.containsKey("restitution")) 
 			this.setRestitution(Float.parseFloat(props.get("restitution")));
@@ -422,8 +430,12 @@ public class PhysicsEntity extends MovingEntity {
 		if (props.containsKey("visible")) 
 			this.setVisible(Boolean.parseBoolean(props.get("visible")));	
 		//is gravitational
-		if (props.containsKey("gravitational")) 
-			this.setGravitational(Boolean.parseBoolean(props.get("gravitational")));
+		if (props.containsKey("gravitational")) {
+			boolean grav = Boolean.parseBoolean(props.get("gravitational"));
+			this.setGravitational(grav);
+			//Set appropriate shape color
+			this.setShapeColor(grav? Constants.GRAVITATIONAL_COL: Constants.NONGRAVITATIONAL_COL);
+		}
 		//is rotatable
 		if (props.containsKey("rotatable"))
 			this.setRotatable(Boolean.parseBoolean(props.get("rotatable")));
@@ -439,6 +451,8 @@ public class PhysicsEntity extends MovingEntity {
 		return null;
 	}
 	public Output getOutput(String o) {
+		//BEWARE PRINT LINE FOR DEBUGGING PURPOSES
+		System.out.println("PhysicsEntity has no Outputs!");
 		return null;
 	}
 	

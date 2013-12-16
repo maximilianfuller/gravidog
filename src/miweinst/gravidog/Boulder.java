@@ -4,12 +4,8 @@ import java.awt.Color;
 import java.util.Map;
 
 import miweinst.engine.entityIO.Connection;
-import miweinst.engine.entityIO.Input;
-import miweinst.engine.shape.CircleShape;
 import miweinst.engine.world.GameWorld;
-import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.SensorEntity;
-import cs195n.Vec2f;
 
 public class Boulder extends SensorEntity {
 
@@ -31,7 +27,6 @@ public class Boulder extends SensorEntity {
 	@Override 
 	public void setProperties(Map<String, String> props) {
 		super.setProperties(props);
-		this.getShape().setColor(new Color(255, 160, 160));
-
+		this.getShape().setColor(Constants.BOULDER_COL);
 	}
 }

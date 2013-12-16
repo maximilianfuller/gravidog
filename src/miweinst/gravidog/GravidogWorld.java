@@ -102,6 +102,8 @@ public class GravidogWorld extends GameWorld {
 	//Variable name mapped to PhysicsEntity instance
 	private HashDecorator<String, PhysicsEntity> _entities;
 	private RelayEntity _doorRelay;
+///////
+	private boolean _jumpboolean = false;
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
 		super(app, viewport);
@@ -324,6 +326,14 @@ public class GravidogWorld extends GameWorld {
 			if (_arrowKeyStates[3]) {
 				_player.moveDown();           
 			}
+		/////
+			if (_arrowKeyStates[1]) {
+				if (!_jumpboolean) {
+					_player.jump();
+					_jumpboolean = true;
+				}
+			}
+		/////^^^
 		}
 	}
 
@@ -352,10 +362,13 @@ public class GravidogWorld extends GameWorld {
 	/* Arrow key sets state boolean which opens
 	 * calling of goalVelocity in onTick.*/
 	public void onKeyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_UP && !_arrowKeyStates[1]) {
-			_player.jump();
-		}
 		int arrow = e.getKeyCode()-37;
+
+		if(e.getKeyCode() == KeyEvent.VK_UP && !_arrowKeyStates[1]) {
+//			_player.jump();
+			_jumpboolean = false;
+			_arrowKeyStates[arrow] = true;
+		}
 		if (arrow >= 0 && arrow < _arrowKeyStates.length) {
 			_arrowKeyStates[arrow] = true;
 		}

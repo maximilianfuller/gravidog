@@ -50,18 +50,18 @@ public class GoalDoor extends SensorEntity {
 			_player = _gworld.getPlayer();
 			super.setEntities(_player);
 		}
-		
-//////////
-/*			if (condition()) 
-				System.out.println("GoalDoor condition met");
-			System.out.println("GoalDoor GWorld: " + _gworld);
-			System.out.println("GoalDoor Player: " + _player);*/
 	}
 	
 	@Override
 	public void setProperties(Map<String, String> props) {
 		super.setProperties(props);
-		//Overrides any curr shape color set in Shape properties
+		
+		_closedColor = Constants.DOOR_CLOSED_COL;
+		_openColor = Constants.DOOR_OPEN_COL;
+		
+		this.setShapeColor(_closedColor);
+		
+/*		//Overrides any curr shape color set in Shape properties
 		this.setShapeColor(_closedColor);
 		if (props.containsKey("closed_color")) {
 			Color cCol = GameWorld.stringToColor(props.get("closed_color"));
@@ -74,6 +74,6 @@ public class GoalDoor extends SensorEntity {
 		//"color" defaults to _openColor
 		if (props.containsKey("color")) {
 			_openColor = GameWorld.stringToColor(props.get("color"));
-		}
+		}*/
 	}
 }
