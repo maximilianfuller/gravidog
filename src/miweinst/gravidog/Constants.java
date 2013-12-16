@@ -13,7 +13,7 @@ public class Constants {
 	public static final Color BG_COL = new Color(205, 205, 205); //light gray
 	public static final Color GRAVITATIONAL_COL = Color.WHITE;
 	public static final Color NONGRAVITATIONAL_COL = Color.GRAY;
-	public static final Color DOOR_CLOSED_COL = Color.yellow;
+	public static final Color DOOR_CLOSED_COL = Color.GRAY;
 	public static final Color DOOR_OPEN_COL = Color.GREEN;
 	public static final Color BLOCK_COL = new Color(108,168,217);	//pastel blue
 	public static final Color BOULDER_COL = new Color(255, 160, 160);	//light red

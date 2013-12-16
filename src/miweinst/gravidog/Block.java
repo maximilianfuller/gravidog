@@ -29,7 +29,7 @@ public class Block extends PhysicsEntity {
 		
 		setRestitution(.5f);
 		setGravitational(false);
-		setRotatable(false);
+		setRotatable(true);
 		
 		setStatic(false);
 		

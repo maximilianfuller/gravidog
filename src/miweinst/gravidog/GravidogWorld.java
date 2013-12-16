@@ -43,11 +43,9 @@ public class GravidogWorld extends GameWorld {
 
 	private final Vec2f GRAVITY_COEFFICIENT = new Vec2f(0f, -20f);
 
-
 	//Calls levelWin if Relay is enabled
 	public Input doDoorReached = new Input() {
 		public void run(Map<String, String> args) {
-			System.out.println("goal door reached");
 			//_doorRelay has Connection to doLevelWin
 			_doorRelay.doActivate();
 
@@ -251,7 +249,10 @@ public class GravidogWorld extends GameWorld {
 					playerSensor.setEntities(_player);
 				}
 			}
-
+			assert(_player != null);
+			//add player to end of list so it draws last
+			this.getEntities().remove(_player);
+			this.addEntities(_player);
 			/* Properties of entire level
 			 * Set after entities because it has 
 			 * viewport scale and static GRAVITY*/ 

@@ -24,24 +24,24 @@ public abstract class Shape implements ShapeCollisionDetection {
 	private float _borderWidth;
 	private ShapeCollisionInfo _collisionInfo;
 	private float _angle;
-	
+
 	public Shape(Vec2f loc, Vec2f dim) {
-		
+
 		_dimension = dim;
 		_location = loc;
 		_angle = 0;
-		
+
 		//Initialize values
 		_color = Color.WHITE;
 		_borderColor = Color.WHITE;
 		_borderWidth = 0;
-		
+
 		_collisionInfo = null;
-		
+
 		//Initialize default shape to Rectangle
 		_shape = new Rectangle2D.Float();
 	}
-	
+
 	/* Mutator is protected, because any specific
 	 * shapes are set in subclasses instantiated
 	 * for that shape. ONLY for subclasses.
@@ -54,7 +54,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public java.awt.Shape getShape() {
 		return _shape;
 	}
-	
+
 	/*Mutators for coordinates*/
 	public void setX(float x) {
 		setLocation(new Vec2f(x, _location.y));
@@ -62,7 +62,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public void setY(float y) {
 		setLocation(new Vec2f(_location.x, y));
 	}
-	
+
 	/*Accessors for coordinates*/
 	public float getX() {
 		return _location.x;
@@ -70,7 +70,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public float getY() {
 		return _location.y;
 	}
-	
+
 	/*Mutator/Accessor for Vec2f Location storage*/
 	public void setLocation(Vec2f loc) {
 		_location = loc;
@@ -78,10 +78,10 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public Vec2f getLocation() {
 		return _location;
 	}
-	
+
 	/*Accessor for center*/
 	public abstract Vec2f getCentroid();
-	
+
 	/*Mutator/Accessor for only width*/
 	public void setWidth(float width){
 		float currHeight = _dimension.y;		//Store the current height of shape
@@ -90,7 +90,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public float getWidth() {
 		return _dimension.x;
 	}	
-	
+
 	/*Mutator/Accessor for only height*/
 	public void setHeight(float height){
 		float currWidth = _dimension.x;
@@ -99,7 +99,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public float getHeight() {
 		return _dimension.y;
 	}
-	
+
 	/*Mutator/accessor for Vec2f dimensions storage*/
 	public void setDimensions(Vec2f dim) {
 		_dimension = dim;
@@ -107,7 +107,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public Vec2f getDimensions() {
 		return _dimension;
 	}
-	
+
 	/*Mutator/accessor for angle*/
 	public void setAngle(float angle) {
 		_angle = angle%(2*((float)Math.PI));
@@ -115,14 +115,14 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public float getAngle() {
 		return _angle;
 	}
-	
+
 	public abstract float getMomentOfInertia(float mass);
 	public abstract float getArea();
 	public abstract Vec2f poi(Shape s);
 	public abstract Vec2f poiPolygon(PolygonShape p);
 	public abstract Vec2f poiCircle(CircleShape c);
 	public abstract Vec2f poiCurve(BezierCurve c);
-	
+
 	/*Mutator/Accessor for shape fill color*/
 	public void setColor(Color color){
 		_color = color;
@@ -137,7 +137,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 	public Color getBorderColor() {
 		return _borderColor;
 	}
-	
+
 	/*Mutator/Accessor for border stroke width*/
 	public void setBorderWidth(float strokeWidth){	
 		_borderWidth = strokeWidth;
@@ -151,13 +151,13 @@ public abstract class Shape implements ShapeCollisionDetection {
 		_borderColor = col;
 		_borderWidth = width;
 	}
-	
+
 	/*Whether a point is contained in shape. Uses
 	 * java.awt.Shape's contain method ONLY for delete_EllipseShape.
 	 * Only used for point containment functions,
 	 * such as selecting a shape; not collisions.*/
 	public abstract boolean contains(Vec2f pnt) ;
-	
+
 	/*Properties of all Shape subclasses mapped from strings to 
 	 * values as strings.*/
 	public void setProperties(Map<String, String> shapeProps) {
@@ -180,26 +180,28 @@ public abstract class Shape implements ShapeCollisionDetection {
 			this.setBorderColor(GameWorld.stringToColor(shapeProps.get("border_color")));
 		}			
 	}
-	
+
 	public void draw (Graphics2D brush){
 		//Draw outline of shape
-		brush.setStroke(new BasicStroke(_borderWidth));
-		brush.setColor(_borderColor);
-		brush.draw(_shape);		//Draw shape with border color
+		if(_borderWidth > 0) {
+			brush.setStroke(new BasicStroke(_borderWidth));
+			brush.setColor(_borderColor);
+			brush.draw(_shape);		//Draw shape with border color
+		}
 		//Fill shape
 		brush.setColor(_color);
 		brush.fill(_shape);	
 	}
-	
+
 	/*Sort of double dispatch pattern for projection onto an axis*/
 	public abstract Vec2f projectOnto(SeparatingAxis sep);
-	
-/////
+
+	/////
 	public ShapeCollisionInfo getCollisionInfo() {
 		return _collisionInfo;
 	}
 	public void setCollisionInfo(ShapeCollisionInfo info) {
 		_collisionInfo = info;
 	}
-/////^^^
+	/////^^^
 }
