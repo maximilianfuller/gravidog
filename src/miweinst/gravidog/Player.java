@@ -18,11 +18,11 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
-	private static final float MOVEMENT_FORCE_COEFFICIENT = 1.5f;
+	private static final float MOVEMENT_FORCE_COEFFICIENT = 2.0f;
 	private final float JUMP_IMPULSE_COEFFICIENT = 12f;
 	private float GOAL_VELOCITY_COEFFICIENT = 10f;
 	private final float FRICTION_COEFFICIENT = 1f;
-	private final float spriteCyclePeriod = 1f;
+	private final float SPRITE_CYCLE_PERIOD = .8f;
 	private Shape _shape;
 	private boolean _gravitySwitched;
 	private float _secondsSinceFirstFrame;
@@ -159,7 +159,7 @@ public class Player extends PhysicsEntity {
 		}
 				
 		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
-		_secondsSinceFirstFrame%=spriteCyclePeriod;
+		_secondsSinceFirstFrame%=SPRITE_CYCLE_PERIOD;
 	}	
 	
 	private void setGravity() {
@@ -282,7 +282,7 @@ public class Player extends PhysicsEntity {
 			current = jumping;
 		}
 		
-		int i = (int)((_secondsSinceFirstFrame/spriteCyclePeriod)*current.length);
+		int i = (int)((_secondsSinceFirstFrame/SPRITE_CYCLE_PERIOD)*current.length);
 		BufferedImage currentImage = current[i];
 		
 		AffineTransform at = new AffineTransform();

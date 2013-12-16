@@ -40,8 +40,8 @@ public class GameWorld {
 		
 		_entities = new ArrayList<PhysicsEntity>();
 		
-		//Initialize timestep to 5 ms
-		_timestep = 2000000;
+		//Initialize timestep to 50 ms
+		_timestep = 20000000;
 		_accumulatedTime = 0;
 		_iters = 1;
 	}

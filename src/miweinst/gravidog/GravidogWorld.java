@@ -41,18 +41,16 @@ import cs195n.Vec2f;
 
 public class GravidogWorld extends GameWorld {    
 
-	private boolean _doorReached = false;
 	private final Vec2f GRAVITY_COEFFICIENT = new Vec2f(0f, -20f);
 
 
 	//Calls levelWin if Relay is enabled
 	public Input doDoorReached = new Input() {
 		public void run(Map<String, String> args) {
-			if (!_doorReached) {
-				//_doorRelay has Connection to doLevelWin
-				_doorRelay.doActivate();
-				_doorReached = true;			
-			}
+			System.out.println("goal door reached");
+			//_doorRelay has Connection to doLevelWin
+			_doorRelay.doActivate();
+
 		}
 	};
 	//Enables relay when any star is collected
@@ -73,8 +71,6 @@ public class GravidogWorld extends GameWorld {
 			/*CURRENT_LEVEL index is next level in LevelMenu because of zero-indexing.*/
 			levelMenu.openLevel(LevelMenuScreen.CURRENT_LEVEL);
 			_app.setScreen(levelMenu);
-			//Reset boolean
-			_doorReached = false;
 
 			///Will save game at the end of every level
 			LevelMenuScreen.save();
@@ -94,15 +90,12 @@ public class GravidogWorld extends GameWorld {
 	private GoalDoor _door;
 	//Player movement using boolean state array
 	private boolean[] _arrowKeyStates;
-	//Lazor visualization for raycasting
-	private Path2D.Float _lazor;
-	private boolean _lazorBool;        
 	//Class.string mapped to instance of Class<?>
 	private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
 	//Variable name mapped to PhysicsEntity instance
 	private HashDecorator<String, PhysicsEntity> _entities;
 	private RelayEntity _doorRelay;
-///////
+	///////
 	private boolean _jumpboolean = false;
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
@@ -112,7 +105,6 @@ public class GravidogWorld extends GameWorld {
 		_arrowKeyStates = new boolean[4];
 		for (int i=0; i<_arrowKeyStates.length; i++) 
 			_arrowKeyStates[i]=false;
-		_lazorBool = false;
 
 		//Unlocks door when star collected
 		_doorRelay = new RelayEntity(this);
@@ -325,14 +317,14 @@ public class GravidogWorld extends GameWorld {
 			if (_arrowKeyStates[3]) {
 				_player.moveDown();           
 			}
-		/////
+			/////
 			if (_arrowKeyStates[1]) {
 				if (!_jumpboolean) {
 					_player.jump();
 					_jumpboolean = true;
 				}
 			}
-		/////^^^
+			/////^^^
 		}
 	}
 
@@ -347,14 +339,6 @@ public class GravidogWorld extends GameWorld {
 	@Override
 	public void draw(Graphics2D g) {                
 		super.draw(g);                        
-		//Draw Path2D lazor while space bar is held down; raycast visualizer
-		if (_lazorBool && _lazor != null) {
-			Color col = g.getColor();
-			g.setColor(Color.RED);
-			g.setStroke(new BasicStroke(.25f));
-			g.draw(_lazor);
-			g.setColor(col);
-		}
 	}
 
 	//USER INPUT
@@ -364,7 +348,7 @@ public class GravidogWorld extends GameWorld {
 		int arrow = e.getKeyCode()-37;
 
 		if(e.getKeyCode() == KeyEvent.VK_UP && !_arrowKeyStates[1]) {
-//			_player.jump();
+			//			_player.jump();
 			_jumpboolean = false;
 			_arrowKeyStates[arrow] = true;
 		}
@@ -377,9 +361,7 @@ public class GravidogWorld extends GameWorld {
 		int arrow = e.getKeyCode()-37;
 		if (arrow >= 0 && arrow < _arrowKeyStates.length) {
 			_arrowKeyStates[arrow] = false;
-		}
-		//for drawing the lazor to visualize raycasting
-		if (e.getKeyCode() == 32) _lazorBool = false;                
+		}          
 	}
 
 	public void onMousePressed(MouseEvent e) {
