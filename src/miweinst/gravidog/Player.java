@@ -109,6 +109,7 @@ public class Player extends PhysicsEntity {
 	};
 
 	
+	private boolean _lastCollided;
 	
 	public Player(GameWorld world) {
 		super(world);
@@ -133,7 +134,8 @@ public class Player extends PhysicsEntity {
 		_gravitySwitched = false;
 		_secondsSinceFirstFrame = 0f;
 		
-			
+		_lastCollided = false;
+					
 //		_saveData = new ArrayList<String>();
 //		_dataWritten = false;
 	}
@@ -149,13 +151,15 @@ public class Player extends PhysicsEntity {
 	public void onTick(long nanosSincePreviousTick) {
 		super.onTick(nanosSincePreviousTick);
 		setGravity();
-		if(didCollide()) {
+		
+		//Store for use later in draw
+		_lastCollided = didCollide();		
+		if(_lastCollided) {
 			applyfriction();
 		}
 				
 		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
 		_secondsSinceFirstFrame%=spriteCyclePeriod;
-		
 	}	
 	
 	private void setGravity() {
@@ -270,10 +274,11 @@ public class Player extends PhysicsEntity {
 			current = running;
 		}
 		
-		
-		ArrayList<PhysicsCollisionInfo> arr = super.getCollisionInfo();
-//		if(!didCollide()) {
-		if(arr.isEmpty()) {
+		/*MAX: STORED THE results of didCollide() in
+		 * boolean _lastCollided, updated on every onTick.
+		 * Avoids ConcurrentModificationException by only 
+		 * iterating through collisions once on the tick.*/		
+		if(!_lastCollided) {
 			current = jumping;
 		}
 		

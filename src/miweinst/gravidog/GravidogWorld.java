@@ -135,6 +135,7 @@ public class GravidogWorld extends GameWorld {
 		_classes.setDecoration("Star", Star.class);
 		_classes.setDecoration("Boulder", Boulder.class);
 		_classes.setDecoration("LevelBounds", LevelBounds.class);
+		_classes.setDecoration("Block", Block.class);
 
 		///Decoration set to each Entity read from LevelEditor!
 		_entities = new HashDecorator<String, PhysicsEntity>();                                        
@@ -203,8 +204,6 @@ public class GravidogWorld extends GameWorld {
 					} else {
 						this.addEntity(entity);
 					}
-
-
 				}
 			}
 

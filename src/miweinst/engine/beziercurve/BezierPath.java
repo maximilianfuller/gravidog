@@ -1,5 +1,6 @@
 package miweinst.engine.beziercurve;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
@@ -12,6 +13,7 @@ import miweinst.engine.shape.CircleShape;
 import miweinst.engine.shape.CompoundShape;
 import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
+import miweinst.gravidog.Constants;
 import support.pj2.lib.edu.rit.util.Tridiagonal;
 import cs195n.Vec2f;
 
@@ -24,6 +26,8 @@ public class BezierPath extends Shape {
 //// Visualization
 	private static ArrayList<CircleShape> _drawDots;
 	private boolean _isFilled;
+	
+	private boolean _gravitationalBorder;
 
 	public BezierPath() {
 		super(new Vec2f(0, 0), new Vec2f(0, 0));
@@ -51,7 +55,14 @@ public class BezierPath extends Shape {
 		this.setColor(Color.WHITE);
 		this.setBorderWidth(.8f);
 		_isFilled = true;
+		
+		_gravitationalBorder = false;
 	}
+	
+	public void setGravitationalBorder(boolean border) {
+		_gravitationalBorder = true;
+	}
+	
 
 	/*Change properties of all curves in path by override
 	 * Shape's attribute mutator methods.*/
@@ -363,6 +374,7 @@ public class BezierPath extends Shape {
 	}
 	
 	public void draw(Graphics2D g) {
+		//Set graphics color
 		g.setColor(this.getColor());
 		/*Right now just fills whatever Shape's color is. But 
 		 * could break it up into _fillColor and _borderColor
@@ -370,6 +382,14 @@ public class BezierPath extends Shape {
 		if (_isFilled) {
 			Path2D path = toPath(_segs);
 			g.fill(path);
+///////
+			/*For levels where we don't want black to signify 
+			 * death in the void (i.e. level one)*/
+			if (_gravitationalBorder) {
+				g.setStroke(new BasicStroke(3));
+				g.setColor(Constants.GRAVITATIONAL_COL);	
+				g.draw(path);
+			}
 		}
 		for (BezierCurve curve: _curves) {
 			curve.draw(g);

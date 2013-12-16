@@ -45,7 +45,7 @@ public class CurvedPathEntity extends PhysicsEntity {
 	/*THIS IS AN EMPTY ONTICK METHOD BECAUSE BUGS.*/
 	@Override
 	public void onTick(long nanos) {
-//		super.onTick(nanos);
+		//WHYYYYYYYY ?????
 	}
 
 	/*Sets whether or not this BezierPath is a closed shape.*/
@@ -65,6 +65,10 @@ public class CurvedPathEntity extends PhysicsEntity {
 	@Override
 	public void setProperties(Map<String, String> props) {
 		super.setProperties(props);
+		//White border necessary to make distinction between level ground and death void
+		if (props.containsKey("gravitational_border")) {
+			_bezierPath.setGravitationalBorder(Boolean.parseBoolean(props.get("gravitational_border")));
+		}
 		if (props.containsKey("fill")) {
 			_bezierPath.setFilled(Boolean.parseBoolean(props.get("fill")));
 		}

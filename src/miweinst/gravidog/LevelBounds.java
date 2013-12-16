@@ -9,7 +9,7 @@ import miweinst.engine.world.SensorEntity;
 
 public class LevelBounds extends SensorEntity {
 	
-	private final static Color BGCOLOR = Color.LIGHT_GRAY;
+	private final static Color BGCOLOR = Constants.BG_COL;
 
 	private GravidogWorld _gworld;
 	private boolean _saved;

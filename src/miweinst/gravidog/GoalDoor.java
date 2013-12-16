@@ -50,6 +50,10 @@ public class GoalDoor extends SensorEntity {
 			_player = _gworld.getPlayer();
 			super.setEntities(_player);
 		}
+///////////
+//		System.out.println("GoalDoor Player: " + _player);
+//		System.out.println("GoalDoor World: " + _gworld);
+////////////////////
 	}
 	
 	@Override
@@ -61,6 +65,7 @@ public class GoalDoor extends SensorEntity {
 		
 		this.setShapeColor(_closedColor);
 		
+/////UNNECESSARY CAUSE ALL COLORS SHOULD BE CONSTANT IN CONSTANTS CLASS
 /*		//Overrides any curr shape color set in Shape properties
 		this.setShapeColor(_closedColor);
 		if (props.containsKey("closed_color")) {

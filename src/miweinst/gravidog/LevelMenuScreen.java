@@ -64,13 +64,14 @@ public class LevelMenuScreen extends GravidogScreen {
 ////// 	TESTING		
 		//TOGGLE BOOLEAN FOR TESTING
 		boolean allOpen;
-		allOpen = false;
+		allOpen = true;
 		if (allOpen) { 
 			for (LevelBox box: _boxes) {
 				box.setLevelOpen(true);
 			}
 		}
 //////^^^^
+		
 		//Loads level upon instantiation
 		loadLevel();
 	}

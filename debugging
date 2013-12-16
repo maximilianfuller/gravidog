@@ -1,3 +1,8 @@
+
+DEAR MAX: After a lot of playtesting, I think (based on other people's suggestion) that we should make it so you have to get all three stars before the door is unlocked. The single star thing makes it easy, but it also allows a player to just avoid all the game mechanics and levels. It's not so hard that three stars are too hard. Or maybe at least two, with one extra. Or we could do three stars plus some other item. I dunno, thoughts?
+
+
+
 NOTE:
 Every level must have a Player object and a Door object, or else null pointer exception. Because reference to Player and Door are used for specific actions/IO.
 	Maybe we could make our own InvalidLevelException and throw it if there's no Player or Door?

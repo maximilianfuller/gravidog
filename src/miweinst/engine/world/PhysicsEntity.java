@@ -451,7 +451,6 @@ public class PhysicsEntity extends MovingEntity {
 		return null;
 	}
 	public Output getOutput(String o) {
-		//BEWARE PRINT LINE FOR DEBUGGING PURPOSES
 		System.out.println("PhysicsEntity has no Outputs!");
 		return null;
 	}
