@@ -43,6 +43,7 @@ public class LevelBounds extends SensorEntity {
 		if (!condition()) {
 			_saved = true;
 		}
+		
 	}
 	
 	@Override

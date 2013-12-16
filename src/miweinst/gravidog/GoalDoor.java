@@ -50,6 +50,12 @@ public class GoalDoor extends SensorEntity {
 			_player = _gworld.getPlayer();
 			super.setEntities(_player);
 		}
+		
+//////////
+			if (condition()) 
+				System.out.println("GoalDoor condition met");
+			System.out.println("GoalDoor GWorld: " + _gworld);
+			System.out.println("GoalDoor Player: " + _player);
 	}
 	
 	@Override
