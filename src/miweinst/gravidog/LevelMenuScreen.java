@@ -24,10 +24,12 @@ public class LevelMenuScreen extends GravidogScreen {
 		setBackgroundColor(Color.WHITE);
 		_boxes = new ArrayList<LevelBox>();
 			
-		//Open
+///// CAN JUST DO ALL OF THIS IN A LOOP ONCE WE HAVE ALL OF THE LEVELS 1..n for i<n
+		//Open; In for loop: if i=1, boxes[i].setLevelOpen(true)
 		LevelBox first = new LevelBox(1);
 		first.box.setColor(Color.PINK);
 		first.setLevelOpen(true);
+		
 		//Closed
 		LevelBox second = new LevelBox(2);
 		second.box.setColor(Color.LIGHT_GRAY);
@@ -41,10 +43,13 @@ public class LevelMenuScreen extends GravidogScreen {
 		LevelBox fifth = new LevelBox(5);
 		fourth.box.setColor(Color.LIGHT_GRAY);
 		
-////Change to new LevelBox(7) once a level_six is added
-		LevelBox seventh = new LevelBox(6);
+		LevelBox sixth = new LevelBox(6);
+		sixth.box.setColor(Color.LIGHT_GRAY);
+		
+		LevelBox seventh = new LevelBox(7);
 		seventh.box.setColor(Color.LIGHT_GRAY);	
-		LevelBox eighth = new LevelBox(7);
+		
+		LevelBox eighth = new LevelBox(8);
 		eighth.box.setColor(Color.LIGHT_GRAY);
 		
 		_boxes.add(first);
@@ -52,20 +57,20 @@ public class LevelMenuScreen extends GravidogScreen {
 		_boxes.add(third);
 		_boxes.add(fourth);
 		_boxes.add(fifth);
-		
+		_boxes.add(sixth);
 		_boxes.add(seventh);
 		_boxes.add(eighth);
-////// 	TESTING
 		
+////// 	TESTING		
 		//TOGGLE BOOLEAN FOR TESTING
 		boolean allOpen;
-		allOpen = true;
+		allOpen = false;
 		if (allOpen) { 
 			for (LevelBox box: _boxes) {
 				box.setLevelOpen(true);
 			}
 		}
-/////^^^^
+//////^^^^
 		//Loads level upon instantiation
 		loadLevel();
 	}

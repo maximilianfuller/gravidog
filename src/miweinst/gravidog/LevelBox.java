@@ -54,7 +54,7 @@ public class LevelBox {
 	//Star
 	private Sprite[] _stars;
 	
-	public LevelBox(int num) {	
+	public LevelBox(Integer num) {	
 		
 		/* Level attributes */
 		level_num = num;
@@ -65,38 +65,44 @@ public class LevelBox {
 //		_maxStars = 0;
 		_stars = new Sprite[3];
 
+////// DELETE SWITCH STATEMENT DESIGN
 		/* Loads level data */
-		String file_path = null;	
+/*		String file_path = null;	
 		switch (num) {
-		case 1:
-			file_path = new String("level_one.nlf");	
-			break;
-		case 2: 
-			file_path = new String("level_two.nlf");
-			break;
-		case 3:
-			file_path = new String("level_three.nlf");
-			break;
-		case 4:
-			file_path = new String("level_four.nlf");
-			break;
-		case 5:
-			file_path = new String("level_five.nlf");
-			break;
-		case 6:
-			file_path = new String("level_seven.nlf");
-			break;
-		case 7:
-//			file_path = new String("level_seven.nlf");
-			file_path = new String("level_eight.nlf");
-			break;
-		default:	//Just default to Level One
-			file_path = new String("level_one.nlf");
-			break;
+			case 1:
+				file_path = new String("level_one.nlf");	
+				break;
+			case 2: 
+				file_path = new String("level_two.nlf");
+				break;
+			case 3:
+				file_path = new String("level_three.nlf");
+				break;
+			case 4:
+				file_path = new String("level_four.nlf");
+				break;
+			case 5:
+				file_path = new String("level_five.nlf");
+				break;
+			case 6:
+				file_path = new String("level_seven.nlf");
+				break;
+			case 7:
+	//			file_path = new String("level_seven.nlf");
+				file_path = new String("level_eight.nlf");
+				break;
+			default:	//Just default to Level One
+				file_path = new String("level_one.nlf");
+				break;
 		}		
+////////
+*/		
+		//Name levels as #.nlf -- ie 1.nlf; 2.nlf etc...)
+		String file_path = num.toString();
 		if (file_path != null) 
-			level_path = new String("src/miweinst/resources/" + file_path);
+			level_path = new String("src/miweinst/resources/" + file_path + ".nlf");
 
+//		System.out.println(level_path);
 //////Should load all frames in GravidogResources as a BufferedImage[] in the cache. Once we have all frames.
 		/* Loads images */
 		File f = null;
