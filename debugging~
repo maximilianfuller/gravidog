@@ -1,32 +1,28 @@
-
-MAX: After a lot of playtesting, I think (based on other people's suggestion) that we should make it so you have to get all three stars before the door is unlocked. The single star thing makes it easy, but it also allows a player to just avoid all the game mechanics and levels. It's not so hard that three stars are too hard. Or maybe at least two, with one extra. Or we could do three stars plus some other item. I dunno, thoughts?
-
-
-
-NOTE:
-Every level must have a Player object and a Door object, or else null pointer exception. Because reference to Player and Door are used for specific actions/IO.
-	Maybe we could make our own InvalidLevelException and throw it if there's no Player or Door?
-
 BUG: LevelBounds does not work at beginning of level editor list
 
-FINAL3
--One levels
+MUST:
+-resize W
+	Needs LevelMenuScreen and (partially) MainMenuScreen
+-make curves with borders and put borders on everything -W
+	Works for StaticBoundaries. Don't use PhysicsEntities now, 			use StaticBoundaries.
+	Needed for all classes that get walked on i.e. Block, Spring
 
-POLISH:
--fill in curves
+-4 more levels 2F 2W
+-reorganize levels
+-BUG: boulder collision F
+-BUG: jumping with left or right arrow key pressed is weaker F
+-get rid of borders
+-friction better -F
+
+
+WANT:
+-fix corner approaching
+-BUG: rotational physics is bugged -F
+-Make Boulder a Polygon and cap its rotational velocity -F
 -title menu
 -level menu
 -pause menu
--jumping
+-make gravidog bigger
+-Make a level win or lose screen
 
 
-BUG: rotational physics is bugged
-BUG: jumping with left or right arrow key pressed is weaker
-
-
-TODO: Make Boulder a Polygon and cap its rotational velocity
-TODO:	Make a level win or lose screen
-TODO: Optimize time step
-
-BUG: AARectShape's location is getting set at center. 
-	But World reads level editor's box as a PolygonShape (rectToPoly), so just don't use AARectShape

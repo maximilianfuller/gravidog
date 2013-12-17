@@ -33,7 +33,7 @@ public abstract class Shape implements ShapeCollisionDetection {
 
 		//Initialize values
 		_color = Color.WHITE;
-		_borderColor = Color.WHITE;
+		_borderColor = _color;
 		_borderWidth = 0;
 
 		_collisionInfo = null;

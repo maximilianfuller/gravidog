@@ -11,20 +11,50 @@ import java.util.Map;
 import miweinst.engine.App;
 import miweinst.engine.FileIO;
 import cs195n.Vec2f;
+import cs195n.Vec2i;
 
 public class LevelMenuScreen extends GravidogScreen {	
+	//Color Constants for LevelMenuScreen
+	public static final Color BG_COL = Constants.MAIN_BG_COL;
+	
+	//Andddd the private sector
+	private ArrayList<LevelBox> _boxes;
+
+	//Static vars, NOT constants
 	public static int CURRENT_LEVEL = 1;
 	private static HashMap<Integer, Integer> star_map = new HashMap<Integer, Integer>();
 	private static HashMap<Integer, Integer> max_star_map = new HashMap<Integer, Integer>();
-	
-	private ArrayList<LevelBox> _boxes;
 		
+//	private App _app;
 	public LevelMenuScreen(App a) {
 		super(a);
-		setBackgroundColor(Color.WHITE);
+//		_app = a;
+		setBackgroundColor(BG_COL);
+		
 		_boxes = new ArrayList<LevelBox>();
-			
-///// CAN JUST DO ALL OF THIS IN A LOOP ONCE WE HAVE ALL OF THE LEVELS 1..n for i<n
+		
+		//Creates instances of LevelBox
+		initBoxes();
+		
+////// 	TOGGLE BOXES FOR TESTING	
+		boolean allOpen;
+		allOpen = false;
+		if (allOpen) { 
+			for (LevelBox box: _boxes) {
+				box.setLevelOpen(true);
+			}
+		}
+//////^^^^
+		
+		//Load star data upon instantiation
+		loadLevel();
+	}
+	
+	/**Creates a LevelBox for each level. This is where you 
+	 * should add level boxes to the list if we have created a new one.
+	 * Once we have all the LevelBoxes we need, let's throw it into
+	 * a loop from 1-n level boxes*/
+	private void initBoxes() {
 		//Open; In for loop: if i=1, boxes[i].setLevelOpen(true)
 		LevelBox first = new LevelBox(1);
 		first.box.setColor(Color.PINK);
@@ -60,20 +90,6 @@ public class LevelMenuScreen extends GravidogScreen {
 		_boxes.add(sixth);
 		_boxes.add(seventh);
 		_boxes.add(eighth);
-		
-////// 	TESTING		
-		//TOGGLE BOOLEAN FOR TESTING
-		boolean allOpen;
-		allOpen = true;
-		if (allOpen) { 
-			for (LevelBox box: _boxes) {
-				box.setLevelOpen(true);
-			}
-		}
-//////^^^^
-		
-		//Loads level upon instantiation
-		loadLevel();
 	}
 	
 	// Save/Load 	
@@ -224,6 +240,21 @@ public class LevelMenuScreen extends GravidogScreen {
 		}
 	}
 	
+	@Override
+	public void onResize(Vec2i size) {
+		super.onResize(size);
+		Vec2f newSize = new Vec2f(size);
+		///CHANGES LOCATION BY THE AMOUNT RESIZED (SKIP THIS)
+		Vec2f oldSize = super.getBackground().getDimensions();
+		//Half the difference in sizes	
+		Vec2f delta2 = newSize.minus(oldSize).sdiv(2f);
+		
+		Vec2f offset = delta2.sdiv(2);
+		LevelBox.setOffset(offset);
+		for (LevelBox box: _boxes) {
+			box.updateBoxLocation();
+		}
+	}
 	
 	@Override
 	public void onDraw(Graphics2D g) {

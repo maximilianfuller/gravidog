@@ -23,17 +23,27 @@ import cs195n.Vec2f;
  * Acts like object that holds information about level, and stores in box.*/
 
 public class LevelBox {
+	//Level Box COLOR constants
+	public static final Color LEVELBOX_OPEN_COL = Color.YELLOW;
+	public static final Color LEVELBOX_CLOSED_COL = Color.GRAY;		
+	public static final Color LEVELBOX_MOUSEOVER_BORDER_COL = new Color(70, 168, 242);
+	
 	/* Static values can change for resizing */
 	//Spacing between cells
-	public final static float CELL_SPACING =30f;
+	public final static float CELL_SPACING = 30f;
 	//Size of each cells, square
-	public final static float SIDE_LENGTH = 200f;
+	public final static float SIDE_LENGTH = 150f;
 	//Default width of border
 	public final static float BORDER_WIDTH = 10f;
+	
+	private static int COLS = 5;
+	
+	//Upper left of LevelBox(1)
+	private static Vec2f _offset = new Vec2f(0, 0);
+
 	//Size of star Sprite image
 	public static Vec2f STAR_SIZE = new Vec2f(30, 30);
 	private static File star_file = new File("src/miweinst/resources/star_small.png");
-	private static int COLS = 4;
 
 	//Store level number
 	public final int level_num;
@@ -69,14 +79,12 @@ public class LevelBox {
 		if (file_path != null) 
 			level_path = new String("src/miweinst/resources/" + file_path + ".nlf");
 
-
-		/* Menu UI */
-
-		
+		/* Menu UI */		
 		//Location of box in horizontal linear layout
 		int row = (num-1)/COLS;
 		int col = (num-1)%COLS;
 		Vec2f loc = new Vec2f(CELL_SPACING*(col+1) + SIDE_LENGTH*(col), CELL_SPACING*(row+1) + SIDE_LENGTH*(row));
+			  loc = loc.plus(_offset);
 		Vec2f dim = new Vec2f(SIDE_LENGTH, SIDE_LENGTH);	//Dim remains constant
 
 		box = new AARectShape(loc, dim);		
@@ -84,10 +92,23 @@ public class LevelBox {
 		box.setBorderColor(Color.BLACK);	
 
 		//Level starts !_open
-		_color = Constants.LEVELBOX_CLOSED_COL;
-		
+		_color = LEVELBOX_CLOSED_COL;
 		updateStars();
 	}	
+//////////////////	
+	/** This is the box's rightful spot
+	 * in the lineup.  */
+	public void updateBoxLocation() {
+		int row = (level_num-1)/COLS;
+		int col = (level_num-1)%COLS;
+		Vec2f loc = new Vec2f(CELL_SPACING*(col+1) + SIDE_LENGTH*(col), CELL_SPACING*(row+1) + SIDE_LENGTH*(row));
+			  loc = loc.plus(_offset);
+		box.setLocation(loc);
+	}
+/////////////	
+	public static void setOffset(Vec2f off) {
+		_offset = off;
+	}
 	
 	/** Number of stars */
 	public int getStars() {
@@ -132,7 +153,7 @@ public class LevelBox {
 	public void onMouseOver() {
 		if (isLevelOpen()) 	{
 			box.setBorderWidth(BORDER_WIDTH+CELL_SPACING/4);
-			box.setBorderColor(new Color(70, 168, 242));
+			box.setBorderColor(LEVELBOX_MOUSEOVER_BORDER_COL);
 		}
 	}
 	/* Called when the cursor is NOT over level box.*/
@@ -172,7 +193,7 @@ public class LevelBox {
 				}
 			}
 			else {
-				_color = Constants.LEVELBOX_OPEN_COL;
+				_color = LEVELBOX_OPEN_COL;
 			}
 			/* DRAW STARS */
 			Vec2f drawLoc = new Vec2f(box.getX(), box.getY() + box.getHeight() - CELL_SPACING/2);

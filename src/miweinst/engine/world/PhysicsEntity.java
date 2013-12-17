@@ -5,11 +5,9 @@ import java.util.Map;
 
 import miweinst.engine.collisiondetection.PhysicsCollisionInfo;
 import miweinst.engine.collisiondetection.ShapeCollisionInfo;
-import miweinst.engine.contraints.PinEntity;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
-import miweinst.gravidog.Boulder;
 import miweinst.gravidog.Constants;
 import cs195n.Vec2f;
 
@@ -435,6 +433,8 @@ public class PhysicsEntity extends MovingEntity {
 			this.setGravitational(grav);
 			//Set appropriate shape color
 			this.setShapeColor(grav? Constants.GRAVITATIONAL_COL: Constants.NONGRAVITATIONAL_COL);
+			//Border has same color
+			this.getShape().setBorderColor(this.getShapeColor());
 		}
 		//is rotatable
 		if (props.containsKey("rotatable"))

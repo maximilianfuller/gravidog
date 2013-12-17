@@ -9,21 +9,26 @@ import java.awt.Color;
  * set in the level editor. */
 
 public class Constants {
-	
-	public static final Color BG_COL = new Color(205, 205, 205); //light gray
+		
+	//COLOR CONSTANTS
+	//GravidogWorld and levels
+	public static final Color MAIN_BG_COL = new Color(205, 205, 205); //light gray
 	public static final Color GRAVITATIONAL_COL = Color.WHITE;
 	public static final Color NONGRAVITATIONAL_COL = Color.GRAY;
 	public static final Color DOOR_CLOSED_COL = Color.GRAY;
 	public static final Color DOOR_OPEN_COL = Color.GREEN;
 	public static final Color BLOCK_COL = new Color(108,168,217);	//pastel blue
-	public static final Color BOULDER_COL = new Color(255, 160, 160);	//light red
+	public static final Color BOULDER_COL = new Color(255, 160, 160);	//light red	
 	
-	//Only necessary if we don't have sprites
-	public static final Color LEVELBOX_OPEN_COL = Color.YELLOW;
-	public static final Color LEVELBOX_CLOSED_COL = Color.GRAY;
-		
 //	public static final Color SPRING_ENTITY = new Color(0, 0, 0);
 //	public static final Color PIN_ENTITY = new Color(0, 0, 0);
+
+	//Calculates BORDER_WIDTH based on Player size
+	public static float borderWidth(Player player) {
+		return player.getDimensions().y/5;
+	}
+	//NEED FORMULA BECAUSE PLAYER CHANGES SIZE COMPARED TO BORDER WIDTH
+//	public static final float BORDER_WIDTH = 2.5f;
 	
 	/*Not necessary because of Sprites right?*/
 	public static final Color STAR_COL = new Color(255, 255, 107);

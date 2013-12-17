@@ -13,9 +13,7 @@ import cs195n.Vec2f;
 
 //graphics uses math coordinates
 public class Viewport {	
-	
-	
-	
+
 	//Shape of Viewport screen, container with border
 //	private Shape _screen;
 	private AARectShape _screen;

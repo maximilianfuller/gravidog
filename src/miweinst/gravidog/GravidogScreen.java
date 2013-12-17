@@ -16,23 +16,32 @@ import cs195n.Vec2i;
 public class GravidogScreen extends Screen {
 	protected App app;
 	private PolygonShape _background;
+	private Color _bgColor;
 	
 	public GravidogScreen(App a) {
 		super(a);
 		app = a;
 		_background = new AARectShape(new Vec2f(0, 0), a.getDimensions()).rectToPoly();
-		_background.setColor(Color.BLACK);
+		_background.setDimensions(a.getDimensions());
+		_bgColor = Color.BLACK;
+		_background.setColor(_bgColor);
+		
+////////WELCOME TO THE FONT STORE
 		//SYSTEM FONTS
 /*		String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 		for (int i=0; i<fonts.length; i++) {
 			System.out.println(fonts[i]);
 		}	
 */
-	}
-	
+	}	
 	protected void setBackgroundColor(Color col) {
+		_bgColor = col;
 		_background.setColor(col);
 	}
+	protected PolygonShape getBackground() {
+		return _background;
+	}
+
 
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
@@ -91,6 +100,9 @@ public class GravidogScreen extends Screen {
 
 	@Override
 	public void onResize(Vec2i newSize) {
-		// TODO Auto-generated method stub		
+		Vec2f dim = new Vec2f(newSize);
+		_background = new AARectShape(new Vec2f(0, 0), dim).rectToPoly();
+		_background.setDimensions(dim);
+		_background.setColor(_bgColor);
 	}
 }

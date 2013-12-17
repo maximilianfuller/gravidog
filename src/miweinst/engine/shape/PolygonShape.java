@@ -344,7 +344,7 @@ public class PolygonShape extends Shape {
 			else {
 				start = new Vec2f(verts[i].x, verts[i].y);
 				end = new Vec2f(verts[0].x, verts[0].y);
-			}				
+			}			
 			Vec2f edge = end.minus(start).normalized();
 			Vec2f normal = new Vec2f(-edge.y, edge.x).normalized();	
 			allAxes[i] = normal;

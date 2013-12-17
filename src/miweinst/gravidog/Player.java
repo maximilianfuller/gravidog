@@ -160,11 +160,6 @@ public class Player extends PhysicsEntity {
 				
 		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
 		_secondsSinceFirstFrame%=SPRITE_CYCLE_PERIOD;
-		
-		//for(CollisionInfo c : getCollisionInfo()) {
-			
-		//}
-		System.out.println(this.getCollisionInfo());
 	}	
 	
 	private void setGravity() {
