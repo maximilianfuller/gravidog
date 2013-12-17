@@ -8,13 +8,12 @@ MUST:
 -BUG: jumping with left or right arrow key pressed is weaker F
 -get rid of borders
 -friction better -F
-
+-make curves with borders and put borders on everything -W
 
 WANT:
 -fix corner approaching
 -BUG: rotational physics is bugged -F
 -Make Boulder a Polygon and cap its rotational velocity -F
--fill in curves
 -title menu
 -level menu
 -pause menu
