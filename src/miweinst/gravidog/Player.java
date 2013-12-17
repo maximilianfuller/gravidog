@@ -18,10 +18,10 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
-	private static final float MOVEMENT_FORCE_COEFFICIENT = 2.0f;
+	private static final float MOVEMENT_FORCE_COEFFICIENT = 3.0f;
 	private final float JUMP_IMPULSE_COEFFICIENT = 12f;
-	private float GOAL_VELOCITY_COEFFICIENT = 10f;
-	private final float FRICTION_COEFFICIENT = 1f;
+	private float GOAL_VELOCITY_COEFFICIENT = 12f;
+	private final float FRICTION_COEFFICIENT = 100f;
 	private final float SPRITE_CYCLE_PERIOD = .8f;
 	private Shape _shape;
 	private boolean _gravitySwitched;
@@ -179,11 +179,11 @@ public class Player extends PhysicsEntity {
 				* when the player is wedged in a corner. */
 				Vec2f newPlatformMTV = infoToBeUsed.mtv;
 				Vec2f oldPlatformMTV = otherMTVs.get(0) == newPlatformMTV ? otherMTVs.get(1) : otherMTVs.get(0);
-				Vec2f dir = newPlatformMTV.getNormal();
+				Vec2f dir = newPlatformMTV.getNormal().normalized();
 				if(dir.dot(oldPlatformMTV) < 0) {
 					dir = dir.invert();
 				}
-				this.applyImpulse(dir.smult(this.getMass()*200), getCentroid());
+				this.applyImpulse(dir.smult(this.getMass()*20), getCentroid());
 
 			}			
 		}
@@ -191,8 +191,9 @@ public class Player extends PhysicsEntity {
 
 	private void applyfriction() {
 		//Opposes movement perpindicular to gravity
-		Vec2f gravityNormal = GRAVITY.getNormal();
-		Vec2f force = getVelocity().projectOnto(gravityNormal).smult(-FRICTION_COEFFICIENT*getMass());
+		Vec2f gravityNormal = GRAVITY.isZero() ? new Vec2f(1f, 0) : GRAVITY.getNormal().normalized();
+		Vec2f gravityNormalInPlayerDirection = gravityNormal.dot(getVelocity()) > 0 ? gravityNormal : gravityNormal.invert();
+		Vec2f force =gravityNormalInPlayerDirection.smult(-FRICTION_COEFFICIENT*getMass());
 		this.applyForce(force, getCentroid());
 	}
 

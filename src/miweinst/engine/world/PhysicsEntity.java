@@ -171,9 +171,6 @@ public class PhysicsEntity extends MovingEntity {
 	 * acceleration over time.
 	 * (ex: start moving)*/
 	public void applyForce(Vec2f f, Vec2f point) {
-		if(this instanceof Player) {
-			System.out.println("force: " + f + " point: " + point);
-		}
 		if (_isStatic == false) {
 			_force = _force.plus(f);
 			if(_isRotatable) {
@@ -186,9 +183,6 @@ public class PhysicsEntity extends MovingEntity {
 	 * instantaneous acceleration. 
 	 * (ex: jumping, collision response)*/
 	public void applyImpulse(Vec2f i, Vec2f point) {
-		if(this instanceof Player) {
-			System.out.println("impulse: " + i + " point: " + point);
-		}
 		if (_isStatic == false) {
 			_impulse = _impulse.plus(i);
 			if(_isRotatable) {
@@ -458,7 +452,7 @@ public class PhysicsEntity extends MovingEntity {
 		return null;
 	}
 	public Output getOutput(String o) {
-		System.out.println("PhysicsEntity has no Outputs!");
+		System.err.println("PhysicsEntity has no Outputs!");
 		return null;
 	}
 	
