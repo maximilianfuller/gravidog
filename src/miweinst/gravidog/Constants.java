@@ -27,8 +27,6 @@ public class Constants {
 	public static float borderWidth(Player player) {
 		return player.getDimensions().y/5;
 	}
-	//NEED FORMULA BECAUSE PLAYER CHANGES SIZE COMPARED TO BORDER WIDTH
-//	public static final float BORDER_WIDTH = 2.5f;
 	
 	/*Not necessary because of Sprites right?*/
 	public static final Color STAR_COL = new Color(255, 255, 107);

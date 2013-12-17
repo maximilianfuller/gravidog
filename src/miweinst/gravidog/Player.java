@@ -114,23 +114,10 @@ public class Player extends PhysicsEntity {
 	public Player(GameWorld world) {
 		super(world);
 		//		_world = world;
-		Vec2f location = new Vec2f(50, 50);
-		float radius = 5f;
-		CircleShape shape = new CircleShape(location, radius);	
-
-		//Pretty yellow
-		Color col = new Color(235, 235, 110);	//Yellow pastel
-		//Use bright yellow for now, so you can see player.
-		shape.setColor(col);
-		shape.setBorderWidth(.5f);
-		shape.setBorderColor(Color.BLACK);
 		
-		this.setShape(shape);
-		this.setLocation(location);
-		this.setDensity(1f);
+		
 		
 		this.setStatic(false);		
-		_shape = shape;		
 		_gravitySwitched = false;
 		_secondsSinceFirstFrame = 0f;
 		
@@ -155,7 +142,7 @@ public class Player extends PhysicsEntity {
 		//Store for use later in draw
 		_lastCollided = didCollide();		
 		if(_lastCollided) {
-			applyfriction();
+			//applyfriction();
 		}
 				
 		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
@@ -361,7 +348,7 @@ public class Player extends PhysicsEntity {
 	 * x, y are almost never set together.*/
 	
 	private void goalVelocity(Vec2f gv) {
-		Vec2f dV = gv.minus(getVelocity());
+		Vec2f dV = gv.minus(getVelocity().projectOnto(gv));
 		Vec2f force = dV.smult(getMass()*MOVEMENT_FORCE_COEFFICIENT);
 		this.applyForce(force, getCentroid());
 	}

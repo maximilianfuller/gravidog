@@ -3,8 +3,10 @@ package miweinst.gravidog;
 import java.awt.Color;
 import java.util.Map;
 
+import miweinst.engine.collisiondetection.PhysicsCollisionInfo;
 import miweinst.engine.entityIO.Connection;
 import miweinst.engine.world.GameWorld;
+import miweinst.engine.world.PhysicsEntity;
 import miweinst.engine.world.SensorEntity;
 
 public class Boulder extends SensorEntity {
@@ -22,6 +24,18 @@ public class Boulder extends SensorEntity {
 		this.setVisible(true);
 		this.setInteractive(true);
 		this.setStatic(false);
+	}
+	
+	@Override
+	public boolean condition() {
+		for(PhysicsEntity e : getEntities()) {
+			for(PhysicsCollisionInfo i : getCollisionInfo()) {
+				if(i != null && i.getOther() == e) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override 
