@@ -5,12 +5,10 @@ import java.util.Map;
 
 import miweinst.engine.collisiondetection.PhysicsCollisionInfo;
 import miweinst.engine.collisiondetection.ShapeCollisionInfo;
-import miweinst.engine.contraints.PinEntity;
 import miweinst.engine.entityIO.Input;
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
-import miweinst.gravidog.Boulder;
-import miweinst.gravidog.Constants;
+import miweinst.gravidog.*;
 import cs195n.Vec2f;
 
 public class PhysicsEntity extends MovingEntity {
@@ -172,6 +170,9 @@ public class PhysicsEntity extends MovingEntity {
 	 * acceleration over time.
 	 * (ex: start moving)*/
 	public void applyForce(Vec2f f, Vec2f point) {
+		if(this instanceof Player) {
+			System.out.println("force: " + f + " point: " + point);
+		}
 		if (_isStatic == false) {
 			_force = _force.plus(f);
 			if(_isRotatable) {
@@ -184,6 +185,9 @@ public class PhysicsEntity extends MovingEntity {
 	 * instantaneous acceleration. 
 	 * (ex: jumping, collision response)*/
 	public void applyImpulse(Vec2f i, Vec2f point) {
+		if(this instanceof Player) {
+			System.out.println("impulse: " + i + " point: " + point);
+		}
 		if (_isStatic == false) {
 			_impulse = _impulse.plus(i);
 			if(_isRotatable) {

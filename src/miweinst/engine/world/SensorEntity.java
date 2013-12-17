@@ -1,6 +1,7 @@
 package miweinst.engine.world;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import miweinst.engine.entityIO.Output;
 import miweinst.engine.shape.Shape;
@@ -96,5 +97,9 @@ public class SensorEntity extends PhysicsEntity {
 			return onNoDetect;
 		}
 		return null;
+	}
+	
+	public List<PhysicsEntity> getEntities() {
+		return _entities;
 	}
 }
