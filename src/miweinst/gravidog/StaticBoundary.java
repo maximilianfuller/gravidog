@@ -21,6 +21,7 @@ public class StaticBoundary extends PhysicsEntity {
 	
 	@Override
 	public void onTick(long nanos) {
+		System.out.println(this.getRestitution());
 		super.onTick(nanos);
 		//Set border width once when player is not null
 		if (_player == null) {
