@@ -123,7 +123,7 @@ public class PlayScreen extends GravidogScreen {
 	@Override
 	public void onMouseWheelMoved(MouseWheelEvent e) {
 		double rot = e.getWheelRotation();
-		float zoom = rot < 0 ? 1.0f/1.1f : 1.1f;
+		float zoom = rot < 0 ? 1.1f : 1.0f/1.1f;
 		if(_viewport.getScreenSize().x/_viewport.getScale() < 5f*_gameWorld.getPlayer().getWidth() && zoom > 1f) {
 			zoom = 1f;
 		}
