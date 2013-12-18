@@ -154,6 +154,8 @@ public class GravidogWorld extends GameWorld {
 				//Create new Entity instance out of Class 
 				PhysicsEntity entity = null;
 				try {
+					//System.out.println(entityClass);
+					//System.out.println(entityName);
 					Constructor<?> c = _classes.getDecoration(entityClass).getConstructor(GameWorld.class);
 					entity = (PhysicsEntity) c.newInstance(this);
 				} catch (Exception e) {
