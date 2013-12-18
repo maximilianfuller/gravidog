@@ -137,7 +137,6 @@ public class Player extends PhysicsEntity {
 	
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
-		System.out.println(this.getRestitution());
 		super.onTick(nanosSincePreviousTick);
 		setGravity();
 		
