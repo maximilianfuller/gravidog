@@ -29,12 +29,11 @@ public class FileIO{
 			File file = new File(OUTPUT_FILE_NAME);
 			if (!file.exists())
 				file.createNewFile();
-////
+
 			//Handle permissions for user
 			file.setReadable(true, false);
 			file.setWritable(true, false);
 			file.setExecutable(true, false);
-//////
 			
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -67,10 +66,14 @@ public class FileIO{
 			FileReader fr = new FileReader(file.getAbsoluteFile());
 			BufferedReader br = new BufferedReader(fr);
 			
-			String str;
-			while ((str = br.readLine()) != null) {
-				String[] strArr = str.split(": ");
-				map.put(strArr[0], strArr[1]);
+			try {
+				String str;
+				while ((str = br.readLine()) != null) {
+					String[] strArr = str.split(": ");
+					map.put(strArr[0], strArr[1]);
+				}
+			} catch(ArrayIndexOutOfBoundsException e) {
+				System.err.println("Load failed: Array out of bounds");
 			}
 			br.close();
 			

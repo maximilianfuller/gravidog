@@ -18,11 +18,12 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
-	private static final float MOVEMENT_FORCE_COEFFICIENT = 4.0f;
+	private static final float MOVEMENT_FORCE_COEFFICIENT = 3.0f;
 	private final float JUMP_IMPULSE_COEFFICIENT = 12f;
 	private float GOAL_VELOCITY_COEFFICIENT = 12f;
 	private final float FRICTION_COEFFICIENT = .5f;
 	private final float SPRITE_CYCLE_PERIOD = .8f;
+	private final float WALL_IMPULSE_COEFFICIENT = 1f;
 	private Shape _shape;
 	private boolean _gravitySwitched;
 	private float _secondsSinceFirstFrame;
@@ -183,7 +184,7 @@ public class Player extends PhysicsEntity {
 				if(dir.dot(oldPlatformMTV) < 0) {
 					dir = dir.invert();
 				}
-				this.applyImpulse(dir.smult(this.getMass()*20), getCentroid());
+				this.applyImpulse(dir.smult((float) (Math.sqrt(getMass())*getMass()*WALL_IMPULSE_COEFFICIENT)), getCentroid());
 
 			}			
 		}
@@ -242,36 +243,32 @@ public class Player extends PhysicsEntity {
 
 	@Override
 	public void draw(Graphics2D g) {
-		//super.draw(g);
 		
 		BufferedImage[] walking = GravidogResources.getValue("walking");
 		BufferedImage[] running = GravidogResources.getValue("running");
 		BufferedImage[] standing = GravidogResources.getValue("standing");
 		BufferedImage[] jumping = GravidogResources.getValue("jumping");
 		
-		BufferedImage[] current;
+		BufferedImage[] currentImageSequence;
 		
 		float dir = isFacingRight ? 1f : -1f;
-		float currRelativeVel = dir * getVelocity().dot(GRAVITY.getNormal().normalized());
+		float currRelativeVel = Math.abs(getVelocity().dot(GRAVITY.getNormal().normalized()));
+		
 		
 		if (currRelativeVel < getGoalVelocity()/50) {
-			current = standing;
+			currentImageSequence = standing;
 		} else if (currRelativeVel < getGoalVelocity()/2) {
-			current = walking;
+			currentImageSequence = walking;
 		} else {
-			current = running;
+			currentImageSequence = running;
 		}
 		
-		/*MAX: STORED THE results of didCollide() in
-		 * boolean _lastCollided, updated on every onTick.
-		 * Avoids ConcurrentModificationException by only 
-		 * iterating through collisions once on the tick.*/		
 		if(!_lastCollided) {
-			current = jumping;
+			currentImageSequence = jumping;
 		}
 		
-		int i = (int)((_secondsSinceFirstFrame/SPRITE_CYCLE_PERIOD)*current.length);
-		BufferedImage currentImage = current[i];
+		int i = (int)((_secondsSinceFirstFrame/SPRITE_CYCLE_PERIOD)*currentImageSequence.length);
+		BufferedImage currentImage = currentImageSequence[i];
 		
 		AffineTransform at = new AffineTransform();
 		float playerWidth = 2*((CircleShape)getShape()).getRadius();

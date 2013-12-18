@@ -1,11 +1,8 @@
 package miweinst.gravidog;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Path2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
