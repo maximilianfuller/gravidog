@@ -90,7 +90,6 @@ public class GravidogWorld extends GameWorld {
 	//Variable name mapped to PhysicsEntity instance
 	private HashDecorator<String, PhysicsEntity> _entities;
 	private RelayEntity _doorRelay;
-	///////
 	private boolean _jumpboolean = false;
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
@@ -151,6 +150,8 @@ public class GravidogWorld extends GameWorld {
 				PhysicsEntity entity = null;
 				try {
 					Constructor<?> c = classes.getDecoration(entityClass).getConstructor(GameWorld.class);
+					System.out.println(entityClass);
+					System.out.println(entityName);
 					entity = (PhysicsEntity) c.newInstance(this);
 				} catch (Exception e) {
 					System.err.println("Exception...: " + e.getMessage());
