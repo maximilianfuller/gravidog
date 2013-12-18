@@ -78,10 +78,10 @@ public class FileIO{
 
 		} catch (FileNotFoundException e) {
 			System.err.println("Load failed");
-			e.printStackTrace();
+//			e.printStackTrace();
 		} catch (IOException e) {
 			System.err.println("Load failed");
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return map;
 	}	

@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import miweinst.engine.App;
 import miweinst.engine.Tuple;
 import miweinst.engine.collisiondetection.Ray;
+import miweinst.engine.graph.HashDecorator;
 import miweinst.engine.screen.Viewport;
 import cs195n.Vec2f;
 
@@ -22,6 +24,9 @@ import cs195n.Vec2f;
 public class GameWorld {
 	public final String string = "GameWorld";
 	
+	//Class.string mapped to instance of Class<?>
+	protected HashDecorator<String, Class<? extends PhysicsEntity>> classes;
+	
 	//Dimensions of game world
 	private Vec2f _worldDim;	
 	//Dimensions of Viewport
@@ -31,7 +36,7 @@ public class GameWorld {
 	private int _iters;		
 	private ArrayList<PhysicsEntity> _entities;		
 	private Viewport _viewport;
-
+	
 	public GameWorld(App app, Viewport v) {
 		//Default initialized dimensions; mutate in setDimensions()
 		_worldDim = new Vec2f(375, 135);		
