@@ -142,7 +142,7 @@ public class Player extends PhysicsEntity {
 		//Store for use later in draw
 		_lastCollided = didCollide();		
 		if(_lastCollided) {
-			//applyfriction();
+			applyfriction();
 		}
 				
 		_secondsSinceFirstFrame += nanosSincePreviousTick/1000000000f;
