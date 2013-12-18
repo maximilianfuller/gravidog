@@ -73,7 +73,7 @@ public class FileIO{
 					map.put(strArr[0], strArr[1]);
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {
-				System.err.println("Load failed: Array out of bounds");
+				System.err.println("Load failed: invalid save_data.txt. Delete file and play game to restore.");
 			}
 			br.close();
 			
