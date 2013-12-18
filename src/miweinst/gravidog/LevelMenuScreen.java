@@ -19,7 +19,7 @@ public class LevelMenuScreen extends GravidogScreen {
 	
 	//Andddd the private sector
 	private ArrayList<LevelBox> _boxes;
-
+	
 	//Static vars, NOT constants
 	public static int CURRENT_LEVEL = 1;
 	private static HashMap<Integer, Integer> star_map = new HashMap<Integer, Integer>();
@@ -29,7 +29,7 @@ public class LevelMenuScreen extends GravidogScreen {
 	public LevelMenuScreen(App a) {
 		super(a);
 //		_app = a;
-		setBackgroundColor(BG_COL);
+		setBackgroundColor(BG_COL);		
 		
 		_boxes = new ArrayList<LevelBox>();
 		
@@ -38,7 +38,7 @@ public class LevelMenuScreen extends GravidogScreen {
 		
 ////// 	TOGGLE BOXES FOR TESTING	
 		boolean allOpen;
-		allOpen = true;
+		allOpen = false;
 		if (allOpen) { 
 			for (LevelBox box: _boxes) {
 				box.setLevelOpen(true);
@@ -245,11 +245,11 @@ public class LevelMenuScreen extends GravidogScreen {
 		super.onResize(size);
 		Vec2f newSize = new Vec2f(size);
 		///CHANGES LOCATION BY THE AMOUNT RESIZED (SKIP THIS)
-		Vec2f oldSize = super.getBackground().getDimensions();
+		Vec2f oldSize = initialDimensions;
 		//Half the difference in sizes	
 		Vec2f delta2 = newSize.minus(oldSize).sdiv(2f);
-		
-		Vec2f offset = delta2.sdiv(2);
+
+		Vec2f offset = delta2;
 		LevelBox.setOffset(offset);
 		for (LevelBox box: _boxes) {
 			box.updateBoxLocation();

@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 
 import miweinst.engine.App;
 import miweinst.engine.gfx.Text;
+import miweinst.engine.shape.AARectShape;
 import miweinst.engine.shape.PolygonShape;
 import miweinst.engine.shape.Shape;
 import cs195n.Vec2f;
@@ -26,7 +27,7 @@ public class MainMenuScreen extends GravidogScreen {
 	
 	/*Alas, the Inconstants*/
 	/* The Variables */
-	private PolygonShape _background;	
+	private AARectShape _background;	
 	private Text _textTitle1;
 	private Text _textTitle2;
 	private Text _textTitle3;
