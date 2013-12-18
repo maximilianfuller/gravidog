@@ -45,7 +45,6 @@ public class LevelMenuScreen extends GravidogScreen {
 			}
 		}
 //////^^^^
-		
 		//Load star data upon instantiation
 		loadLevel();
 	}
@@ -175,17 +174,23 @@ public class LevelMenuScreen extends GravidogScreen {
 			star_map.put(CURRENT_LEVEL-1, 1);
 		}
 	}
-	/** Returns 0 if lvl not contained in HashMap*/
+/*	*//** Returns 0 if lvl not contained in HashMap*//*
 	public static int getStars() {
 		int lvl = CURRENT_LEVEL;
 		if (star_map.containsKey(lvl))
 			return star_map.get(lvl);
 		else
 			return 0;
-	}
+	}*/
 	/**Returns star_map earned at specified level number*/
 	public static int getStarsFor(int level) {
 		return star_map.get(level);
+	}
+	/**Called if Player dies or level is restarted,
+	 * delete stars earned thus far.*/
+	public static void levelIncomplete() {
+		int index = CURRENT_LEVEL-1;
+		star_map.put(index, 0);
 	}
 	
 	/**Sets stars of LevelBox to current stars if

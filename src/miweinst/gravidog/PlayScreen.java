@@ -73,6 +73,7 @@ public class PlayScreen extends GravidogScreen {
 			System.exit(0);
 		}
 		if (e.getKeyChar() == 'r') {
+			LevelMenuScreen.levelIncomplete();
 			app.setScreen(new MainMenuScreen(app));
 		}	
 		_gameWorld.onKeyPressed(e);
