@@ -24,7 +24,7 @@ import cs195n.Vec2f;
 
 public class LevelBox {
 	//Level Box COLOR constants
-	public static final Color LEVELBOX_OPEN_COL = Color.YELLOW;
+	public static final Color LEVELBOX_OPEN_COL = Color.GREEN;
 	public static final Color LEVELBOX_CLOSED_COL = Color.GRAY;		
 	public static final Color LEVELBOX_MOUSEOVER_BORDER_COL = new Color(70, 168, 242);
 	
