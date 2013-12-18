@@ -244,7 +244,6 @@ public class Player extends PhysicsEntity {
 
 	@Override
 	public void draw(Graphics2D g) {
-		super.draw(g);
 		
 		BufferedImage[] walking = GravidogResources.getValue("walking");
 		BufferedImage[] running = GravidogResources.getValue("running");
