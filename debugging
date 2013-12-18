@@ -1,3 +1,15 @@
+
+Friction - F
+Title Screen - F
+Level Menu - W
+Star bug - W
+Levels - W
+
+Organize Levels - WF
+
+-Borders for curves and other objects he can walk on
+	- Done for StaticBoundary
+
 BUG: LevelBounds does not work at beginning of level editor list
 
 MUST:
@@ -7,12 +19,9 @@ Update:	Needs LevelMenuScreen and (partially) MainMenuScreen
 Update:	Works for StaticBoundaries. Don't use PhysicsEntities now, 			use StaticBoundaries.
 	Needed for all classes that get walked on i.e. Block, Spring
 
--4 more levels 2F 2W
--reorganize levels
--BUG: boulder collision F
--BUG: jumping with left or right arrow key pressed is weaker F
--get rid of borders
--friction better -F
+
+
+
 
 
 WANT:
