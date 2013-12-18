@@ -77,6 +77,7 @@ public class GravidogWorld extends GameWorld {
 	//Level lose
 	public Input doLevelLose = new Input() {
 		public void run(Map<String, String> args) {
+			LevelMenuScreen.levelIncomplete();
 			LevelMenuScreen levelMenu = new LevelMenuScreen(_app);
 			_app.setScreen(levelMenu);
 			LevelMenuScreen.save();

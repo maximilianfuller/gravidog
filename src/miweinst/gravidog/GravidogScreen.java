@@ -9,20 +9,21 @@ import java.awt.event.MouseWheelEvent;
 import miweinst.engine.App;
 import miweinst.engine.screen.Screen;
 import miweinst.engine.shape.AARectShape;
-import miweinst.engine.shape.PolygonShape;
 import cs195n.Vec2f;
 import cs195n.Vec2i;
 
 public class GravidogScreen extends Screen {
 	protected App app;
-	private PolygonShape _background;
+	protected Vec2f initialDimensions;
+	private AARectShape _background;
 	private Color _bgColor;
 	
 	public GravidogScreen(App a) {
 		super(a);
 		app = a;
-		_background = new AARectShape(new Vec2f(0, 0), a.getDimensions()).rectToPoly();
-		_background.setDimensions(a.getDimensions());
+		_background = new AARectShape(new Vec2f(0, 0), a.getDimensions());
+		_background.setDimensions(a.getDimensions());		
+		initialDimensions = a.getDimensions();
 		_bgColor = Color.BLACK;
 		_background.setColor(_bgColor);
 		
@@ -38,11 +39,10 @@ public class GravidogScreen extends Screen {
 		_bgColor = col;
 		_background.setColor(col);
 	}
-	protected PolygonShape getBackground() {
+	protected AARectShape getBackground() {
 		return _background;
 	}
-
-
+	
 	@Override
 	public void onTick(long nanosSincePreviousTick) {
 		// TODO Auto-generated method stub		
@@ -100,8 +100,7 @@ public class GravidogScreen extends Screen {
 
 	@Override
 	public void onResize(Vec2i newSize) {
-		Vec2f dim = new Vec2f(newSize);
-		_background = new AARectShape(new Vec2f(0, 0), dim).rectToPoly();
+		Vec2f dim = new Vec2f(newSize);		
 		_background.setDimensions(dim);
 		_background.setColor(_bgColor);
 	}
