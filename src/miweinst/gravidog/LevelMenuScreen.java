@@ -38,7 +38,7 @@ public class LevelMenuScreen extends GravidogScreen {
 		
 ////// 	TOGGLE BOXES FOR TESTING	
 		boolean allOpen;
-		allOpen = false;
+		allOpen = true;
 		if (allOpen) { 
 			for (LevelBox box: _boxes) {
 				box.setLevelOpen(true);
@@ -82,6 +82,10 @@ public class LevelMenuScreen extends GravidogScreen {
 		LevelBox eighth = new LevelBox(8);
 		eighth.box.setColor(Color.LIGHT_GRAY);
 		
+		LevelBox ninth = new LevelBox(9);
+		
+		LevelBox tenth = new LevelBox(10);
+		
 		_boxes.add(first);
 		_boxes.add(second);
 		_boxes.add(third);
@@ -90,6 +94,8 @@ public class LevelMenuScreen extends GravidogScreen {
 		_boxes.add(sixth);
 		_boxes.add(seventh);
 		_boxes.add(eighth);
+		_boxes.add(ninth);
+		_boxes.add(tenth);
 	}
 	
 	// Save/Load 	

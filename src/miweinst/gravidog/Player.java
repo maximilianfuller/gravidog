@@ -18,10 +18,10 @@ import cs195n.Vec2f;
 
 public class Player extends PhysicsEntity {
 
-	private static final float MOVEMENT_FORCE_COEFFICIENT = 3.0f;
+	private static final float MOVEMENT_FORCE_COEFFICIENT = 4.0f;
 	private final float JUMP_IMPULSE_COEFFICIENT = 12f;
 	private float GOAL_VELOCITY_COEFFICIENT = 12f;
-	private final float FRICTION_COEFFICIENT = 100f;
+	private final float FRICTION_COEFFICIENT = .5f;
 	private final float SPRITE_CYCLE_PERIOD = .8f;
 	private Shape _shape;
 	private boolean _gravitySwitched;
@@ -193,7 +193,7 @@ public class Player extends PhysicsEntity {
 		//Opposes movement perpindicular to gravity
 		Vec2f gravityNormal = GRAVITY.isZero() ? new Vec2f(1f, 0) : GRAVITY.getNormal().normalized();
 		Vec2f gravityNormalInPlayerDirection = gravityNormal.dot(getVelocity()) > 0 ? gravityNormal : gravityNormal.invert();
-		Vec2f force =gravityNormalInPlayerDirection.smult(-FRICTION_COEFFICIENT*getMass());
+		Vec2f force =gravityNormalInPlayerDirection.smult(-FRICTION_COEFFICIENT*GRAVITY.mag()*getMass());
 		this.applyForce(force, getCentroid());
 	}
 
