@@ -1,11 +1,8 @@
 package miweinst.gravidog;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Path2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
@@ -89,12 +86,10 @@ public class GravidogWorld extends GameWorld {
 	private GoalDoor _door;
 	//Player movement using boolean state array
 	private boolean[] _arrowKeyStates;
-	//Class.string mapped to instance of Class<?>
-	private HashDecorator<String, Class<? extends PhysicsEntity>> _classes;
+
 	//Variable name mapped to PhysicsEntity instance
 	private HashDecorator<String, PhysicsEntity> _entities;
 	private RelayEntity _doorRelay;
-	///////
 	private boolean _jumpboolean = false;
 
 	public GravidogWorld(App app, Viewport viewport, File f) {
@@ -112,21 +107,21 @@ public class GravidogWorld extends GameWorld {
 		////////////// START LEVEL READER /////////////////////
 
 		//Map of Strings to Class<?>, for interpreting level data
-		_classes = new HashDecorator<String, Class<? extends PhysicsEntity>>();                
-		_classes.setDecoration("PhysicsEntity", PhysicsEntity.class);
-		_classes.setDecoration("Player", Player.class);
-		_classes.setDecoration("StaticBoundary", StaticBoundary.class);
-		_classes.setDecoration("SensorEntity", SensorEntity.class);
-		_classes.setDecoration("RelayEntity", RelayEntity.class);
-		_classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
-		_classes.setDecoration("CurvedPathEntity", CurvedPathEntity.class);
-		_classes.setDecoration("PinEntity", PinEntity.class);
-		_classes.setDecoration("SpringEntity", SpringEntity.class);
-		_classes.setDecoration("GoalDoor", GoalDoor.class);
-		_classes.setDecoration("Star", Star.class);
-		_classes.setDecoration("Boulder", Boulder.class);
-		_classes.setDecoration("LevelBounds", LevelBounds.class);
-		_classes.setDecoration("Block", Block.class);
+		classes = new HashDecorator<String, Class<? extends PhysicsEntity>>();                
+		classes.setDecoration("PhysicsEntity", PhysicsEntity.class);
+		classes.setDecoration("Player", Player.class);
+		classes.setDecoration("StaticBoundary", StaticBoundary.class);
+		classes.setDecoration("SensorEntity", SensorEntity.class);
+		classes.setDecoration("RelayEntity", RelayEntity.class);
+		classes.setDecoration("BezierCurveEntity", BezierCurveEntity.class);
+		classes.setDecoration("CurvedPathEntity", CurvedPathEntity.class);
+		classes.setDecoration("PinEntity", PinEntity.class);
+		classes.setDecoration("SpringEntity", SpringEntity.class);
+		classes.setDecoration("GoalDoor", GoalDoor.class);
+		classes.setDecoration("Star", Star.class);
+		classes.setDecoration("Boulder", Boulder.class);
+		classes.setDecoration("LevelBounds", LevelBounds.class);
+		classes.setDecoration("Block", Block.class);
 
 		///Decoration set to each Entity read from LevelEditor!
 		_entities = new HashDecorator<String, PhysicsEntity>();                                        
@@ -154,9 +149,9 @@ public class GravidogWorld extends GameWorld {
 				//Create new Entity instance out of Class 
 				PhysicsEntity entity = null;
 				try {
-					//System.out.println(entityClass);
-					//System.out.println(entityName);
-					Constructor<?> c = _classes.getDecoration(entityClass).getConstructor(GameWorld.class);
+					Constructor<?> c = classes.getDecoration(entityClass).getConstructor(GameWorld.class);
+					System.out.println(entityClass);
+					System.out.println(entityName);
 					entity = (PhysicsEntity) c.newInstance(this);
 				} catch (Exception e) {
 					System.err.println("Exception...: " + e.getMessage());
